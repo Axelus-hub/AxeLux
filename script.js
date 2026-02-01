@@ -1,571 +1,858 @@
-// FIREBASE CONFIGURATION
-const firebaseConfig = {
-    apiKey: "AIzaSyC-EXAMPLE-KEY-CHANGE-THIS",
-    authDomain: "axelux-store.firebaseapp.com",
-    projectId: "axelux-store",
-    storageBucket: "axelux-store.appspot.com",
-    messagingSenderId: "1234567890",
-    appId: "1:1234567890:web:abc123def456"
-};
-
-// Initialize Firebase
-firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
-const db = firebase.firestore();
-const rtdb = firebase.database();
-
-// STATE MANAGEMENT
-let currentUser = null;
-let isAdmin = false;
-let visitorId = null;
-
-// MASTER ADMIN CREDENTIALS (ENCRYPTED)
-const MASTER_ADMIN = {
-    username: "Axm",
-    password: "brandalz70",
-    encrypted: btoa("Axm:brandalz70:axelux:" + Date.now())
-};
-
-// INITIALIZE APP
-document.addEventListener('DOMContentLoaded', function() {
-    initApp();
-    setupEventListeners();
-    trackVisitor();
-});
-
-// INITIALIZE APPLICATION
-function initApp() {
-    // Check authentication state
-    auth.onAuthStateChanged((user) => {
-        if (user) {
-            currentUser = user;
-            checkIfAdmin(user);
-            showMainPage();
-        } else {
-            showLoginPage();
-        }
-    });
-    
-    // Check URL for admin access
-    const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.get('admin') === 'true') {
-        document.getElementById('adminAccess').style.display = 'block';
-    }
-}
-
-// SETUP EVENT LISTENERS
-function setupEventListeners() {
-    // Login form
-    document.getElementById('loginForm')?.addEventListener('submit', function(e) {
-        e.preventDefault();
-        const email = document.getElementById('loginEmail').value;
-        const password = document.getElementById('loginPassword').value;
-        const adminMode = document.getElementById('adminMode').checked;
+// AXELUX STORE - CORE APPLICATION
+class AxeLuxStore {
+    constructor() {
+        this.currentUser = null;
+        this.isAdmin = false;
+        this.theme = 'dark';
+        this.visitorId = null;
+        this.users = [];
+        this.products = [];
+        this.testimonials = [];
+        this.visitors = [];
+        this.logs = [];
         
-        if (adminMode && email === MASTER_ADMIN.username && password === MASTER_ADMIN.password) {
-            masterAdminLogin();
-        } else {
-            firebaseLogin(email, password);
+        this.init();
+    }
+    
+    init() {
+        this.loadData();
+        this.setupEventListeners();
+        this.setTheme(this.getSavedTheme());
+        this.checkAuth();
+        this.trackVisitor();
+        this.render();
+    }
+    
+    // DATA MANAGEMENT
+    loadData() {
+        // Load users
+        this.users = JSON.parse(localStorage.getItem('axelux_users') || '[]');
+        
+        // Ensure master admin exists
+        if (!this.users.find(u => u.username === 'Axm')) {
+            this.users.push({
+                id: 'admin_001',
+                username: 'Axm',
+                email: 'owner@axelux.store',
+                password: btoa('brandalz70'),
+                role: 'owner',
+                created: new Date().toISOString(),
+                lastLogin: null
+            });
+            this.saveUsers();
         }
-    });
-}
-
-// MASTER ADMIN LOGIN
-function masterAdminLogin() {
-    localStorage.setItem('axelux_admin_token', MASTER_ADMIN.encrypted);
-    localStorage.setItem('axelux_role', 'owner');
-    localStorage.setItem('axelux_username', MASTER_ADMIN.username);
+        
+        // Load other data
+        this.products = JSON.parse(localStorage.getItem('axelux_products') || '[]');
+        this.testimonials = JSON.parse(localStorage.getItem('axelux_testimonials') || '[]');
+        this.visitors = JSON.parse(localStorage.getItem('axelux_visitors') || '[]');
+        this.logs = JSON.parse(localStorage.getItem('axelux_logs') || '[]');
+        
+        // Initialize sample products if empty
+        if (this.products.length === 0) {
+            this.products = [
+                { id: 1, name: 'Premium Watch', price: '$299', category: 'Electronics', stock: 10 },
+                { id: 2, name: 'Wireless Earbuds', price: '$199', category: 'Audio', stock: 25 },
+                { id: 3, name: 'Smartphone X', price: '$999', category: 'Electronics', stock: 5 },
+                { id: 4, name: 'Leather Wallet', price: '$89', category: 'Accessories', stock: 50 }
+            ];
+            this.saveProducts();
+        }
+    }
     
-    // Create fake user object
-    currentUser = {
-        displayName: "Axm (OWNER)",
-        email: "owner@axelux.store",
-        uid: "admin-owner-001"
-    };
+    saveUsers() { localStorage.setItem('axelux_users', JSON.stringify(this.users)); }
+    saveProducts() { localStorage.setItem('axelux_products', JSON.stringify(this.products)); }
+    saveTestimonials() { localStorage.setItem('axelux_testimonials', JSON.stringify(this.testimonials)); }
+    saveVisitors() { localStorage.setItem('axelux_visitors', JSON.stringify(this.visitors)); }
+    saveLogs() { localStorage.setItem('axelux_logs', JSON.stringify(this.logs)); }
     
-    isAdmin = true;
-    showMainPage();
-    logAction("MASTER ADMIN LOGIN", "Full access granted");
-    
-    // Initialize admin features
-    setTimeout(() => {
-        document.querySelectorAll('.admin-only').forEach(el => {
-            el.style.display = 'flex';
-        });
-        updateStats();
-        loadAllData();
-    }, 500);
-}
-
-// FIREBASE LOGIN
-function firebaseLogin(email, password) {
-    auth.signInWithEmailAndPassword(email, password)
-        .then((userCredential) => {
-            logAction("USER_LOGIN", email);
-        })
-        .catch((error) => {
-            showError("Login failed: " + error.message);
-        });
-}
-
-// GOOGLE LOGIN
-function loginGoogle() {
-    const provider = new firebase.auth.GoogleAuthProvider();
-    auth.signInWithPopup(provider)
-        .then((result) => {
-            logAction("GOOGLE_LOGIN", result.user.email);
-        })
-        .catch((error) => {
-            showError("Google login failed");
-        });
-}
-
-// FACEBOOK LOGIN
-function loginFacebook() {
-    showError("Facebook login temporarily disabled");
-}
-
-// GUEST LOGIN
-function enterAsGuest() {
-    currentUser = {
-        displayName: "Guest User",
-        role: "guest"
-    };
-    localStorage.setItem('axelux_role', 'guest');
-    showMainPage();
-    logAction("GUEST_ACCESS", "Guest entered");
-}
-
-// CHECK IF USER IS ADMIN
-function checkIfAdmin(user) {
-    // Check Firebase custom claims
-    user.getIdTokenResult()
-        .then((idTokenResult) => {
-            isAdmin = idTokenResult.claims.admin === true || 
-                     idTokenResult.claims.owner === true;
+    // AUTHENTICATION
+    checkAuth() {
+        const savedUser = localStorage.getItem('axelux_current_user');
+        const savedRole = localStorage.getItem('axelux_role');
+        
+        if (savedUser) {
+            this.currentUser = JSON.parse(savedUser);
+            this.isAdmin = savedRole === 'owner';
             
-            // Also check local storage for master admin
-            if (localStorage.getItem('axelux_role') === 'owner') {
-                isAdmin = true;
+            if (this.isAdmin) {
+                document.body.classList.add('show-admin');
             }
             
-            if (isAdmin) {
-                document.querySelectorAll('.admin-only').forEach(el => {
-                    el.style.display = 'flex';
-                });
+            this.showMainPage();
+        } else {
+            this.showLoginPage();
+        }
+    }
+    
+    register(username, email, password) {
+        // Validation
+        if (password.length < 6) {
+            this.showError('Password must be at least 6 characters');
+            return false;
+        }
+        
+        // Check if user exists
+        if (this.users.find(u => u.username === username || u.email === email)) {
+            this.showError('Username or email already exists');
+            return false;
+        }
+        
+        // Create user
+        const newUser = {
+            id: 'user_' + Date.now(),
+            username,
+            email,
+            password: btoa(password),
+            role: 'user',
+            created: new Date().toISOString(),
+            lastLogin: new Date().toISOString()
+        };
+        
+        this.users.push(newUser);
+        this.saveUsers();
+        
+        // Auto login
+        this.login(username, password);
+        
+        this.logAction('USER_REGISTER', `New user: ${username}`);
+        this.showSuccess(`Welcome ${username}! Account created successfully.`);
+        
+        return true;
+    }
+    
+    login(usernameOrEmail, password, isAdminMode = false) {
+        let user;
+        
+        if (isAdminMode && usernameOrEmail === 'Axm' && password === 'brandalz70') {
+            // Master admin login
+            user = {
+                id: 'admin_001',
+                username: 'Axm',
+                email: 'owner@axelux.store',
+                role: 'owner',
+                displayName: 'Axm (Owner)'
+            };
+        } else {
+            // Normal user login
+            user = this.users.find(u => 
+                (u.username === usernameOrEmail || u.email === usernameOrEmail) && 
+                btoa(password) === u.password
+            );
+        }
+        
+        if (user) {
+            // Update last login
+            user.lastLogin = new Date().toISOString();
+            this.saveUsers();
+            
+            this.currentUser = {
+                id: user.id,
+                username: user.username,
+                email: user.email,
+                displayName: user.username + (user.role === 'owner' ? ' (Owner)' : ''),
+                role: user.role
+            };
+            
+            this.isAdmin = user.role === 'owner';
+            
+            // Save session
+            localStorage.setItem('axelux_current_user', JSON.stringify(this.currentUser));
+            localStorage.setItem('axelux_role', user.role);
+            
+            if (this.isAdmin) {
+                document.body.classList.add('show-admin');
             }
-        })
-        .catch(() => {
-            isAdmin = false;
-        });
-}
-
-// VISITOR TRACKING
-function trackVisitor() {
-    visitorId = 'visitor_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+            
+            this.showMainPage();
+            this.updateUI();
+            
+            this.logAction('USER_LOGIN', `${user.username} logged in`);
+            this.showSuccess(`Welcome back, ${user.username}!`);
+            
+            return true;
+        } else {
+            this.showError('Invalid username/email or password');
+            return false;
+        }
+    }
     
-    const visitorData = {
-        id: visitorId,
-        userAgent: navigator.userAgent,
-        language: navigator.language,
-        platform: navigator.platform,
-        screen: `${window.screen.width}x${window.screen.height}`,
-        time: new Date().toISOString(),
-        url: window.location.href,
-        ip: 'detecting...'
-    };
+    guestLogin() {
+        this.currentUser = {
+            id: 'guest_' + Date.now(),
+            username: 'guest_' + Math.random().toString(36).substr(2, 6),
+            displayName: 'Guest User',
+            role: 'guest'
+        };
+        
+        localStorage.setItem('axelux_current_user', JSON.stringify(this.currentUser));
+        localStorage.setItem('axelux_role', 'guest');
+        
+        this.showMainPage();
+        this.updateUI();
+        
+        this.logAction('GUEST_LOGIN', 'Guest user entered');
+        this.showInfo('You are browsing as guest. Some features are limited.');
+        
+        return true;
+    }
     
-    // Save to Firebase Realtime Database
-    rtdb.ref('visitors/' + visitorId).set(visitorData);
+    logout() {
+        this.logAction('USER_LOGOUT', `${this.currentUser.username} logged out`);
+        
+        this.currentUser = null;
+        this.isAdmin = false;
+        
+        localStorage.removeItem('axelux_current_user');
+        localStorage.removeItem('axelux_role');
+        document.body.classList.remove('show-admin');
+        
+        this.showLoginPage();
+        this.showSuccess('Logged out successfully');
+    }
     
-    // Update local storage
-    let visitors = JSON.parse(localStorage.getItem('axelux_visitors') || '[]');
-    visitors.push(visitorData);
-    localStorage.setItem('axelux_visitors', JSON.stringify(visitors));
+    // VISITOR TRACKING
+    trackVisitor() {
+        this.visitorId = 'visitor_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        
+        const visitor = {
+            id: this.visitorId,
+            timestamp: new Date().toISOString(),
+            userAgent: navigator.userAgent,
+            screen: `${window.screen.width}x${window.screen.height}`,
+            user: this.currentUser ? this.currentUser.username : 'anonymous'
+        };
+        
+        this.visitors.push(visitor);
+        this.saveVisitors();
+        
+        // Keep only last 100 visitors
+        if (this.visitors.length > 100) {
+            this.visitors = this.visitors.slice(-100);
+            this.saveVisitors();
+        }
+    }
     
-    // Update display
-    updateVisitorStats();
-}
-
-// UPDATE VISITOR STATISTICS
-function updateVisitorStats() {
-    const visitors = JSON.parse(localStorage.getItem('axelux_visitors') || '[]');
-    document.getElementById('totalVisitors').textContent = visitors.length;
+    // TESTIMONIALS
+    addTestimonial(text, isFake = false) {
+        if (!this.currentUser || this.currentUser.role === 'guest') {
+            this.showError('Please login to submit testimonials');
+            return false;
+        }
+        
+        const testimonial = {
+            id: 'review_' + Date.now(),
+            author: this.currentUser.displayName,
+            text: text,
+            rating: 5,
+            date: new Date().toISOString(),
+            fake: isFake,
+            verified: !isFake
+        };
+        
+        this.testimonials.push(testimonial);
+        this.saveTestimonials();
+        
+        this.logAction('TESTIMONIAL_ADDED', `${isFake ? 'Fake' : 'Real'} testimonial added`);
+        this.showSuccess(isFake ? 'Fake testimonial added!' : 'Thank you for your review!');
+        
+        return true;
+    }
     
-    // Update live visitor list
-    const visitorList = document.getElementById('visitorList');
-    if (visitorList) {
-        visitorList.innerHTML = visitors.slice(-10).reverse().map(v => `
+    addFakeTestimonials(count) {
+        if (!this.isAdmin) {
+            this.showError('Admin access required');
+            return;
+        }
+        
+        const fakeNames = ['Alex Johnson', 'Maria Garcia', 'James Smith', 'Lisa Wang', 'Robert Brown'];
+        const fakeTexts = [
+            'Amazing product! Exceeded all expectations.',
+            'Best purchase ever. Highly recommended!',
+            'Quality is outstanding. Worth every penny.',
+            'Customer service was excellent.',
+            'I would recommend this to everyone.'
+        ];
+        
+        for (let i = 0; i < count; i++) {
+            this.addTestimonial(
+                fakeTexts[Math.floor(Math.random() * fakeTexts.length)],
+                true
+            );
+        }
+        
+        this.showSuccess(`Added ${count} fake testimonials`);
+    }
+    
+    // PRODUCTS
+    addProduct(name, price, category, stock) {
+        if (!this.isAdmin) {
+            this.showError('Admin access required');
+            return false;
+        }
+        
+        const product = {
+            id: 'prod_' + Date.now(),
+            name,
+            price,
+            category,
+            stock: parseInt(stock),
+            added: new Date().toISOString()
+        };
+        
+        this.products.push(product);
+        this.saveProducts();
+        
+        this.logAction('PRODUCT_ADDED', `New product: ${name}`);
+        return true;
+    }
+    
+    // AI SUPPORT
+    askAI(question) {
+        const responses = {
+            shipping: 'We offer worldwide shipping within 5-7 business days. Express shipping available for $25.',
+            price: 'Our prices are competitive. Contact us at sales@axelux.store for bulk discounts.',
+            refund: '30-day money back guarantee. No questions asked. Contact support for returns.',
+            contact: 'Email: support@axelux.store | Phone: +1-800-AXELUX | Hours: 24/7',
+            default: 'Thank you for your inquiry. Our team will respond within 24 hours. For immediate assistance, check our FAQ section.'
+        };
+        
+        let response = responses.default;
+        question = question.toLowerCase();
+        
+        if (question.includes('ship') || question.includes('delivery')) response = responses.shipping;
+        else if (question.includes('price') || question.includes('cost')) response = responses.price;
+        else if (question.includes('refund') || question.includes('return')) response = responses.refund;
+        else if (question.includes('contact') || question.includes('support')) response = responses.contact;
+        
+        this.logAction('AI_QUERY', `Question: ${question.substring(0, 50)}...`);
+        return response;
+    }
+    
+    // DATABASE OPERATIONS
+    viewDatabase(tab = 'users') {
+        if (!this.isAdmin) {
+            this.showError('Admin access required');
+            return;
+        }
+        
+        let output = '';
+        
+        switch(tab) {
+            case 'users':
+                output = JSON.stringify(this.users, null, 2);
+                break;
+            case 'products':
+                output = JSON.stringify(this.products, null, 2);
+                break;
+            case 'reviews':
+                output = JSON.stringify(this.testimonials, null, 2);
+                break;
+            case 'logs':
+                output = JSON.stringify(this.logs.slice(-50), null, 2);
+                break;
+            default:
+                output = 'Select a tab to view data';
+        }
+        
+        document.getElementById('databaseOutput').textContent = output;
+    }
+    
+    nukeDatabase() {
+        if (!this.isAdmin) return;
+        
+        if (confirm('⚠️ NUKE DATABASE? This will delete ALL data except users. Cannot be undone!')) {
+            this.products = [];
+            this.testimonials = [];
+            this.visitors = [];
+            this.logs = [];
+            
+            this.saveProducts();
+            this.saveTestimonials();
+            this.saveVisitors();
+            this.saveLogs();
+            
+            this.showSuccess('Database nuked. System reset.');
+            this.logAction('DATABASE_NUKE', 'All data cleared');
+            
+            setTimeout(() => location.reload(), 2000);
+        }
+    }
+    
+    // THEME
+    setTheme(theme) {
+        this.theme = theme;
+        document.documentElement.setAttribute('data-theme', theme);
+        localStorage.setItem('axelux_theme', theme);
+    }
+    
+    getSavedTheme() {
+        return localStorage.getItem('axelux_theme') || 'dark';
+    }
+    
+    // LOGGING
+    logAction(action, details) {
+        const log = {
+            timestamp: new Date().toISOString(),
+            action,
+            details,
+            user: this.currentUser ? this.currentUser.username : 'system',
+            ip: this.visitorId
+        };
+        
+        this.logs.push(log);
+        
+        // Keep only last 200 logs
+        if (this.logs.length > 200) {
+            this.logs = this.logs.slice(-200);
+        }
+        
+        this.saveLogs();
+    }
+    
+    // UI UPDATES
+    updateUI() {
+        if (this.currentUser) {
+            document.getElementById('currentUsername').textContent = this.currentUser.displayName;
+            document.getElementById('currentRole').textContent = this.currentUser.role;
+            document.getElementById('userStatus').textContent = this.currentUser.role === 'owner' ? 'Owner Mode' : 'User Mode';
+            
+            document.getElementById('settingUsername').textContent = this.currentUser.username;
+            document.getElementById('settingRole').textContent = this.currentUser.role;
+            document.getElementById('settingJoinDate').textContent = new Date().toLocaleDateString();
+        }
+        
+        // Update stats
+        document.getElementById('statVisitors').textContent = this.visitors.length;
+        document.getElementById('statProducts').textContent = this.products.length;
+        document.getElementById('statReviews').textContent = this.testimonials.length;
+        
+        // Update live visitors
+        this.updateLiveVisitors();
+        
+        // Render products and testimonials
+        this.renderProducts();
+        this.renderTestimonials();
+    }
+    
+    updateLiveVisitors() {
+        const container = document.getElementById('liveVisitors');
+        if (!container) return;
+        
+        const recentVisitors = this.visitors.slice(-10).reverse();
+        
+        if (recentVisitors.length === 0) {
+            container.innerHTML = '<p class="empty-state">No active visitors</p>';
+            return;
+        }
+        
+        container.innerHTML = recentVisitors.map(v => `
             <div class="visitor-item">
                 <i class="fas fa-user-circle"></i>
-                <span>${v.time.split('T')[1].substring(0,8)}</span>
-                <span>${v.platform}</span>
+                <span>${v.user}</span>
+                <span class="time">${new Date(v.timestamp).toLocaleTimeString()}</span>
             </div>
         `).join('');
     }
-}
-
-// UPDATE ALL STATS
-function updateStats() {
-    updateVisitorStats();
     
-    // Get products count
-    const products = JSON.parse(localStorage.getItem('axelux_products') || '[]');
-    document.getElementById('totalProducts').textContent = products.length;
-    
-    // Get testimonials count
-    const testimonials = JSON.parse(localStorage.getItem('axelux_testimonials') || '[]');
-    document.getElementById('totalTestimonials').textContent = testimonials.length;
-}
-
-// ADD FAKE TESTIMONIALS
-function addFakeTestimonials(count) {
-    if (!isAdmin) {
-        showError("Admin access required");
-        return;
+    renderProducts() {
+        const container = document.getElementById('productsGrid');
+        if (!container) return;
+        
+        container.innerHTML = this.products.map(p => `
+            <div class="product-card">
+                <h3>${p.name}</h3>
+                <p class="price">${p.price}</p>
+                <p class="category">${p.category}</p>
+                <p class="stock">Stock: ${p.stock}</p>
+                ${this.isAdmin ? `
+                    <button class="btn-secondary" onclick="axelux.deleteProduct('${p.id}')">
+                        <i class="fas fa-trash"></i> Delete
+                    </button>
+                ` : ''}
+            </div>
+        `).join('');
     }
     
-    const fakeNames = ["Alex Johnson", "Maria Garcia", "James Smith", "Lisa Wang", "Robert Brown"];
-    const fakeTitles = ["Amazing Product!", "Life Changing", "Best Purchase Ever", "Highly Recommended", "5 Stars!"];
-    const fakeTexts = [
-        "This product exceeded all my expectations. Absolutely fantastic!",
-        "I've been using this for a week and already see incredible results.",
-        "The quality is outstanding. Worth every penny!",
-        "Customer service was excellent and the product is even better.",
-        "I would recommend this to everyone. Simply the best!"
-    ];
+    renderTestimonials() {
+        const container = document.getElementById('testimonialsGrid');
+        if (!container) return;
+        
+        const recentReviews = this.testimonials.slice(-20).reverse();
+        
+        container.innerHTML = recentReviews.map(t => `
+            <div class="testimonial-card ${t.fake ? 'fake' : ''}">
+                <div class="review-header">
+                    <strong>${t.author}</strong>
+                    <span class="review-date">${new Date(t.date).toLocaleDateString()}</span>
+                    ${t.fake ? '<span class="badge fake-badge">FAKE</span>' : ''}
+                </div>
+                <div class="review-text">${t.text}</div>
+                <div class="review-rating">
+                    ${'★'.repeat(t.rating)}${'☆'.repeat(5 - t.rating)}
+                </div>
+            </div>
+        `).join('');
+    }
     
-    let testimonials = JSON.parse(localStorage.getItem('axelux_testimonials') || '[]');
+    // PAGE NAVIGATION
+    showLoginPage() {
+        document.getElementById('loginPage').classList.add('active');
+        document.getElementById('mainPage').classList.remove('active');
+    }
     
-    for (let i = 0; i < count; i++) {
-        const testimonial = {
-            id: 'fake_' + Date.now() + '_' + i,
-            author: fakeNames[Math.floor(Math.random() * fakeNames.length)],
-            title: fakeTitles[Math.floor(Math.random() * fakeTitles.length)],
-            text: fakeTexts[Math.floor(Math.random() * fakeTexts.length)],
-            rating: 5,
-            date: new Date().toISOString(),
-            fake: true
+    showMainPage() {
+        document.getElementById('loginPage').classList.remove('active');
+        document.getElementById('mainPage').classList.add('active');
+        this.updateUI();
+    }
+    
+    showSection(sectionId) {
+        // Hide all sections
+        document.querySelectorAll('.content-section').forEach(s => {
+            s.classList.remove('active');
+        });
+        
+        // Remove active from all menu items
+        document.querySelectorAll('.menu-item').forEach(m => {
+            m.classList.remove('active');
+        });
+        
+        // Show selected section
+        document.getElementById(sectionId).classList.add('active');
+        
+        // Add active to clicked menu item
+        event.target.closest('.menu-item').classList.add('active');
+        
+        // If database section, load default tab
+        if (sectionId === 'database' && this.isAdmin) {
+            this.viewDatabase('users');
+        }
+    }
+    
+    showDatabaseTab(tab) {
+        if (!this.isAdmin) return;
+        
+        // Update tab buttons
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        event.target.classList.add('active');
+        
+        // Show tab content
+        this.viewDatabase(tab);
+    }
+    
+    // NOTIFICATIONS
+    showError(message) {
+        this.showNotification(message, 'error');
+        console.error('Error:', message);
+    }
+    
+    showSuccess(message) {
+        this.showNotification(message, 'success');
+        console.log('Success:', message);
+    }
+    
+    showInfo(message) {
+        this.showNotification(message, 'info');
+    }
+    
+    showNotification(message, type = 'info') {
+        const container = document.getElementById('notificationArea');
+        
+        const notification = document.createElement('div');
+        notification.className = `notification ${type}`;
+        notification.innerHTML = `
+            <i class="fas fa-${type === 'success' ? 'check-circle' : 
+                            type === 'error' ? 'exclamation-circle' : 
+                            'info-circle'}"></i>
+            <span>${message}</span>
+            <button onclick="this.parentElement.remove()">&times;</button>
+        `;
+        
+        container.appendChild(notification);
+        
+        // Auto remove after 5 seconds
+        setTimeout(() => {
+            if (notification.parentElement) {
+                notification.style.animation = 'fadeOut 0.3s ease forwards';
+                setTimeout(() => notification.remove(), 300);
+            }
+        }, 5000);
+    }
+    
+    // EVENT LISTENERS
+    setupEventListeners() {
+        // Login form
+        document.getElementById('formLogin')?.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const username = document.getElementById('loginUsername').value;
+            const password = document.getElementById('loginPassword').value;
+            const adminMode = document.getElementById('adminMode').checked;
+            
+            this.login(username, password, adminMode);
+        });
+        
+        // Register form
+        document.getElementById('formRegister')?.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const username = document.getElementById('regUsername').value;
+            const email = document.getElementById('regEmail').value;
+            const password = document.getElementById('regPassword').value;
+            const confirm = document.getElementById('regConfirmPassword').value;
+            
+            if (password !== confirm) {
+                this.showError('Passwords do not match');
+                return;
+            }
+            
+            this.register(username, email, password);
+        });
+        
+        // AI Chat
+        window.sendAIQuery = () => {
+            const input = document.getElementById('userQuery');
+            const question = input.value.trim();
+            
+            if (!question) return;
+            
+            // Add user message
+            const chat = document.getElementById('chatMessages');
+            chat.innerHTML += `
+                <div class="message user">
+                    <div class="message-avatar">You</div>
+                    <div class="message-content">${question}</div>
+                </div>
+            `;
+            
+            // Get AI response
+            const response = this.askAI(question);
+            
+            // Add AI response after delay
+            setTimeout(() => {
+                chat.innerHTML += `
+                    <div class="message ai">
+                        <div class="message-avatar">AI</div>
+                        <div class="message-content">${response}</div>
+                    </div>
+                `;
+                chat.scrollTop = chat.scrollHeight;
+            }, 500);
+            
+            input.value = '';
         };
         
-        testimonials.push(testimonial);
+        // Quick questions
+        window.askQuestion = (type) => {
+            const questions = {
+                shipping: 'What are the shipping options?',
+                price: 'Are there any discounts?',
+                refund: 'What is the return policy?',
+                contact: 'How can I contact support?'
+            };
+            
+            document.getElementById('userQuery').value = questions[type];
+            sendAIQuery();
+        };
         
-        // Also save to Firebase if admin
-        if (currentUser?.uid?.includes('admin')) {
-            db.collection('testimonials').add(testimonial);
+        // Testimonial submission
+        window.submitTestimonial = () => {
+            const textarea = document.getElementById('newTestimonial');
+            const text = textarea.value.trim();
+            
+            if (!text) {
+                this.showError('Please enter review text');
+                return;
+            }
+            
+            if (this.addTestimonial(text, false)) {
+                textarea.value = '';
+                this.renderTestimonials();
+                this.updateUI();
+            }
+        };
+        
+        // Admin functions
+        window.addFakeTestimonials = (count) => this.addFakeTestimonials(count);
+        window.wipeVisitorData = () => {
+            if (!this.isAdmin) return;
+            this.visitors = [];
+            this.saveVisitors();
+            this.updateUI();
+            this.showSuccess('Visitor data cleared');
+        };
+        
+        window.showAdminAccess = () => {
+            document.getElementById('adminAccess').style.display = 'block';
+        };
+        
+        window.verifyAdminCredentials = () => {
+            const username = document.getElementById('adminUsername').value;
+            const password = document.getElementById('adminPassword').value;
+            
+            if (username === 'Axm' && password === 'brandalz70') {
+                this.login(username, password, true);
+                this.hideAdminModal();
+            } else {
+                this.showError('Invalid admin credentials');
+            }
+        };
+        
+        window.hideAdminModal = () => {
+            document.getElementById('adminModal').classList.remove('active');
+        };
+        
+        window.showNukeConfirm = () => {
+            if (confirm('⚠️ THIS WILL DELETE ALL DATA EXCEPT USERS!\n\nAre you absolutely sure?')) {
+                this.nukeDatabase();
+            }
+        };
+    }
+    
+    // RENDER INITIAL UI
+    render() {
+        this.updateUI();
+        
+        // Show admin quick access if URL parameter
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('admin') === 'true') {
+            document.getElementById('adminAccess').style.display = 'block';
         }
     }
-    
-    localStorage.setItem('axelux_testimonials', JSON.stringify(testimonials));
-    updateStats();
-    loadTestimonials();
-    
-    showSuccess(`Added ${count} fake testimonials`);
-    logAction("ADD_FAKE_TESTIMONIALS", `Count: ${count}`);
 }
 
-// DELETE ALL VISITORS
-function deleteAllVisitors() {
-    if (!isAdmin) {
-        showError("Admin access required");
-        return;
-    }
-    
-    if (confirm("⚠️ WARNING: This will delete ALL visitor data. Continue?")) {
-        localStorage.removeItem('axelux_visitors');
-        
-        // Also delete from Firebase
-        rtdb.ref('visitors').remove();
-        
-        updateStats();
-        showSuccess("All visitor data deleted");
-        logAction("DELETE_ALL_VISITORS", "Complete wipe");
-    }
+// GLOBAL FUNCTIONS
+function showLoginForm() {
+    document.getElementById('registerForm').style.display = 'none';
+    document.getElementById('loginFormContainer').style.display = 'block';
 }
 
-// AI CUSTOMER SERVICE
-function askAI() {
-    const query = document.getElementById('customerQuery').value;
-    if (!query.trim()) return;
-    
-    const chatMessages = document.getElementById('chatMessages');
-    if (chatMessages) {
-        chatMessages.innerHTML += `<div class="message user">You: ${query}</div>`;
-    }
-    
-    // AI Responses based on keywords
-    const responses = {
-        shipping: "We offer worldwide shipping within 5-7 business days. Express shipping available.",
-        price: "Our prices are competitive. Contact us for bulk discounts.",
-        quality: "All products are premium quality with 2-year warranty.",
-        refund: "30-day money back guarantee. No questions asked.",
-        contact: "Email us at support@axelux.store or call +1-800-AXELUX",
-        default: "Thank you for your inquiry. Our team will respond within 24 hours. For immediate assistance, check our FAQ section."
-    };
-    
-    let response = responses.default;
-    query.toLowerCase().split(' ').forEach(word => {
-        if (responses[word]) {
-            response = responses[word];
-        }
-    });
-    
-    // Add AI response
-    setTimeout(() => {
-        if (chatMessages) {
-            chatMessages.innerHTML += `<div class="message ai">🤖 AI: ${response}</div>`;
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-        }
-        
-        document.getElementById('aiResponse').innerHTML = 
-            `<i class="fas fa-robot"></i> AI Response: ${response}`;
-    }, 1000);
-    
-    document.getElementById('customerQuery').value = '';
+function showRegisterForm() {
+    document.getElementById('loginFormContainer').style.display = 'none';
+    document.getElementById('registerForm').style.display = 'block';
 }
 
-// LOAD ALL DATA
-function loadAllData() {
-    if (!isAdmin) return;
-    
-    loadProducts();
-    loadTestimonials();
-    loadUsers();
+function enterAsGuest() {
+    axelux.guestLogin();
 }
 
-// LOAD PRODUCTS
-function loadProducts() {
-    const productsGrid = document.getElementById('productsGrid');
-    if (!productsGrid) return;
-    
-    const products = JSON.parse(localStorage.getItem('axelux_products') || '[]');
-    
-    if (products.length === 0) {
-        // Add sample products
-        const sampleProducts = [
-            { id: 1, name: "Premium Watch", price: "$299", desc: "Luxury timepiece", stock: 10 },
-            { id: 2, name: "Wireless Earbuds", price: "$199", desc: "Noise cancelling", stock: 25 },
-            { id: 3, name: "Smartphone X", price: "$999", desc: "Latest model", stock: 5 }
-        ];
-        
-        localStorage.setItem('axelux_products', JSON.stringify(sampleProducts));
-        productsGrid.innerHTML = sampleProducts.map(p => createProductCard(p)).join('');
-    } else {
-        productsGrid.innerHTML = products.map(p => createProductCard(p)).join('');
-    }
-}
-
-function createProductCard(product) {
-    return `
-        <div class="product-card">
-            <h3>${product.name}</h3>
-            <p class="price">${product.price}</p>
-            <p>${product.desc}</p>
-            <p>Stock: ${product.stock}</p>
-            ${isAdmin ? `<button onclick="editProduct(${product.id})" class="btn small">Edit</button>` : ''}
-        </div>
-    `;
-}
-
-// LOAD TESTIMONIALS
-function loadTestimonials() {
-    const testimonialsList = document.getElementById('testimonialsList');
-    if (!testimonialsList) return;
-    
-    const testimonials = JSON.parse(localStorage.getItem('axelux_testimonials') || '[]');
-    
-    testimonialsList.innerHTML = testimonials.map(t => `
-        <div class="testimonial-item ${t.fake ? 'fake' : ''}">
-            <div class="testimonial-header">
-                <strong>${t.author}</strong>
-                <span>${new Date(t.date).toLocaleDateString()}</span>
-                ${t.fake ? '<span class="badge">FAKE</span>' : ''}
-            </div>
-            <h4>${t.title}</h4>
-            <p>${t.text}</p>
-            <div class="rating">${'★'.repeat(t.rating)}${'☆'.repeat(5-t.rating)}</div>
-        </div>
-    `).join('');
-}
-
-// ADD TESTIMONIAL
-function addTestimonial() {
-    const text = document.getElementById('newTestimonial').value;
-    if (!text.trim()) {
-        showError("Please enter testimonial text");
-        return;
-    }
-    
-    const testimonial = {
-        id: 'user_' + Date.now(),
-        author: currentUser?.displayName || "Anonymous",
-        title: "Great Experience!",
-        text: text,
-        rating: 5,
-        date: new Date().toISOString(),
-        fake: false
-    };
-    
-    let testimonials = JSON.parse(localStorage.getItem('axelux_testimonials') || '[]');
-    testimonials.push(testimonial);
-    localStorage.setItem('axelux_testimonials', JSON.stringify(testimonials));
-    
-    // Save to Firebase
-    if (currentUser?.uid) {
-        db.collection('testimonials').add(testimonial);
-    }
-    
-    document.getElementById('newTestimonial').value = '';
-    loadTestimonials();
-    updateStats();
-    showSuccess("Testimonial added!");
-}
-
-// DATABASE FUNCTIONS
-function viewAllData() {
-    if (!isAdmin) {
-        showError("Admin access required");
-        return;
-    }
-    
-    const allData = {
-        visitors: JSON.parse(localStorage.getItem('axelux_visitors') || '[]'),
-        products: JSON.parse(localStorage.getItem('axelux_products') || '[]'),
-        testimonials: JSON.parse(localStorage.getItem('axelux_testimonials') || '[]'),
-        users: JSON.parse(localStorage.getItem('axelux_users') || '[]'),
-        logs: JSON.parse(localStorage.getItem('axelux_logs') || '[]')
-    };
-    
-    document.getElementById('databaseOutput').textContent = 
-        JSON.stringify(allData, null, 2);
-}
-
-function nukeDatabase() {
-    if (!isAdmin) {
-        showError("Admin access required");
-        return;
-    }
-    
-    if (confirm("☢️ NUCLEAR OPTION: Delete ALL data? This cannot be undone!")) {
-        localStorage.clear();
-        
-        // Try to clear Firebase (requires admin permissions)
-        rtdb.ref().remove().catch(e => console.log("Firebase clear failed"));
-        
-        showSuccess("All data nuked. System reset.");
-        setTimeout(() => location.reload(), 2000);
-    }
-}
-
-// PAGE NAVIGATION
-function showLoginPage() {
-    document.getElementById('loginPage').classList.add('active');
-    document.getElementById('mainPage').classList.remove('active');
-}
-
-function showMainPage() {
-    document.getElementById('loginPage').classList.remove('active');
-    document.getElementById('mainPage').classList.add('active');
-    
-    // Update user display
-    document.getElementById('currentUser').textContent = 
-        currentUser?.displayName || "Guest User";
-    
-    document.getElementById('userRoleBadge').textContent = 
-        isAdmin ? "OWNER" : (currentUser?.role || "GUEST");
-    
-    document.getElementById('welcomeUser').textContent = 
-        currentUser?.displayName || "Guest";
-    
-    // Update stats
-    updateStats();
-    
-    // Load data if admin
-    if (isAdmin) {
-        loadAllData();
-    }
-}
-
-function showSection(sectionId) {
-    // Hide all sections
-    document.querySelectorAll('.section').forEach(section => {
-        section.classList.remove('active');
-    });
-    
-    // Remove active class from all nav links
-    document.querySelectorAll('.nav-link').forEach(link => {
-        link.classList.remove('active');
-    });
-    
-    // Show selected section
-    document.getElementById(sectionId).classList.add('active');
-    
-    // Add active class to clicked nav link
-    event.target.classList.add('active');
-}
-
-// LOGOUT
-function logout() {
-    auth.signOut();
-    localStorage.removeItem('axelux_admin_token');
-    localStorage.removeItem('axelux_role');
-    currentUser = null;
-    isAdmin = false;
-    showLoginPage();
-    logAction("USER_LOGOUT", "Session ended");
-}
-
-// LOGGING SYSTEM
-function logAction(action, details) {
-    const logEntry = {
-        action: action,
-        details: details,
-        user: currentUser?.displayName || "system",
-        timestamp: new Date().toISOString(),
-        ip: visitorId
-    };
-    
-    // Save to localStorage
-    let logs = JSON.parse(localStorage.getItem('axelux_logs') || '[]');
-    logs.push(logEntry);
-    localStorage.setItem('axelux_logs', JSON.stringify(logs.slice(-100))); // Keep last 100
-    
-    // Save to Firebase if admin
-    if (isAdmin) {
-        db.collection('logs').add(logEntry);
-    }
-}
-
-// UTILITY FUNCTIONS
-function showError(message) {
-    alert("❌ " + message);
-}
-
-function showSuccess(message) {
-    alert("✅ " + message);
-}
-
-// DIRECT ADMIN ACCESS
 function directAdminLogin() {
-    masterAdminLogin();
+    axelux.login('Axm', 'brandalz70', true);
 }
 
-// INITIALIZE SECURITY
-function initSecurity() {
-    // Prevent right-click
-    document.addEventListener('contextmenu', e => e.preventDefault());
-    
-    // Prevent F12, Ctrl+Shift+I, Ctrl+Shift+J
-    document.addEventListener('keydown', e => {
-        if (e.key === 'F12' || 
-            (e.ctrlKey && e.shiftKey && e.key === 'I') ||
-            (e.ctrlKey && e.shiftKey && e.key === 'J') ||
-            (e.ctrlKey && e.key === 'U')) {
-            e.preventDefault();
-            alert("Developer tools disabled for security.");
+function logout() {
+    axelux.logout();
+}
+
+function setTheme(theme) {
+    axelux.setTheme(theme);
+}
+
+function showAdminHint() {
+    axelux.showInfo('Owner Mode: Use username "Axm" and password "brandalz70"');
+}
+
+// Initialize application
+const axelux = new AxeLuxStore();
+
+// Make available globally
+window.axelux = axelux;
+window.showLoginForm = showLoginForm;
+window.showRegisterForm = showRegisterForm;
+window.enterAsGuest = enterAsGuest;
+window.directAdminLogin = directAdminLogin;
+window.logout = logout;
+window.setTheme = setTheme;
+window.showAdminHint = showAdminHint;
+window.showSection = (section) => axelux.showSection(section);
+window.showDatabaseTab = (tab) => axelux.showDatabaseTab(tab);
+
+// Add CSS for notifications if not exists
+if (!document.querySelector('#notification-styles')) {
+    const style = document.createElement('style');
+    style.id = 'notification-styles';
+    style.textContent = `
+        #notificationArea {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
         }
-    });
+        
+        .notification {
+            padding: 16px 20px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            max-width: 400px;
+            animation: slideInRight 0.3s ease;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .notification.success {
+            background: rgba(16, 185, 129, 0.15);
+            border-left: 4px solid #10b981;
+            color: #10b981;
+        }
+        
+        .notification.error {
+            background: rgba(239, 68, 68, 0.15);
+            border-left: 4px solid #ef4444;
+            color: #ef4444;
+        }
+        
+        .notification.info {
+            background: rgba(59, 130, 246, 0.15);
+            border-left: 4px solid #3b82f6;
+            color: #3b82f6;
+        }
+        
+        .notification button {
+            margin-left: auto;
+            background: transparent;
+            border: none;
+            color: inherit;
+            cursor: pointer;
+            font-size: 20px;
+            opacity: 0.7;
+        }
+        
+        .notification button:hover {
+            opacity: 1;
+        }
+        
+        @keyframes slideInRight {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        @keyframes fadeOut {
+            to { opacity: 0; transform: translateY(-10px); }
+        }
+        
+        .fake-badge {
+            background: #f59e0b;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        
+        .role-badge {
+            background: var(--primary);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+    `;
+    document.head.appendChild(style);
 }
-
-// Initialize security
-initSecurity();
