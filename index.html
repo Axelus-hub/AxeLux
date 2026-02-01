@@ -3,343 +3,199 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AxeLux Premium Store</title>
+    <title>AxeLux | Premium Store</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🔮</text></svg>">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
 </head>
 <body>
-    <!-- LANGUAGE SELECTOR -->
-    <div class="language-selector">
-        <select id="languageSelect" onchange="changeLanguage(this.value)">
-            <option value="id">🇮🇩 Bahasa Indonesia</option>
-            <option value="en">🇺🇸 English</option>
-            <option value="jp">🇯🇵 日本語</option>
-            <option value="kr">🇰🇷 한국어</option>
-            <option value="cn">🇨🇳 中文</option>
-            <option value="es">🇪🇸 Español</option>
-        </select>
-    </div>
-
-    <!-- THEME SELECTOR -->
-    <div class="theme-selector">
-        <button onclick="setTheme('dark')" title="Dark Mode"><i class="fas fa-moon"></i></button>
-        <button onclick="setTheme('light')" title="Light Mode"><i class="fas fa-sun"></i></button>
-        <button onclick="setTheme('blue')" title="Blue Theme"><i class="fas fa-palette"></i></button>
-        <button onclick="setTheme('green')" title="Green Theme"><i class="fas fa-leaf"></i></button>
-        <button onclick="setTheme('red')" title="Red Theme"><i class="fas fa-fire"></i></button>
-    </div>
-
-    <!-- LOGIN PAGE -->
-    <div id="loginPage" class="page active">
-        <div class="login-wrapper">
-            <div class="login-left">
-                <div class="brand-hero">
-                    <div class="hero-logo">
-                        <i class="fas fa-crown"></i>
-                        <div class="logo-pulse"></div>
-                    </div>
-                    <h1 class="brand-title">AxeLux</h1>
-                    <p class="brand-subtitle" data-i18n="login.subtitle">Premium Digital Experience</p>
-                    
-                    <div class="hero-features">
-                        <div class="feature">
-                            <i class="fas fa-shield-alt"></i>
-                            <span data-i18n="login.feature1">Military-grade Security</span>
-                        </div>
-                        <div class="feature">
-                            <i class="fas fa-bolt"></i>
-                            <span data-i18n="login.feature2">AI-Powered Support</span>
-                        </div>
-                        <div class="feature">
-                            <i class="fas fa-globe"></i>
-                            <span data-i18n="login.feature3">Multi-language</span>
-                        </div>
-                    </div>
-                </div>
+    <!-- Login Page (Awal) -->
+    <div id="loginPage" class="page">
+        <div class="login-container">
+            <div class="logo">AxeLux</div>
+            <div class="theme-toggle">
+                <button onclick="setTheme('green')" class="theme-btn green">Hijau</button>
+                <button onclick="setTheme('red')" class="theme-btn red">Merah</button>
             </div>
-
-            <div class="login-right">
-                <div class="auth-container glass-effect">
-                    <!-- LOGIN FORM -->
-                    <div id="loginFormContainer" class="auth-form active">
-                        <div class="auth-header">
-                            <h2 data-i18n="login.welcome">Welcome Back</h2>
-                            <p data-i18n="login.signin">Sign in to your account</p>
-                        </div>
-
-                        <form id="formLogin" autocomplete="off">
-                            <div class="input-group">
-                                <div class="input-icon">
-                                    <i class="fas fa-user"></i>
-                                </div>
-                                <input type="text" id="loginUsername" placeholder="Username or email" data-i18n-placeholder="login.username" required>
-                            </div>
-
-                            <div class="input-group">
-                                <div class="input-icon">
-                                    <i class="fas fa-lock"></i>
-                                </div>
-                                <input type="password" id="loginPassword" placeholder="Password" data-i18n-placeholder="login.password" required>
-                                <button type="button" class="show-password" onclick="togglePassword('loginPassword')">
-                                    <i class="fas fa-eye"></i>
-                                </button>
-                            </div>
-
-                            <div class="form-options">
-                                <div class="admin-toggle">
-                                    <label class="checkbox-label">
-                                        <input type="checkbox" id="adminMode">
-                                        <span class="checkbox-custom"></span>
-                                        <span class="checkbox-text" data-i18n="login.adminmode">Owner Mode</span>
-                                    </label>
-                                    <span class="admin-hint" onclick="showAdminHint()">
-                                        <i class="fas fa-info-circle"></i>
-                                    </span>
-                                </div>
-                            </div>
-
-                            <button type="submit" class="btn-auth">
-                                <i class="fas fa-sign-in-alt"></i>
-                                <span data-i18n="login.signin">Sign In</span>
-                            </button>
-                        </form>
-
-                        <div class="auth-divider">
-                            <span data-i18n="login.or">or continue with</span>
-                        </div>
-
-                        <div class="auth-options">
-                            <button class="btn-guest" onclick="enterAsGuest()">
-                                <i class="fas fa-eye"></i>
-                                <span data-i18n="login.guest">Browse as Guest</span>
-                            </button>
-                        </div>
-
-                        <div class="auth-footer">
-                            <p data-i18n="login.noaccount">Don't have an account?</p>
-                            <a href="#" onclick="showRegisterForm()" class="auth-link" data-i18n="login.register">Create Account</a>
-                        </div>
-
-                        <div class="quick-admin-access">
-                            <button class="btn-admin-quick" onclick="directAdminLogin()">
-                                <i class="fas fa-key"></i>
-                                <span>Owner Quick Access</span>
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- REGISTER FORM -->
-                    <div id="registerForm" class="auth-form">
-                        <div class="auth-header">
-                            <h2 data-i18n="register.title">Create Account</h2>
-                            <p data-i18n="register.subtitle">Join AxeLux community</p>
-                        </div>
-
-                        <form id="formRegister" autocomplete="off">
-                            <div class="input-group">
-                                <div class="input-icon">
-                                    <i class="fas fa-user-circle"></i>
-                                </div>
-                                <input type="text" id="regUsername" placeholder="Choose username" data-i18n-placeholder="register.username" required>
-                            </div>
-
-                            <div class="input-group">
-                                <div class="input-icon">
-                                    <i class="fas fa-envelope"></i>
-                                </div>
-                                <input type="email" id="regEmail" placeholder="Email address" data-i18n-placeholder="register.email" required>
-                            </div>
-
-                            <div class="password-group">
-                                <div class="input-group">
-                                    <div class="input-icon">
-                                        <i class="fas fa-lock"></i>
-                                    </div>
-                                    <input type="password" id="regPassword" placeholder="Password (min 6 chars)" data-i18n-placeholder="register.password" required>
-                                    <button type="button" class="show-password" onclick="togglePassword('regPassword')">
-                                        <i class="fas fa-eye"></i>
-                                    </button>
-                                </div>
-                                <div class="input-group">
-                                    <div class="input-icon">
-                                        <i class="fas fa-lock"></i>
-                                    </div>
-                                    <input type="password" id="regConfirmPassword" placeholder="Confirm password" data-i18n-placeholder="register.confirm" required>
-                                    <button type="button" class="show-password" onclick="togglePassword('regConfirmPassword')">
-                                        <i class="fas fa-eye"></i>
-                                    </button>
-                                </div>
-                            </div>
-
-                            <div class="password-strength">
-                                <div class="strength-bar">
-                                    <div class="strength-fill" id="passwordStrength"></div>
-                                </div>
-                                <span class="strength-text" data-i18n="register.strength">Password strength</span>
-                            </div>
-
-                            <button type="submit" class="btn-auth">
-                                <i class="fas fa-user-plus"></i>
-                                <span data-i18n="register.create">Create Account</span>
-                            </button>
-                        </form>
-
-                        <div class="auth-footer">
-                            <p data-i18n="register.haveaccount">Already have an account?</p>
-                            <a href="#" onclick="showLoginForm()" class="auth-link" data-i18n="register.signin">Sign In</a>
-                        </div>
-                    </div>
-                </div>
+            <div class="lang-select">
+                <select id="langSelect" onchange="changeLanguage()">
+                    <option value="id">Indonesia</option>
+                    <option value="en">English</option>
+                    <option value="jp">日本語</option>
+                    <option value="ar">العربية</option>
+                </select>
             </div>
-        </div>
-
-        <div class="login-bottom">
-            <div class="security-badge">
-                <i class="fas fa-shield-alt"></i>
-                <span data-i18n="login.secured">Secured with AES-256 Encryption</span>
-            </div>
-            <div class="copyright">
-                <span data-i18n="login.copyright">© 2024 AxeLux Store. All rights reserved.</span>
+            <div class="login-form">
+                <h2 id="loginTitle">Masuk ke Akun</h2>
+                <input type="text" id="loginEmail" placeholder="Email atau Username">
+                <input type="password" id="loginPassword" placeholder="Password">
+                <button onclick="login()" class="btn-login">Login</button>
+                <button onclick="signInAsGuest()" class="btn-guest">Masuk sebagai Guest</button>
+                <p id="loginMsg" class="message"></p>
+                <p class="small">Akun Owner: User: Axm, Pass: brandalz70</p>
             </div>
         </div>
     </div>
 
-    <!-- MAIN APP -->
-    <div id="mainPage" class="page">
-        <!-- SIDEBAR -->
-        <nav class="sidebar">
-            <div class="sidebar-header">
-                <div class="brand-display">
-                    <div class="sidebar-logo">
-                        <i class="fas fa-crown"></i>
-                    </div>
-                    <div class="brand-info">
-                        <h2>AxeLux</h2>
-                        <p class="user-role" id="userRoleDisplay">Guest</p>
-                    </div>
+    <!-- Main App (Setelah Login) -->
+    <div id="mainApp" class="page hidden">
+        <!-- Header -->
+        <header>
+            <div class="header-left">
+                <h1 class="app-title">AxeLux</h1>
+                <div class="lang-select small">
+                    <select id="langSelectMain" onchange="changeLanguage()">
+                        <option value="id">ID</option>
+                        <option value="en">EN</option>
+                        <option value="jp">JP</option>
+                        <option value="ar">AR</option>
+                    </select>
                 </div>
-                
-                <div class="sidebar-stats">
-                    <div class="stat-mini">
-                        <i class="fas fa-users"></i>
-                        <span id="miniVisitors">0</span>
-                    </div>
-                    <div class="stat-mini">
-                        <i class="fas fa-box"></i>
-                        <span id="miniProducts">0</span>
-                    </div>
-                    <div class="stat-mini">
-                        <i class="fas fa-star"></i>
-                        <span id="miniReviews">0</span>
-                    </div>
+                <div class="theme-btns">
+                    <button onclick="setTheme('green')" class="theme-btn mini green"><i class="fas fa-leaf"></i></button>
+                    <button onclick="setTheme('red')" class="theme-btn mini red"><i class="fas fa-fire"></i></button>
                 </div>
             </div>
-
-            <div class="sidebar-menu">
-                <div class="menu-section">
-                    <span class="menu-title" data-i18n="menu.main">MAIN</span>
-                    <a href="#dashboard" class="menu-item active" onclick="showSection('dashboard')">
-                        <div class="menu-icon">
-                            <i class="fas fa-chart-line"></i>
-                        </div>
-                        <span class="menu-text" data-i18n="menu.dashboard">Dashboard</span>
-                    </a>
-                    <a href="#products" class="menu-item" onclick="showSection('products')">
-                        <div class="menu-icon">
-                            <i class="fas fa-box-open"></i>
-                        </div>
-                        <span class="menu-text" data-i18n="menu.products">Products</span>
-                    </a>
-                    <a href="#support" class="menu-item" onclick="showSection('support')">
-                        <div class="menu-icon">
-                            <i class="fas fa-headset"></i>
-                        </div>
-                        <span class="menu-text" data-i18n="menu.support">Support</span>
-                    </a>
-                </div>
-
-                <div class="menu-section">
-                    <span class="menu-title" data-i18n="menu.content">CONTENT</span>
-                    <a href="#testimonials" class="menu-item" onclick="showSection('testimonials')">
-                        <div class="menu-icon">
-                            <i class="fas fa-star"></i>
-                        </div>
-                        <span class="menu-text" data-i18n="menu.testimonials">Testimonials</span>
-                        <span class="menu-badge" id="reviewBadge">0</span>
-                    </a>
-                    <a href="#analytics" class="menu-item" onclick="showSection('analytics')">
-                        <div class="menu-icon">
-                            <i class="fas fa-chart-bar"></i>
-                        </div>
-                        <span class="menu-text" data-i18n="menu.analytics">Analytics</span>
-                    </a>
-                </div>
-
-                <div class="menu-section admin-only">
-                    <span class="menu-title" data-i18n="menu.admin">ADMIN</span>
-                    <a href="#database" class="menu-item" onclick="showSection('database')">
-                        <div class="menu-icon">
-                            <i class="fas fa-database"></i>
-                        </div>
-                        <span class="menu-text" data-i18n="menu.database">Database</span>
-                        <span class="menu-badge danger">ADMIN</span>
-                    </a>
-                    <a href="#users" class="menu-item" onclick="showSection('users')">
-                        <div class="menu-icon">
-                            <i class="fas fa-users-cog"></i>
-                        </div>
-                        <span class="menu-text" data-i18n="menu.users">User Management</span>
-                    </a>
-                </div>
-
-                <div class="menu-section">
-                    <span class="menu-title" data-i18n="menu.settings">SETTINGS</span>
-                    <a href="#settings" class="menu-item" onclick="showSection('settings')">
-                        <div class="menu-icon">
-                            <i class="fas fa-cog"></i>
-                        </div>
-                        <span class="menu-text" data-i18n="menu.settings">Settings</span>
-                    </a>
-                    <a href="#profile" class="menu-item" onclick="showSection('profile')">
-                        <div class="menu-icon">
-                            <i class="fas fa-user-circle"></i>
-                        </div>
-                        <span class="menu-text" data-i18n="menu.profile">Profile</span>
-                    </a>
-                </div>
+            <div class="header-right">
+                <span id="welcomeUser">Selamat datang, </span>
+                <button onclick="logout()" class="btn-logout">Logout</button>
             </div>
+        </header>
 
-            <div class="sidebar-footer">
-                <div class="user-profile">
-                    <div class="user-avatar">
-                        <i class="fas fa-user" id="avatarIcon"></i>
-                    </div>
-                    <div class="user-details">
-                        <strong id="sidebarUsername">Guest User</strong>
-                        <span id="sidebarUserEmail">guest@example.com</span>
-                    </div>
-                    <button class="logout-btn" onclick="logout()" title="Logout">
-                        <i class="fas fa-sign-out-alt"></i>
-                    </button>
-                </div>
-            </div>
+        <!-- Navigation -->
+        <nav>
+            <ul>
+                <li><a href="#" onclick="showSection('home')" class="nav-link active"><i class="fas fa-home"></i> <span id="navHome">Home</span></a></li>
+                <li><a href="#" onclick="showSection('product')" class="nav-link"><i class="fas fa-shopping-bag"></i> <span id="navProduct">Product</span></a></li>
+                <li><a href="#" onclick="showSection('cs')" class="nav-link"><i class="fas fa-headset"></i> <span id="navCS">Customer Service</span></a></li>
+                <li><a href="#" onclick="showSection('database')" class="nav-link admin-only"><i class="fas fa-database"></i> <span id="navDB">Database</span></a></li>
+                <li><a href="#" onclick="showSection('testimoni')" class="nav-link"><i class="fas fa-star"></i> <span id="navTesti">Testimoni</span></a></li>
+                <li><a href="#" onclick="showSection('userSettings')" class="nav-link"><i class="fas fa-cog"></i> <span id="navSettings">User Settings</span></a></li>
+            </ul>
         </nav>
 
-        <!-- MAIN CONTENT -->
-        <main class="content-area">
-            <!-- Content sections will be loaded here -->
-            <div id="contentSections">
-                <!-- Sections will be loaded dynamically -->
-            </div>
+        <!-- Content Sections -->
+        <main>
+            <!-- Home -->
+            <section id="homeSection" class="content-section">
+                <h2 id="homeTitle">Dashboard AxeLux</h2>
+                <p id="homeDesc">Web premium penjualan produk eksklusif. Hanya admin yang bisa mengelola produk dan data.</p>
+                <div class="stats">
+                    <div class="stat-card">
+                        <h3 id="statVisitors">Total Pengunjung</h3>
+                        <p id="visitorCount">0</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3 id="statProducts">Total Produk</h3>
+                        <p id="productCount">0</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3 id="statTesti">Total Testimoni</h3>
+                        <p id="testiCount">0</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Product -->
+            <section id="productSection" class="content-section hidden">
+                <h2 id="productTitle">Produk Eksklusif</h2>
+                <div class="product-list" id="productList">
+                    <!-- Produk di-load via JS -->
+                </div>
+                <div class="admin-actions admin-only">
+                    <h3>Admin Panel - Kelola Produk</h3>
+                    <input type="text" id="productName" placeholder="Nama Produk">
+                    <input type="number" id="productPrice" placeholder="Harga">
+                    <textarea id="productDesc" placeholder="Deskripsi"></textarea>
+                    <button onclick="addProduct()" class="btn-admin">Tambah Produk</button>
+                    <button onclick="deleteAllProducts()" class="btn-admin delete">Hapus Semua Produk</button>
+                </div>
+            </section>
+
+            <!-- Customer Service -->
+            <section id="csSection" class="content-section hidden">
+                <h2 id="csTitle">Customer Service (AI Auto‑Reply)</h2>
+                <div class="chat-container">
+                    <div class="chat-box" id="chatBox">
+                        <div class="message ai">Halo! Saya AI Assistant AxeLux. Silakan tanyakan tentang produk atau layanan kami.</div>
+                    </div>
+                    <div class="chat-input">
+                        <input type="text" id="userQuestion" placeholder="Tulis pertanyaan Anda...">
+                        <button onclick="sendQuestion()"><i class="fas fa-paper-plane"></i></button>
+                    </div>
+                </div>
+                <p class="small">*AI ini akan menjawab secara otomatis berdasarkan kata kunci.</p>
+            </section>
+
+            <!-- Database (Admin Only) -->
+            <section id="databaseSection" class="content-section hidden">
+                <h2 id="dbTitle">Database Admin</h2>
+                <div class="db-section">
+                    <h3 id="dbUsers">Daftar Pengguna yang Login</h3>
+                    <ul id="userList"></ul>
+                </div>
+                <div class="db-section">
+                    <h3 id="dbAllTesti">Semua Testimoni (Raw Data)</h3>
+                    <pre id="rawTesti"></pre>
+                </div>
+                <div class="db-section admin-only">
+                    <h3>Tools Admin</h3>
+                    <button onclick="generateFakeTestimonials()" class="btn-admin">Buat Testimoni Palsu (Random Names)</button>
+                    <button onclick="deleteAllTestimonials()" class="btn-admin delete">Hapus Semua Testimoni</button>
+                    <button onclick="exportData()" class="btn-admin">Export Semua Data</button>
+                </div>
+            </section>
+
+            <!-- Testimoni -->
+            <section id="testimoniSection" class="content-section hidden">
+                <h2 id="testiTitle">Testimoni Pelanggan</h2>
+                <div class="testimoni-list" id="testimoniList">
+                    <!-- Testimoni di-load via JS -->
+                </div>
+                <div class="add-testimoni" id="addTestimoniSection">
+                    <h3>Tambah Testimoni</h3>
+                    <textarea id="newTestimoni" placeholder="Tulis pengalaman Anda..."></textarea>
+                    <button onclick="addTestimoni()" id="btnAddTestimoni">Kirim Testimoni</button>
+                </div>
+                <div class="admin-actions admin-only">
+                    <h3>Admin Tools</h3>
+                    <button onclick="generateFakeTestimonials()" class="btn-admin">Buat Testimoni Palsu (10)</button>
+                </div>
+            </section>
+
+            <!-- User Settings -->
+            <section id="userSettingsSection" class="content-section hidden">
+                <h2 id="settingsTitle">Pengaturan Pengguna</h2>
+                <div class="settings-form">
+                    <label id="labelEmail">Email:</label>
+                    <input type="email" id="userEmail" disabled>
+                    <label id="labelTheme">Tema:</label>
+                    <select id="themeSelect" onchange="setTheme(this.value)">
+                        <option value="green">Hijau</option>
+                        <option value="red">Merah</option>
+                    </select>
+                    <label id="labelLanguage">Bahasa:</label>
+                    <select id="languageSelect" onchange="changeLanguage()">
+                        <option value="id">Indonesia</option>
+                        <option value="en">English</option>
+                        <option value="jp">日本語</option>
+                        <option value="ar">العربية</option>
+                    </select>
+                    <button onclick="updateProfile()" class="btn-save" id="btnSave">Simpan</button>
+                </div>
+            </section>
         </main>
+
+        <!-- Footer -->
+        <footer>
+            <p id="footerText">© 2023 AxeLux Premium Store. Semua fitur aman dan terlindungi.</p>
+            <p class="visitor-counter"><span id="liveVisitorCount">0</span> pengunjung online</p>
+        </footer>
     </div>
 
-    <!-- NOTIFICATION AREA -->
-    <div id="notificationArea"></div>
-
-    <!-- SCRIPTS -->
     <script src="script.js"></script>
-    <script src="languages.js"></script>
 </body>
 </html>
