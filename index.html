@@ -3,266 +3,468 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AxeLux Store - Premium</title>
+    <title>AxeLux Premium Store</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js"></script>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🔮</text></svg>">
 </head>
 <body>
+    <!-- THEME SELECTOR -->
+    <div class="theme-selector">
+        <button onclick="setTheme('dark')"><i class="fas fa-moon"></i></button>
+        <button onclick="setTheme('light')"><i class="fas fa-sun"></i></button>
+        <button onclick="setTheme('blue')"><i class="fas fa-palette"></i></button>
+    </div>
+
     <!-- LOGIN PAGE -->
     <div id="loginPage" class="page active">
-        <div class="login-container">
-            <div class="logo">🔮 AxeLux Store</div>
-            <h2>Owner Access Only</h2>
-            
-            <div class="social-login">
-                <button class="btn google" onclick="loginGoogle()">
-                    <i class="fab fa-google"></i> Login with Google
-                </button>
-                <button class="btn facebook" onclick="loginFacebook()">
-                    <i class="fab fa-facebook"></i> Login with Facebook
-                </button>
+        <div class="login-container glass-effect">
+            <div class="brand-header">
+                <div class="logo-circle">
+                    <i class="fas fa-crown"></i>
+                </div>
+                <h1>AxeLux</h1>
+                <p class="tagline">Premium Digital Store</p>
             </div>
-            
-            <div class="separator">OR</div>
-            
-            <form id="loginForm">
-                <div class="input-group">
-                    <i class="fas fa-user"></i>
-                    <input type="text" id="loginEmail" placeholder="Email / Username" required>
+
+            <div class="auth-container">
+                <!-- REGISTER FORM -->
+                <div id="registerForm" class="auth-form" style="display: none;">
+                    <h3><i class="fas fa-user-plus"></i> Create Account</h3>
+                    <form id="formRegister" autocomplete="off">
+                        <div class="form-group">
+                            <input type="text" id="regUsername" placeholder="Choose username" required>
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="form-group">
+                            <input type="email" id="regEmail" placeholder="Your email" required>
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <div class="form-group">
+                            <input type="password" id="regPassword" placeholder="Password (min 6 chars)" required>
+                            <i class="fas fa-lock"></i>
+                        </div>
+                        <div class="form-group">
+                            <input type="password" id="regConfirmPassword" placeholder="Confirm password" required>
+                            <i class="fas fa-lock"></i>
+                        </div>
+                        <button type="submit" class="btn-primary full-width">
+                            <i class="fas fa-user-plus"></i> Create Account
+                        </button>
+                    </form>
+                    <div class="auth-footer">
+                        <p>Already have an account? <a href="#" onclick="showLoginForm()" class="auth-link">Sign In</a></p>
+                    </div>
                 </div>
-                <div class="input-group">
-                    <i class="fas fa-lock"></i>
-                    <input type="password" id="loginPassword" placeholder="Password" required>
+
+                <!-- LOGIN FORM -->
+                <div id="loginFormContainer" class="auth-form">
+                    <h3><i class="fas fa-sign-in-alt"></i> Welcome Back</h3>
+                    <form id="formLogin" autocomplete="off">
+                        <div class="form-group">
+                            <input type="text" id="loginUsername" placeholder="Username or email" required>
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="form-group">
+                            <input type="password" id="loginPassword" placeholder="Password" required>
+                            <i class="fas fa-lock"></i>
+                        </div>
+                        
+                        <div class="admin-toggle">
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="adminMode">
+                                <span class="toggle-slider"></span>
+                                <span class="toggle-label">Owner Mode</span>
+                            </label>
+                            <span class="admin-hint" onclick="showAdminHint()"><i class="fas fa-question-circle"></i></span>
+                        </div>
+
+                        <button type="submit" class="btn-primary full-width">
+                            <i class="fas fa-sign-in-alt"></i> Sign In
+                        </button>
+                    </form>
+
+                    <div class="auth-options">
+                        <div class="divider">or</div>
+                        
+                        <button class="btn-secondary full-width" onclick="enterAsGuest()">
+                            <i class="fas fa-eye"></i> Browse as Guest
+                        </button>
+                    </div>
+
+                    <div class="auth-footer">
+                        <p>New here? <a href="#" onclick="showRegisterForm()" class="auth-link">Create Account</a></p>
+                        <p class="quick-admin" onclick="showAdminAccess()">
+                            <i class="fas fa-key"></i> Admin Quick Access
+                        </p>
+                    </div>
                 </div>
-                
-                <div class="admin-secret">
-                    <input type="checkbox" id="adminMode">
-                    <label for="adminMode">Master Admin Mode</label>
-                </div>
-                
-                <button type="submit" class="btn login-btn">
-                    <i class="fas fa-sign-in-alt"></i> LOGIN
-                </button>
-            </form>
-            
-            <button class="btn guest" onclick="enterAsGuest()">
-                <i class="fas fa-eye"></i> Enter as Guest
-            </button>
-            
-            <div class="security-note">
-                <i class="fas fa-shield-alt"></i> Protected by AxeLux Security v2.0
             </div>
-            
-            <!-- HIDDEN ADMIN ACCESS -->
-            <div id="adminAccess" style="display:none;">
-                <h3>🛠️ Direct Admin Panel</h3>
-                <button onclick="directAdminLogin()" class="btn danger">
-                    <i class="fas fa-crown"></i> ACCESS AS OWNER (Axm)
-                </button>
+
+            <div class="login-footer">
+                <p><i class="fas fa-shield-alt"></i> Secured by AES-256 Encryption</p>
             </div>
         </div>
     </div>
 
-    <!-- MAIN DASHBOARD -->
+    <!-- MAIN APP -->
     <div id="mainPage" class="page">
-        <!-- NAVBAR -->
-        <nav class="navbar">
-            <div class="nav-brand">
-                <span class="logo">🔮</span>
-                <span class="brand-name">AxeLux Store</span>
-                <span class="user-badge" id="userRoleBadge">Guest</span>
+        <!-- SIDEBAR -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <div class="brand-logo">
+                    <i class="fas fa-crown"></i>
+                </div>
+                <div class="brand-text">
+                    <h2>AxeLux</h2>
+                    <p id="userStatus">Loading...</p>
+                </div>
             </div>
-            
-            <div class="nav-menu">
-                <a href="#" onclick="showSection('dashboard')" class="nav-link active">
-                    <i class="fas fa-home"></i> Dashboard
+
+            <div class="sidebar-menu">
+                <a href="#dashboard" class="menu-item active" onclick="showSection('dashboard')">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Dashboard</span>
                 </a>
-                <a href="#" onclick="showSection('products')" class="nav-link">
-                    <i class="fas fa-box"></i> Products
+                <a href="#products" class="menu-item" onclick="showSection('products')">
+                    <i class="fas fa-box-open"></i>
+                    <span>Products</span>
                 </a>
-                <a href="#" onclick="showSection('customerService')" class="nav-link">
-                    <i class="fas fa-headset"></i> Support
+                <a href="#support" class="menu-item" onclick="showSection('support')">
+                    <i class="fas fa-headset"></i>
+                    <span>Support</span>
                 </a>
-                <a href="#" onclick="showSection('testimonials')" class="nav-link">
-                    <i class="fas fa-star"></i> Testimonials
+                <a href="#testimonials" class="menu-item" onclick="showSection('testimonials')">
+                    <i class="fas fa-star"></i>
+                    <span>Testimonials</span>
                 </a>
-                <a href="#" onclick="showSection('database')" class="nav-link admin-only">
-                    <i class="fas fa-database"></i> Database
+                <a href="#database" class="menu-item admin-only" onclick="showSection('database')">
+                    <i class="fas fa-database"></i>
+                    <span>Database</span>
+                    <span class="menu-badge">Admin</span>
                 </a>
-                <a href="#" onclick="showSection('settings')" class="nav-link">
-                    <i class="fas fa-cog"></i> Settings
+                <a href="#settings" class="menu-item" onclick="showSection('settings')">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
                 </a>
             </div>
-            
-            <div class="nav-actions">
-                <span id="currentUser">Loading...</span>
-                <button onclick="logout()" class="btn small">
-                    <i class="fas fa-sign-out-alt"></i> Logout
+
+            <div class="sidebar-footer">
+                <div class="user-profile">
+                    <div class="avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="user-info">
+                        <strong id="currentUsername">Guest</strong>
+                        <span id="currentRole">Guest</span>
+                    </div>
+                </div>
+                <button class="btn-logout" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i>
                 </button>
             </div>
         </nav>
 
-        <!-- DASHBOARD SECTION -->
-        <div id="dashboard" class="section active">
-            <div class="dashboard-header">
-                <h1><i class="fas fa-crown"></i> Owner Control Panel</h1>
-                <div class="admin-actions">
-                    <button onclick="addFakeTestimonials(10)" class="btn">
-                        <i class="fas fa-plus"></i> Add Fake Testimonials (x10)
-                    </button>
-                    <button onclick="deleteAllVisitors()" class="btn danger">
-                        <i class="fas fa-trash"></i> Wipe Visitor Logs
-                    </button>
-                    <button onclick="generateReport()" class="btn">
-                        <i class="fas fa-file-export"></i> Export All Data
-                    </button>
-                </div>
-            </div>
-
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <h3><i class="fas fa-users"></i> Total Visitors</h3>
-                    <div class="stat-number" id="totalVisitors">0</div>
-                </div>
-                <div class="stat-card">
-                    <h3><i class="fas fa-box"></i> Products</h3>
-                    <div class="stat-number" id="totalProducts">0</div>
-                </div>
-                <div class="stat-card">
-                    <h3><i class="fas fa-comments"></i> Testimonials</h3>
-                    <div class="stat-number" id="totalTestimonials">0</div>
-                </div>
-                <div class="stat-card">
-                    <h3><i class="fas fa-shield-alt"></i> Security Level</h3>
-                    <div class="stat-number">MAX</div>
-                </div>
-            </div>
-
-            <!-- LIVE VISITOR TRACKING -->
-            <div class="live-visitors">
-                <h3><i class="fas fa-globe"></i> Live Visitors</h3>
-                <div class="visitor-list" id="visitorList"></div>
-            </div>
-        </div>
-
-        <!-- PRODUCTS SECTION -->
-        <div id="products" class="section">
-            <h2><i class="fas fa-boxes"></i> Product Management</h2>
-            <div class="product-controls">
-                <button onclick="addNewProduct()" class="btn admin-only">
-                    <i class="fas fa-plus-circle"></i> Add New Product
-                </button>
-                <button onclick="editAllProducts()" class="btn admin-only">
-                    <i class="fas fa-edit"></i> Edit All Products
-                </button>
-            </div>
-            <div class="products-grid" id="productsGrid"></div>
-        </div>
-
-        <!-- CUSTOMER SERVICE WITH AI -->
-        <div id="customerService" class="section">
-            <h2><i class="fas fa-robot"></i> AI Customer Service</h2>
-            <div class="chat-container">
-                <div class="chat-messages" id="chatMessages"></div>
-                <div class="chat-input">
-                    <input type="text" id="customerQuery" placeholder="Ask anything...">
-                    <button onclick="askAI()"><i class="fas fa-paper-plane"></i></button>
-                </div>
-            </div>
-            <div class="ai-responses">
-                <h4><i class="fas fa-bolt"></i> AI Auto-Replies Active</h4>
-                <div id="aiResponse">Ready to assist customers 24/7</div>
-            </div>
-        </div>
-
-        <!-- TESTIMONIALS SECTION -->
-        <div id="testimonials" class="section">
-            <h2><i class="fas fa-star"></i> Testimonials Management</h2>
-            <div class="testimonial-form">
-                <textarea id="newTestimonial" placeholder="Write your testimonial..." rows="3"></textarea>
-                <button onclick="addTestimonial()" class="btn">
-                    <i class="fas fa-share"></i> Submit Testimonial
-                </button>
-                <button onclick="addFakeTestimonials(5)" class="btn admin-only">
-                    <i class="fas fa-magic"></i> Generate Fake (x5)
-                </button>
-            </div>
-            <div class="testimonials-list" id="testimonialsList"></div>
-        </div>
-
-        <!-- DATABASE SECTION (ADMIN ONLY) -->
-        <div id="database" class="section">
-            <h2><i class="fas fa-database"></i> Master Database</h2>
-            <div class="database-actions">
-                <button onclick="viewAllUsers()" class="btn">
-                    <i class="fas fa-users"></i> View All Users
-                </button>
-                <button onclick="viewAllData()" class="btn">
-                    <i class="fas fa-table"></i> View All Data
-                </button>
-                <button onclick="backupDatabase()" class="btn">
-                    <i class="fas fa-save"></i> Backup Database
-                </button>
-                <button onclick="nukeDatabase()" class="btn danger">
-                    <i class="fas fa-bomb"></i> NUKE DATABASE
-                </button>
-            </div>
-            <div class="database-view">
-                <pre id="databaseOutput">Database content will appear here...</pre>
-            </div>
-        </div>
-
-        <!-- SETTINGS SECTION -->
-        <div id="settings" class="section">
-            <h2><i class="fas fa-cog"></i> System Settings</h2>
-            <div class="settings-grid">
-                <div class="setting-card">
-                    <h3><i class="fas fa-user-shield"></i> Admin Settings</h3>
-                    <div class="admin-creds">
-                        <p><strong>Owner:</strong> <span id="ownerName">Axm</span></p>
-                        <p><strong>Access Level:</strong> <span class="badge danger">MASTER</span></p>
-                        <button onclick="changePassword()" class="btn small">
-                            Change Password
+        <!-- MAIN CONTENT -->
+        <main class="content-area">
+            <!-- DASHBOARD -->
+            <section id="dashboard" class="content-section active">
+                <div class="section-header">
+                    <h1><i class="fas fa-tachometer-alt"></i> Dashboard</h1>
+                    <div class="admin-controls admin-only">
+                        <button class="btn-admin" onclick="addFakeTestimonials(5)">
+                            <i class="fas fa-plus"></i> Add Fake Reviews
+                        </button>
+                        <button class="btn-admin btn-danger" onclick="wipeVisitorData()">
+                            <i class="fas fa-trash"></i> Clear Visitors
+                        </button>
+                        <button class="btn-admin" onclick="exportAllData()">
+                            <i class="fas fa-download"></i> Export Data
                         </button>
                     </div>
                 </div>
-                
-                <div class="setting-card">
-                    <h3><i class="fas fa-bell"></i> Notifications</h3>
-                    <label class="switch">
-                        <input type="checkbox" checked>
-                        <span class="slider"></span>
-                        <span>Email Alerts</span>
-                    </label>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>Visitors</h3>
+                            <p class="stat-number" id="statVisitors">0</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-box"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>Products</h3>
+                            <p class="stat-number" id="statProducts">12</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-comment-dots"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>Reviews</h3>
+                            <p class="stat-number" id="statReviews">0</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>Security</h3>
+                            <p class="stat-number">100%</p>
+                        </div>
+                    </div>
                 </div>
-                
-                <div class="setting-card">
-                    <h3><i class="fas fa-palette"></i> Theme</h3>
-                    <select onchange="changeTheme(this.value)">
-                        <option value="dark">Dark Mode</option>
-                        <option value="light">Light Mode</option>
-                        <option value="purple">Purple Haze</option>
-                    </select>
+
+                <div class="dashboard-row">
+                    <div class="card">
+                        <h3><i class="fas fa-globe-americas"></i> Live Visitors</h3>
+                        <div class="visitor-list" id="liveVisitors">
+                            <p class="empty-state">No active visitors</p>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <h3><i class="fas fa-chart-bar"></i> Quick Actions</h3>
+                        <div class="quick-actions">
+                            <button class="action-btn" onclick="showSection('products')">
+                                <i class="fas fa-plus-circle"></i> Add Product
+                            </button>
+                            <button class="action-btn" onclick="showSection('testimonials')">
+                                <i class="fas fa-star"></i> Add Review
+                            </button>
+                            <button class="action-btn admin-only" onclick="viewDatabase()">
+                                <i class="fas fa-database"></i> View Database
+                            </button>
+                            <button class="action-btn" onclick="showSection('settings')">
+                                <i class="fas fa-user-cog"></i> User Settings
+                            </button>
+                        </div>
+                    </div>
                 </div>
+            </section>
+
+            <!-- PRODUCTS -->
+            <section id="products" class="content-section">
+                <div class="section-header">
+                    <h1><i class="fas fa-box-open"></i> Products</h1>
+                    <button class="btn-primary admin-only" onclick="openProductModal()">
+                        <i class="fas fa-plus"></i> Add New Product
+                    </button>
+                </div>
+
+                <div class="products-grid" id="productsGrid">
+                    <!-- Products loaded via JS -->
+                </div>
+            </section>
+
+            <!-- SUPPORT -->
+            <section id="support" class="content-section">
+                <div class="section-header">
+                    <h1><i class="fas fa-headset"></i> AI Support</h1>
+                    <span class="status-badge online">
+                        <i class="fas fa-circle"></i> AI Online
+                    </span>
+                </div>
+
+                <div class="chat-container">
+                    <div class="chat-header">
+                        <h3><i class="fas fa-robot"></i> Auto-Reply Assistant</h3>
+                        <p>24/7 Support • Instant Responses</p>
+                    </div>
+                    
+                    <div class="chat-messages" id="chatMessages">
+                        <div class="message ai">
+                            <div class="message-avatar">AI</div>
+                            <div class="message-content">
+                                Hello! I'm your AI assistant. How can I help you today?
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="chat-input">
+                        <input type="text" id="userQuery" placeholder="Ask a question...">
+                        <button onclick="sendAIQuery()">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="ai-responses">
+                    <h4><i class="fas fa-bolt"></i> Common Questions</h4>
+                    <div class="quick-questions">
+                        <button class="question-btn" onclick="askQuestion('shipping')">
+                            Shipping info?
+                        </button>
+                        <button class="question-btn" onclick="askQuestion('price')">
+                            Pricing?
+                        </button>
+                        <button class="question-btn" onclick="askQuestion('refund')">
+                            Refund policy?
+                        </button>
+                        <button class="question-btn" onclick="askQuestion('contact')">
+                            Contact support?
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TESTIMONIALS -->
+            <section id="testimonials" class="content-section">
+                <div class="section-header">
+                    <h1><i class="fas fa-star"></i> Testimonials</h1>
+                    <div class="header-actions">
+                        <button class="btn-primary" onclick="openTestimonialModal()">
+                            <i class="fas fa-plus"></i> Add Review
+                        </button>
+                        <button class="btn-secondary admin-only" onclick="addFakeTestimonials(3)">
+                            <i class="fas fa-magic"></i> Add Fake (x3)
+                        </button>
+                    </div>
+                </div>
+
+                <div class="testimonial-form">
+                    <textarea id="newTestimonial" placeholder="Share your experience... (Login required)" rows="3"></textarea>
+                    <button class="btn-primary" onclick="submitTestimonial()">
+                        <i class="fas fa-share"></i> Submit Review
+                    </button>
+                </div>
+
+                <div class="testimonials-grid" id="testimonialsGrid">
+                    <!-- Reviews loaded via JS -->
+                </div>
+            </section>
+
+            <!-- DATABASE -->
+            <section id="database" class="content-section">
+                <div class="section-header">
+                    <h1><i class="fas fa-database"></i> Database Admin</h1>
+                    <div class="danger-zone admin-only">
+                        <button class="btn-danger" onclick="showNukeConfirm()">
+                            <i class="fas fa-bomb"></i> Nuke Database
+                        </button>
+                    </div>
+                </div>
+
+                <div class="database-tabs">
+                    <button class="tab-btn active" onclick="showDatabaseTab('users')">Users</button>
+                    <button class="tab-btn" onclick="showDatabaseTab('products')">Products</button>
+                    <button class="tab-btn" onclick="showDatabaseTab('reviews')">Reviews</button>
+                    <button class="tab-btn" onclick="showDatabaseTab('logs')">Logs</button>
+                </div>
+
+                <div class="database-view">
+                    <pre id="databaseOutput">Select a tab to view data</pre>
+                </div>
+
+                <div class="database-actions admin-only">
+                    <button class="btn-secondary" onclick="refreshDatabase()">
+                        <i class="fas fa-sync"></i> Refresh
+                    </button>
+                    <button class="btn-secondary" onclick="downloadDatabase()">
+                        <i class="fas fa-download"></i> Download JSON
+                    </button>
+                    <button class="btn-secondary" onclick="clearDatabase()">
+                        <i class="fas fa-trash"></i> Clear Data
+                    </button>
+                </div>
+            </section>
+
+            <!-- SETTINGS -->
+            <section id="settings" class="content-section">
+                <div class="section-header">
+                    <h1><i class="fas fa-cog"></i> Settings</h1>
+                </div>
+
+                <div class="settings-grid">
+                    <div class="settings-card">
+                        <h3><i class="fas fa-user-shield"></i> Account</h3>
+                        <div class="account-info">
+                            <p><strong>Username:</strong> <span id="settingUsername">Guest</span></p>
+                            <p><strong>Role:</strong> <span id="settingRole" class="role-badge">guest</span></p>
+                            <p><strong>Joined:</strong> <span id="settingJoinDate">-</span></p>
+                        </div>
+                        <button class="btn-secondary" onclick="changePassword()">
+                            <i class="fas fa-key"></i> Change Password
+                        </button>
+                    </div>
+
+                    <div class="settings-card">
+                        <h3><i class="fas fa-bell"></i> Notifications</h3>
+                        <div class="toggle-item">
+                            <span>Email Notifications</span>
+                            <label class="switch">
+                                <input type="checkbox" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        <div class="toggle-item">
+                            <span>Review Alerts</span>
+                            <label class="switch">
+                                <input type="checkbox" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="settings-card">
+                        <h3><i class="fas fa-paint-brush"></i> Appearance</h3>
+                        <div class="theme-options">
+                            <div class="theme-option" onclick="setTheme('dark')">
+                                <div class="theme-preview dark"></div>
+                                <span>Dark</span>
+                            </div>
+                            <div class="theme-option" onclick="setTheme('light')">
+                                <div class="theme-preview light"></div>
+                                <span>Light</span>
+                            </div>
+                            <div class="theme-option" onclick="setTheme('blue')">
+                                <div class="theme-preview blue"></div>
+                                <span>Blue</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="settings-footer">
+                    <button class="btn-danger" onclick="deleteAccount()">
+                        <i class="fas fa-user-slash"></i> Delete Account
+                    </button>
+                    <button class="btn-secondary" onclick="clearLocalData()">
+                        <i class="fas fa-trash-alt"></i> Clear Cache
+                    </button>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- MODALS -->
+    <div id="adminModal" class="modal">
+        <div class="modal-content">
+            <h2><i class="fas fa-crown"></i> Admin Access</h2>
+            <p>Enter master credentials to unlock owner mode:</p>
+            <div class="form-group">
+                <input type="text" id="adminUsername" placeholder="Username">
+                <i class="fas fa-user"></i>
+            </div>
+            <div class="form-group">
+                <input type="password" id="adminPassword" placeholder="Password">
+                <i class="fas fa-lock"></i>
+            </div>
+            <div class="modal-actions">
+                <button class="btn-secondary" onclick="hideAdminModal()">Cancel</button>
+                <button class="btn-primary" onclick="verifyAdminCredentials()">Unlock</button>
             </div>
         </div>
     </div>
 
-    <!-- HIDDEN ADMIN MODAL -->
-    <div id="adminModal" class="modal">
-        <div class="modal-content">
-            <h2><i class="fas fa-key"></i> Master Admin Access</h2>
-            <input type="password" id="masterPassword" placeholder="Enter Master Password">
-            <button onclick="verifyMasterPassword()" class="btn">
-                <i class="fas fa-unlock"></i> Unlock Full Access
-            </button>
-        </div>
-    </div>
+    <div id="notificationArea"></div>
 
     <script src="script.js"></script>
 </body>
