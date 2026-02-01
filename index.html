@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AxeLux Store - Premium</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js"></script>
+</head>
+<body>
+    <!-- LOGIN PAGE -->
+    <div id="loginPage" class="page active">
+        <div class="login-container">
+            <div class="logo">🔮 AxeLux Store</div>
+            <h2>Owner Access Only</h2>
+            
+            <div class="social-login">
+                <button class="btn google" onclick="loginGoogle()">
+                    <i class="fab fa-google"></i> Login with Google
+                </button>
+                <button class="btn facebook" onclick="loginFacebook()">
+                    <i class="fab fa-facebook"></i> Login with Facebook
+                </button>
+            </div>
+            
+            <div class="separator">OR</div>
+            
+            <form id="loginForm">
+                <div class="input-group">
+                    <i class="fas fa-user"></i>
+                    <input type="text" id="loginEmail" placeholder="Email / Username" required>
+                </div>
+                <div class="input-group">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="loginPassword" placeholder="Password" required>
+                </div>
+                
+                <div class="admin-secret">
+                    <input type="checkbox" id="adminMode">
+                    <label for="adminMode">Master Admin Mode</label>
+                </div>
+                
+                <button type="submit" class="btn login-btn">
+                    <i class="fas fa-sign-in-alt"></i> LOGIN
+                </button>
+            </form>
+            
+            <button class="btn guest" onclick="enterAsGuest()">
+                <i class="fas fa-eye"></i> Enter as Guest
+            </button>
+            
+            <div class="security-note">
+                <i class="fas fa-shield-alt"></i> Protected by AxeLux Security v2.0
+            </div>
+            
+            <!-- HIDDEN ADMIN ACCESS -->
+            <div id="adminAccess" style="display:none;">
+                <h3>🛠️ Direct Admin Panel</h3>
+                <button onclick="directAdminLogin()" class="btn danger">
+                    <i class="fas fa-crown"></i> ACCESS AS OWNER (Axm)
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN DASHBOARD -->
+    <div id="mainPage" class="page">
+        <!-- NAVBAR -->
+        <nav class="navbar">
+            <div class="nav-brand">
+                <span class="logo">🔮</span>
+                <span class="brand-name">AxeLux Store</span>
+                <span class="user-badge" id="userRoleBadge">Guest</span>
+            </div>
+            
+            <div class="nav-menu">
+                <a href="#" onclick="showSection('dashboard')" class="nav-link active">
+                    <i class="fas fa-home"></i> Dashboard
+                </a>
+                <a href="#" onclick="showSection('products')" class="nav-link">
+                    <i class="fas fa-box"></i> Products
+                </a>
+                <a href="#" onclick="showSection('customerService')" class="nav-link">
+                    <i class="fas fa-headset"></i> Support
+                </a>
+                <a href="#" onclick="showSection('testimonials')" class="nav-link">
+                    <i class="fas fa-star"></i> Testimonials
+                </a>
+                <a href="#" onclick="showSection('database')" class="nav-link admin-only">
+                    <i class="fas fa-database"></i> Database
+                </a>
+                <a href="#" onclick="showSection('settings')" class="nav-link">
+                    <i class="fas fa-cog"></i> Settings
+                </a>
+            </div>
+            
+            <div class="nav-actions">
+                <span id="currentUser">Loading...</span>
+                <button onclick="logout()" class="btn small">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </div>
+        </nav>
+
+        <!-- DASHBOARD SECTION -->
+        <div id="dashboard" class="section active">
+            <div class="dashboard-header">
+                <h1><i class="fas fa-crown"></i> Owner Control Panel</h1>
+                <div class="admin-actions">
+                    <button onclick="addFakeTestimonials(10)" class="btn">
+                        <i class="fas fa-plus"></i> Add Fake Testimonials (x10)
+                    </button>
+                    <button onclick="deleteAllVisitors()" class="btn danger">
+                        <i class="fas fa-trash"></i> Wipe Visitor Logs
+                    </button>
+                    <button onclick="generateReport()" class="btn">
+                        <i class="fas fa-file-export"></i> Export All Data
+                    </button>
+                </div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3><i class="fas fa-users"></i> Total Visitors</h3>
+                    <div class="stat-number" id="totalVisitors">0</div>
+                </div>
+                <div class="stat-card">
+                    <h3><i class="fas fa-box"></i> Products</h3>
+                    <div class="stat-number" id="totalProducts">0</div>
+                </div>
+                <div class="stat-card">
+                    <h3><i class="fas fa-comments"></i> Testimonials</h3>
+                    <div class="stat-number" id="totalTestimonials">0</div>
+                </div>
+                <div class="stat-card">
+                    <h3><i class="fas fa-shield-alt"></i> Security Level</h3>
+                    <div class="stat-number">MAX</div>
+                </div>
+            </div>
+
+            <!-- LIVE VISITOR TRACKING -->
+            <div class="live-visitors">
+                <h3><i class="fas fa-globe"></i> Live Visitors</h3>
+                <div class="visitor-list" id="visitorList"></div>
+            </div>
+        </div>
+
+        <!-- PRODUCTS SECTION -->
+        <div id="products" class="section">
+            <h2><i class="fas fa-boxes"></i> Product Management</h2>
+            <div class="product-controls">
+                <button onclick="addNewProduct()" class="btn admin-only">
+                    <i class="fas fa-plus-circle"></i> Add New Product
+                </button>
+                <button onclick="editAllProducts()" class="btn admin-only">
+                    <i class="fas fa-edit"></i> Edit All Products
+                </button>
+            </div>
+            <div class="products-grid" id="productsGrid"></div>
+        </div>
+
+        <!-- CUSTOMER SERVICE WITH AI -->
+        <div id="customerService" class="section">
+            <h2><i class="fas fa-robot"></i> AI Customer Service</h2>
+            <div class="chat-container">
+                <div class="chat-messages" id="chatMessages"></div>
+                <div class="chat-input">
+                    <input type="text" id="customerQuery" placeholder="Ask anything...">
+                    <button onclick="askAI()"><i class="fas fa-paper-plane"></i></button>
+                </div>
+            </div>
+            <div class="ai-responses">
+                <h4><i class="fas fa-bolt"></i> AI Auto-Replies Active</h4>
+                <div id="aiResponse">Ready to assist customers 24/7</div>
+            </div>
+        </div>
+
+        <!-- TESTIMONIALS SECTION -->
+        <div id="testimonials" class="section">
+            <h2><i class="fas fa-star"></i> Testimonials Management</h2>
+            <div class="testimonial-form">
+                <textarea id="newTestimonial" placeholder="Write your testimonial..." rows="3"></textarea>
+                <button onclick="addTestimonial()" class="btn">
+                    <i class="fas fa-share"></i> Submit Testimonial
+                </button>
+                <button onclick="addFakeTestimonials(5)" class="btn admin-only">
+                    <i class="fas fa-magic"></i> Generate Fake (x5)
+                </button>
+            </div>
+            <div class="testimonials-list" id="testimonialsList"></div>
+        </div>
+
+        <!-- DATABASE SECTION (ADMIN ONLY) -->
+        <div id="database" class="section">
+            <h2><i class="fas fa-database"></i> Master Database</h2>
+            <div class="database-actions">
+                <button onclick="viewAllUsers()" class="btn">
+                    <i class="fas fa-users"></i> View All Users
+                </button>
+                <button onclick="viewAllData()" class="btn">
+                    <i class="fas fa-table"></i> View All Data
+                </button>
+                <button onclick="backupDatabase()" class="btn">
+                    <i class="fas fa-save"></i> Backup Database
+                </button>
+                <button onclick="nukeDatabase()" class="btn danger">
+                    <i class="fas fa-bomb"></i> NUKE DATABASE
+                </button>
+            </div>
+            <div class="database-view">
+                <pre id="databaseOutput">Database content will appear here...</pre>
+            </div>
+        </div>
+
+        <!-- SETTINGS SECTION -->
+        <div id="settings" class="section">
+            <h2><i class="fas fa-cog"></i> System Settings</h2>
+            <div class="settings-grid">
+                <div class="setting-card">
+                    <h3><i class="fas fa-user-shield"></i> Admin Settings</h3>
+                    <div class="admin-creds">
+                        <p><strong>Owner:</strong> <span id="ownerName">Axm</span></p>
+                        <p><strong>Access Level:</strong> <span class="badge danger">MASTER</span></p>
+                        <button onclick="changePassword()" class="btn small">
+                            Change Password
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="setting-card">
+                    <h3><i class="fas fa-bell"></i> Notifications</h3>
+                    <label class="switch">
+                        <input type="checkbox" checked>
+                        <span class="slider"></span>
+                        <span>Email Alerts</span>
+                    </label>
+                </div>
+                
+                <div class="setting-card">
+                    <h3><i class="fas fa-palette"></i> Theme</h3>
+                    <select onchange="changeTheme(this.value)">
+                        <option value="dark">Dark Mode</option>
+                        <option value="light">Light Mode</option>
+                        <option value="purple">Purple Haze</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- HIDDEN ADMIN MODAL -->
+    <div id="adminModal" class="modal">
+        <div class="modal-content">
+            <h2><i class="fas fa-key"></i> Master Admin Access</h2>
+            <input type="password" id="masterPassword" placeholder="Enter Master Password">
+            <button onclick="verifyMasterPassword()" class="btn">
+                <i class="fas fa-unlock"></i> Unlock Full Access
+            </button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
