@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@800;900&display=swap" rel="stylesheet">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚡</text></svg>">
 </head>
 <body>
     <div class="container">
@@ -34,28 +35,28 @@
         <!-- Navigasi dengan efek 3D -->
         <nav class="navbar">
             <ul class="nav-menu">
-                <li class="nav-item active">
+                <li class="nav-item active" data-page="home">
                     <a href="#" class="nav-link">
                         <i class="fas fa-home"></i>
                         <span>Beranda</span>
                     </a>
                     <div class="nav-3d-effect"></div>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item" data-page="products">
                     <a href="#" class="nav-link">
                         <i class="fas fa-box-open"></i>
                         <span>Produk</span>
                     </a>
                     <div class="nav-3d-effect"></div>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item" data-page="testimonials">
                     <a href="#" class="nav-link">
                         <i class="fas fa-comment-alt"></i>
                         <span>Testimoni</span>
                     </a>
                     <div class="nav-3d-effect"></div>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item" data-page="settings">
                     <a href="#" class="nav-link">
                         <i class="fas fa-cog"></i>
                         <span>Pengaturan</span>
@@ -65,136 +66,177 @@
             </ul>
         </nav>
 
-        <!-- Konten utama dengan efek 3D -->
-        <main class="main-content">
-            <div class="dashboard-header">
-                <h1 class="dashboard-title">
-                    <span class="title-3d">Dashboard</span>
-                    <span class="title-sub">Axelux Store</span>
-                </h1>
-                <div class="theme-toggle">
-                    <div class="toggle-label">
-                        <i class="fas fa-sun"></i>
-                        <span>Mode Terang</span>
-                    </div>
-                    <div class="toggle-switch">
-                        <input type="checkbox" id="theme-toggle" checked>
-                        <label for="theme-toggle" class="toggle-slider">
-                            <span class="toggle-knob"></span>
-                        </label>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Kartu statistik 3D -->
-            <div class="stats-container">
-                <div class="stat-card stat-card-3d">
-                    <div class="stat-icon">
-                        <i class="fas fa-shopping-bag"></i>
-                    </div>
-                    <div class="stat-info">
-                        <div class="stat-value">1.248</div>
-                        <div class="stat-label">Total Produk</div>
-                    </div>
-                    <div class="stat-badge">+12%</div>
-                </div>
-
-                <div class="stat-card stat-card-3d">
-                    <div class="stat-icon">
-                        <i class="fas fa-users"></i>
-                    </div>
-                    <div class="stat-info">
-                        <div class="stat-value">5.623</div>
-                        <div class="stat-label">Pengunjung</div>
-                    </div>
-                    <div class="stat-badge">+8%</div>
-                </div>
-
-                <div class="stat-card stat-card-3d">
-                    <div class="stat-icon">
-                        <i class="fas fa-star"></i>
-                    </div>
-                    <div class="stat-info">
-                        <div class="stat-value">4.8</div>
-                        <div class="stat-label">Rating</div>
-                    </div>
-                    <div class="stat-badge">Terbaik</div>
-                </div>
-            </div>
-
-            <!-- Bagian konten utama dengan efek 3D -->
-            <div class="content-grid">
-                <div class="content-card content-3d">
-                    <div class="card-header">
-                        <h3><i class="fas fa-bolt"></i> Status Sistem</h3>
-                        <div class="status-light green active"></div>
-                    </div>
-                    <div class="card-body">
-                        <p>Sistem berjalan dengan lancar. Semua layanan dalam kondisi optimal.</p>
-                        <div class="progress-container">
-                            <div class="progress-label">Kinerja Server</div>
-                            <div class="progress-bar">
-                                <div class="progress-fill" style="width: 85%"></div>
-                            </div>
-                            <div class="progress-value">85%</div>
+        <!-- Konten utama - Akan diganti oleh JavaScript -->
+        <main class="main-content" id="main-content">
+            <!-- Konten default (beranda) akan ditampilkan di sini -->
+            <div class="page-content" id="home-page">
+                <div class="dashboard-header">
+                    <h1 class="dashboard-title">
+                        <span class="title-3d">Dashboard</span>
+                        <span class="title-sub">Axelux Store</span>
+                    </h1>
+                    <div class="theme-toggle">
+                        <div class="toggle-label">
+                            <i class="fas fa-sun"></i>
+                            <span>Mode Terang</span>
+                        </div>
+                        <div class="toggle-switch">
+                            <input type="checkbox" id="theme-toggle" checked>
+                            <label for="theme-toggle" class="toggle-slider">
+                                <span class="toggle-knob"></span>
+                            </label>
                         </div>
                     </div>
                 </div>
 
-                <div class="content-card content-3d">
-                    <div class="card-header">
-                        <h3><i class="fas fa-fire"></i> Produk Terpopuler</h3>
-                        <span class="hot-badge">HOT</span>
+                <!-- Kartu statistik 3D -->
+                <div class="stats-container">
+                    <div class="stat-card stat-card-3d">
+                        <div class="stat-icon">
+                            <i class="fas fa-shopping-bag"></i>
+                        </div>
+                        <div class="stat-info">
+                            <div class="stat-value">1.248</div>
+                            <div class="stat-label">Total Produk</div>
+                        </div>
+                        <div class="stat-badge">+12%</div>
                     </div>
-                    <div class="card-body">
-                        <ul class="product-list">
-                            <li class="product-item">
-                                <div class="product-rank">1</div>
-                                <div class="product-name">Axelux Pro X9</div>
-                                <div class="product-sales">452 terjual</div>
-                            </li>
-                            <li class="product-item">
-                                <div class="product-rank">2</div>
-                                <div class="product-name">Nexus Lite v3</div>
-                                <div class="product-sales">387 terjual</div>
-                            </li>
-                            <li class="product-item">
-                                <div class="product-rank">3</div>
-                                <div class="product-name">Quantum Z2</div>
-                                <div class="product-sales">321 terjual</div>
-                            </li>
-                        </ul>
+
+                    <div class="stat-card stat-card-3d">
+                        <div class="stat-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="stat-info">
+                            <div class="stat-value">5.623</div>
+                            <div class="stat-label">Pengunjung</div>
+                        </div>
+                        <div class="stat-badge">+8%</div>
+                    </div>
+
+                    <div class="stat-card stat-card-3d">
+                        <div class="stat-icon">
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <div class="stat-info">
+                            <div class="stat-value">4.8</div>
+                            <div class="stat-label">Rating</div>
+                        </div>
+                        <div class="stat-badge">Terbaik</div>
                     </div>
                 </div>
 
-                <div class="content-card content-3d welcome-card">
-                    <div class="card-header">
-                        <h3><i class="fas fa-hand-wave"></i> Selamat Datang, Tamu!</h3>
-                    </div>
-                    <div class="card-body">
-                        <div class="welcome-content">
-                            <div class="welcome-text">
-                                <p>Selamat datang di <strong>Axelux Store</strong>. Anda sedang mengakses dashboard dalam mode tamu. Fitur lengkap tersedia setelah login.</p>
-                                <button class="btn-login">
-                                    <i class="fas fa-sign-in-alt"></i> Masuk ke Akun
-                                </button>
+                <!-- Bagian konten utama dengan efek 3D -->
+                <div class="content-grid">
+                    <div class="content-card content-3d">
+                        <div class="card-header">
+                            <h3><i class="fas fa-bolt"></i> Status Sistem</h3>
+                            <div class="status-light green active"></div>
+                        </div>
+                        <div class="card-body">
+                            <p>Sistem berjalan dengan lancar. Semua layanan dalam kondisi optimal.</p>
+                            <div class="progress-container">
+                                <div class="progress-label">Kinerja Server</div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 85%"></div>
+                                </div>
+                                <div class="progress-value">85%</div>
                             </div>
-                            <div class="welcome-illustration">
-                                <div class="illustration-3d">
-                                    <i class="fas fa-store-alt"></i>
+                        </div>
+                    </div>
+
+                    <div class="content-card content-3d">
+                        <div class="card-header">
+                            <h3><i class="fas fa-fire"></i> Produk Terpopuler</h3>
+                            <span class="hot-badge">HOT</span>
+                        </div>
+                        <div class="card-body">
+                            <ul class="product-list">
+                                <li class="product-item">
+                                    <div class="product-rank">1</div>
+                                    <div class="product-name">Axelux Pro X9</div>
+                                    <div class="product-sales">452 terjual</div>
+                                </li>
+                                <li class="product-item">
+                                    <div class="product-rank">2</div>
+                                    <div class="product-name">Nexus Lite v3</div>
+                                    <div class="product-sales">387 terjual</div>
+                                </li>
+                                <li class="product-item">
+                                    <div class="product-rank">3</div>
+                                    <div class="product-name">Quantum Z2</div>
+                                    <div class="product-sales">321 terjual</div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="content-card content-3d welcome-card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-hand-wave"></i> Selamat Datang, Tamu!</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="welcome-content">
+                                <div class="welcome-text">
+                                    <p>Selamat datang di <strong>Axelux Store</strong>. Anda sedang mengakses dashboard dalam mode tamu. Fitur lengkap tersedia setelah login.</p>
+                                    <button class="btn-login" id="login-btn-main">
+                                        <i class="fas fa-sign-in-alt"></i> Masuk ke Akun
+                                    </button>
+                                </div>
+                                <div class="welcome-illustration">
+                                    <div class="illustration-3d">
+                                        <i class="fas fa-store-alt"></i>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-
-            <!-- Footer -->
-            <footer class="footer">
-                <p>Axelux Store &copy; 2023 - Dashboard Modern dengan Efek 3D</p>
-                <p class="footer-note">Versi 2.1 | Status: <span class="status-active">Aktif</span></p>
-            </footer>
         </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>Axelux Store &copy; 2023 - Dashboard Modern dengan Efek 3D</p>
+            <p class="footer-note">Versi 2.1 | Status: <span class="status-active">Aktif</span> | <span id="page-indicator">Beranda</span></p>
+        </footer>
+    </div>
+
+    <!-- Modal Login -->
+    <div class="modal-overlay" id="login-modal">
+        <div class="modal-content modal-3d">
+            <div class="modal-header">
+                <h2><i class="fas fa-sign-in-alt"></i> Masuk ke Akun</h2>
+                <button class="modal-close" id="close-login">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="login-form">
+                    <div class="form-group">
+                        <label for="username"><i class="fas fa-user"></i> Nama Pengguna</label>
+                        <input type="text" id="username" placeholder="Masukkan nama pengguna" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="password"><i class="fas fa-lock"></i> Kata Sandi</label>
+                        <input type="password" id="password" placeholder="Masukkan kata sandi" required>
+                        <div class="password-toggle">
+                            <i class="fas fa-eye" id="toggle-password"></i>
+                        </div>
+                    </div>
+                    <div class="form-options">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="remember-me">
+                            <span>Ingat saya</span>
+                        </label>
+                        <a href="#" class="forgot-link">Lupa kata sandi?</a>
+                    </div>
+                    <button type="submit" class="btn-submit">
+                        <i class="fas fa-paper-plane"></i> Masuk Sekarang
+                    </button>
+                    <div class="register-link">
+                        Belum punya akun? <a href="#" id="register-link">Daftar di sini</a>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
 
     <script src="script.js"></script>
