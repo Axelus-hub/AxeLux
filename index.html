@@ -3,196 +3,499 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AxeLux | Premium Store</title>
+    <title>AxeLux | Premium Luxury Store</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
 </head>
-<body>
-    <!-- Login Page (Awal) -->
-    <div id="loginPage" class="page">
-        <div class="login-container">
-            <div class="logo">AxeLux</div>
-            <div class="theme-toggle">
-                <button onclick="setTheme('green')" class="theme-btn green">Hijau</button>
-                <button onclick="setTheme('red')" class="theme-btn red">Merah</button>
-            </div>
-            <div class="lang-select">
-                <select id="langSelect" onchange="changeLanguage()">
-                    <option value="id">Indonesia</option>
-                    <option value="en">English</option>
-                    <option value="jp">日本語</option>
-                    <option value="ar">العربية</option>
-                </select>
-            </div>
-            <div class="login-form">
-                <h2 id="loginTitle">Masuk ke Akun</h2>
-                <input type="text" id="loginEmail" placeholder="Email atau Username">
-                <input type="password" id="loginPassword" placeholder="Password">
-                <button onclick="login()" class="btn-login">Login</button>
-                <button onclick="signInAsGuest()" class="btn-guest">Masuk sebagai Guest</button>
-                <p id="loginMsg" class="message"></p>
-                <p class="small">Akun Owner: User: Axm, Pass: brandalz70</p>
+<body class="theme-blue">
+    <!-- Login Page -->
+    <div id="loginPage" class="page login-page">
+        <div class="login-wrapper">
+            <div class="login-card">
+                <div class="brand-header">
+                    <div class="logo-icon"><i class="fas fa-gem"></i></div>
+                    <h1 class="logo-text">AxeLux</h1>
+                    <p class="tagline">Premium Luxury Store</p>
+                </div>
+
+                <div class="theme-selector">
+                    <p class="section-label">Pilih Tema:</p>
+                    <div class="theme-buttons">
+                        <button onclick="setTheme('blue')" class="theme-option blue active" title="Blue">
+                            <i class="fas fa-palette"></i> Blue
+                        </button>
+                        <button onclick="setTheme('red')" class="theme-option red" title="Red">
+                            <i class="fas fa-fire"></i> Red
+                        </button>
+                        <button onclick="setTheme('green')" class="theme-option green" title="Green">
+                            <i class="fas fa-leaf"></i> Green
+                        </button>
+                        <button onclick="setTheme('yellow')" class="theme-option yellow" title="Yellow">
+                            <i class="fas fa-sun"></i> Yellow
+                        </button>
+                        <button onclick="setTheme('night')" class="theme-option night" title="Night">
+                            <i class="fas fa-moon"></i> Night
+                        </button>
+                        <button onclick="setTheme('light')" class="theme-option light" title="Light">
+                            <i class="fas fa-sun"></i> Light
+                        </button>
+                    </div>
+                </div>
+
+                <div class="language-selector">
+                    <select id="langSelect" class="lang-dropdown" onchange="changeLanguage()">
+                        <option value="id">🇮🇩 Indonesia</option>
+                        <option value="en">🇺🇸 English</option>
+                        <option value="jp">🇯🇵 日本語</option>
+                        <option value="es">🇪🇸 Español</option>
+                    </select>
+                </div>
+
+                <div class="login-form">
+                    <h2 id="loginTitle" class="form-title">Masuk ke Dashboard</h2>
+                    
+                    <div class="input-group">
+                        <i class="fas fa-user input-icon"></i>
+                        <input type="text" id="loginEmail" placeholder="Email atau Username" class="form-input">
+                    </div>
+                    
+                    <div class="input-group">
+                        <i class="fas fa-lock input-icon"></i>
+                        <input type="password" id="loginPassword" placeholder="Password" class="form-input">
+                    </div>
+
+                    <button onclick="login()" class="btn btn-primary btn-login">
+                        <i class="fas fa-sign-in-alt"></i> <span id="btnLoginText">Login</span>
+                    </button>
+                    
+                    <button onclick="signInAsGuest()" class="btn btn-secondary btn-guest">
+                        <i class="fas fa-user-circle"></i> <span id="btnGuestText">Masuk sebagai Guest</span>
+                    </button>
+
+                    <p id="loginMsg" class="message"></p>
+                    
+                    <div class="login-hint">
+                        <i class="fas fa-info-circle"></i>
+                        <p>Owner login: User: <strong>Axm</strong>, Password: <strong>brandalz70</strong></p>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- Main App (Setelah Login) -->
-    <div id="mainApp" class="page hidden">
+    <!-- Main App -->
+    <div id="mainApp" class="page main-app hidden">
         <!-- Header -->
-        <header>
+        <header class="app-header">
             <div class="header-left">
-                <h1 class="app-title">AxeLux</h1>
-                <div class="lang-select small">
-                    <select id="langSelectMain" onchange="changeLanguage()">
-                        <option value="id">ID</option>
-                        <option value="en">EN</option>
-                        <option value="jp">JP</option>
-                        <option value="ar">AR</option>
-                    </select>
+                <div class="logo-container">
+                    <div class="logo-icon-small"><i class="fas fa-gem"></i></div>
+                    <h1 class="app-title">AxeLux</h1>
                 </div>
-                <div class="theme-btns">
-                    <button onclick="setTheme('green')" class="theme-btn mini green"><i class="fas fa-leaf"></i></button>
-                    <button onclick="setTheme('red')" class="theme-btn mini red"><i class="fas fa-fire"></i></button>
+                
+                <div class="header-controls">
+                    <div class="theme-selector-small">
+                        <select id="themeSelect" class="theme-dropdown" onchange="setTheme(this.value)">
+                            <option value="blue">Blue Theme</option>
+                            <option value="red">Red Theme</option>
+                            <option value="green">Green Theme</option>
+                            <option value="yellow">Yellow Theme</option>
+                            <option value="night">Night Theme</option>
+                            <option value="light">Light Theme</option>
+                        </select>
+                    </div>
+                    
+                    <div class="language-selector-small">
+                        <select id="langSelectMain" class="lang-dropdown" onchange="changeLanguage()">
+                            <option value="id">🇮🇩 ID</option>
+                            <option value="en">🇺🇸 EN</option>
+                            <option value="jp">🇯🇵 JP</option>
+                            <option value="es">🇪🇸 ES</option>
+                        </select>
+                    </div>
                 </div>
             </div>
+            
             <div class="header-right">
-                <span id="welcomeUser">Selamat datang, </span>
-                <button onclick="logout()" class="btn-logout">Logout</button>
+                <div class="user-info">
+                    <i class="fas fa-user-circle user-avatar"></i>
+                    <div class="user-details">
+                        <span id="welcomeUser" class="username">Selamat datang, Guest</span>
+                        <span class="user-role" id="userRole">Pengunjung</span>
+                    </div>
+                </div>
+                <button onclick="logout()" class="btn btn-logout">
+                    <i class="fas fa-sign-out-alt"></i> <span id="btnLogoutText">Logout</span>
+                </button>
             </div>
         </header>
 
         <!-- Navigation -->
-        <nav>
-            <ul>
-                <li><a href="#" onclick="showSection('home')" class="nav-link active"><i class="fas fa-home"></i> <span id="navHome">Home</span></a></li>
-                <li><a href="#" onclick="showSection('product')" class="nav-link"><i class="fas fa-shopping-bag"></i> <span id="navProduct">Product</span></a></li>
-                <li><a href="#" onclick="showSection('cs')" class="nav-link"><i class="fas fa-headset"></i> <span id="navCS">Customer Service</span></a></li>
-                <li><a href="#" onclick="showSection('database')" class="nav-link admin-only"><i class="fas fa-database"></i> <span id="navDB">Database</span></a></li>
-                <li><a href="#" onclick="showSection('testimoni')" class="nav-link"><i class="fas fa-star"></i> <span id="navTesti">Testimoni</span></a></li>
-                <li><a href="#" onclick="showSection('userSettings')" class="nav-link"><i class="fas fa-cog"></i> <span id="navSettings">User Settings</span></a></li>
+        <nav class="main-nav">
+            <ul class="nav-list">
+                <li class="nav-item">
+                    <a href="#" onclick="showSection('home')" class="nav-link active">
+                        <i class="fas fa-home nav-icon"></i>
+                        <span class="nav-text" id="navHome">Home</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" onclick="showSection('product')" class="nav-link">
+                        <i class="fas fa-shopping-bag nav-icon"></i>
+                        <span class="nav-text" id="navProduct">Products</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" onclick="showSection('cs')" class="nav-link">
+                        <i class="fas fa-headset nav-icon"></i>
+                        <span class="nav-text" id="navCS">Support</span>
+                    </a>
+                </li>
+                <li class="nav-item admin-only">
+                    <a href="#" onclick="showSection('database')" class="nav-link">
+                        <i class="fas fa-database nav-icon"></i>
+                        <span class="nav-text" id="navDB">Database</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" onclick="showSection('testimoni')" class="nav-link">
+                        <i class="fas fa-star nav-icon"></i>
+                        <span class="nav-text" id="navTesti">Testimonials</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" onclick="showSection('userSettings')" class="nav-link">
+                        <i class="fas fa-cog nav-icon"></i>
+                        <span class="nav-text" id="navSettings">Settings</span>
+                    </a>
+                </li>
             </ul>
         </nav>
 
-        <!-- Content Sections -->
-        <main>
+        <!-- Main Content -->
+        <main class="content-area">
             <!-- Home -->
-            <section id="homeSection" class="content-section">
-                <h2 id="homeTitle">Dashboard AxeLux</h2>
-                <p id="homeDesc">Web premium penjualan produk eksklusif. Hanya admin yang bisa mengelola produk dan data.</p>
-                <div class="stats">
+            <section id="homeSection" class="content-section active-section">
+                <div class="section-header">
+                    <h2 id="homeTitle" class="section-title">Dashboard Overview</h2>
+                    <p id="homeDesc" class="section-subtitle">Monitor your luxury store performance and analytics</p>
+                </div>
+                
+                <div class="stats-grid">
                     <div class="stat-card">
-                        <h3 id="statVisitors">Total Pengunjung</h3>
-                        <p id="visitorCount">0</p>
+                        <div class="stat-icon">
+                            <i class="fas fa-eye"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="statVisitors">Total Visitors</h3>
+                            <p class="stat-number" id="visitorCount">0</p>
+                            <p class="stat-trend"><i class="fas fa-arrow-up"></i> 12% today</p>
+                        </div>
                     </div>
+                    
                     <div class="stat-card">
-                        <h3 id="statProducts">Total Produk</h3>
-                        <p id="productCount">0</p>
+                        <div class="stat-icon">
+                            <i class="fas fa-box"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="statProducts">Products</h3>
+                            <p class="stat-number" id="productCount">0</p>
+                            <p class="stat-trend"><i class="fas fa-plus"></i> Add new</p>
+                        </div>
                     </div>
+                    
                     <div class="stat-card">
-                        <h3 id="statTesti">Total Testimoni</h3>
-                        <p id="testiCount">0</p>
+                        <div class="stat-icon">
+                            <i class="fas fa-comment-dots"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="statTesti">Testimonials</h3>
+                            <p class="stat-number" id="testiCount">0</p>
+                            <p class="stat-trend"><i class="fas fa-star"></i> 4.8 rating</p>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="statOnline">Online Now</h3>
+                            <p class="stat-number" id="liveVisitorCount">0</p>
+                            <p class="stat-trend"><i class="fas fa-circle online-dot"></i> Live</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="quick-actions">
+                    <h3 class="actions-title">Quick Actions</h3>
+                    <div class="action-buttons">
+                        <button onclick="showSection('product')" class="btn-action">
+                            <i class="fas fa-plus-circle"></i> Add Product
+                        </button>
+                        <button onclick="showSection('testimoni')" class="btn-action">
+                            <i class="fas fa-pen"></i> Write Testimonial
+                        </button>
+                        <button onclick="showSection('cs')" class="btn-action">
+                            <i class="fas fa-question-circle"></i> Get Support
+                        </button>
                     </div>
                 </div>
             </section>
 
-            <!-- Product -->
-            <section id="productSection" class="content-section hidden">
-                <h2 id="productTitle">Produk Eksklusif</h2>
-                <div class="product-list" id="productList">
-                    <!-- Produk di-load via JS -->
+            <!-- Products -->
+            <section id="productSection" class="content-section">
+                <div class="section-header">
+                    <h2 id="productTitle" class="section-title">Luxury Products</h2>
+                    <p id="productDesc" class="section-subtitle">Exclusive collection of premium items</p>
                 </div>
-                <div class="admin-actions admin-only">
-                    <h3>Admin Panel - Kelola Produk</h3>
-                    <input type="text" id="productName" placeholder="Nama Produk">
-                    <input type="number" id="productPrice" placeholder="Harga">
-                    <textarea id="productDesc" placeholder="Deskripsi"></textarea>
-                    <button onclick="addProduct()" class="btn-admin">Tambah Produk</button>
-                    <button onclick="deleteAllProducts()" class="btn-admin delete">Hapus Semua Produk</button>
+                
+                <div class="products-grid" id="productList">
+                    <!-- Products loaded via JS -->
+                </div>
+                
+                <div class="admin-panel admin-only">
+                    <h3 class="panel-title">Admin Product Management</h3>
+                    <div class="admin-form">
+                        <div class="form-row">
+                            <input type="text" id="productName" placeholder="Product Name" class="form-input admin-input">
+                            <input type="number" id="productPrice" placeholder="Price ($)" class="form-input admin-input">
+                        </div>
+                        <textarea id="productDesc" placeholder="Product Description" class="form-textarea"></textarea>
+                        <div class="form-actions">
+                            <button onclick="addProduct()" class="btn btn-admin btn-success">
+                                <i class="fas fa-plus"></i> Add Product
+                            </button>
+                            <button onclick="deleteAllProducts()" class="btn btn-admin btn-danger">
+                                <i class="fas fa-trash"></i> Delete All
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </section>
 
             <!-- Customer Service -->
-            <section id="csSection" class="content-section hidden">
-                <h2 id="csTitle">Customer Service (AI Auto‑Reply)</h2>
+            <section id="csSection" class="content-section">
+                <div class="section-header">
+                    <h2 id="csTitle" class="section-title">24/7 AI Customer Support</h2>
+                    <p id="csDesc" class="section-subtitle">Instant AI-powered responses to your queries</p>
+                </div>
+                
                 <div class="chat-container">
-                    <div class="chat-box" id="chatBox">
-                        <div class="message ai">Halo! Saya AI Assistant AxeLux. Silakan tanyakan tentang produk atau layanan kami.</div>
+                    <div class="chat-header">
+                        <i class="fas fa-robot chat-ai-icon"></i>
+                        <div>
+                            <h4>AxeLux AI Assistant</h4>
+                            <p class="chat-status">Online • Auto-Reply Enabled</p>
+                        </div>
                     </div>
-                    <div class="chat-input">
-                        <input type="text" id="userQuestion" placeholder="Tulis pertanyaan Anda...">
-                        <button onclick="sendQuestion()"><i class="fas fa-paper-plane"></i></button>
+                    
+                    <div class="chat-messages" id="chatBox">
+                        <div class="message ai-message">
+                            <div class="message-content">
+                                <strong>AxeLux AI:</strong> Hello! I'm your AI assistant. How can I help you with our luxury products today?
+                            </div>
+                            <div class="message-time">Just now</div>
+                        </div>
+                    </div>
+                    
+                    <div class="chat-input-area">
+                        <input type="text" id="userQuestion" placeholder="Type your question here..." class="chat-input">
+                        <button onclick="sendQuestion()" class="btn btn-primary btn-send">
+                            <i class="fas fa-paper-plane"></i> Send
+                        </button>
                     </div>
                 </div>
-                <p class="small">*AI ini akan menjawab secara otomatis berdasarkan kata kunci.</p>
+                
+                <div class="faq-section">
+                    <h4>Frequently Asked Questions:</h4>
+                    <div class="faq-grid">
+                        <button onclick="insertFAQ('What is your return policy?')" class="faq-item">Return Policy</button>
+                        <button onclick="insertFAQ('Do you ship internationally?')" class="faq-item">International Shipping</button>
+                        <button onclick="insertFAQ('How can I track my order?')" class="faq-item">Order Tracking</button>
+                        <button onclick="insertFAQ('What payment methods do you accept?')" class="faq-item">Payment Methods</button>
+                    </div>
+                </div>
             </section>
 
             <!-- Database (Admin Only) -->
-            <section id="databaseSection" class="content-section hidden">
-                <h2 id="dbTitle">Database Admin</h2>
-                <div class="db-section">
-                    <h3 id="dbUsers">Daftar Pengguna yang Login</h3>
-                    <ul id="userList"></ul>
+            <section id="databaseSection" class="content-section admin-only">
+                <div class="section-header">
+                    <h2 id="dbTitle" class="section-title">Admin Database</h2>
+                    <p id="dbDesc" class="section-subtitle">Full control over all data and users</p>
                 </div>
-                <div class="db-section">
-                    <h3 id="dbAllTesti">Semua Testimoni (Raw Data)</h3>
-                    <pre id="rawTesti"></pre>
+                
+                <div class="db-tabs">
+                    <button class="db-tab active" onclick="showDbTab('users')">Users</button>
+                    <button class="db-tab" onclick="showDbTab('testimonials')">Testimonials</button>
+                    <button class="db-tab" onclick="showDbTab('analytics')">Analytics</button>
                 </div>
-                <div class="db-section admin-only">
-                    <h3>Tools Admin</h3>
-                    <button onclick="generateFakeTestimonials()" class="btn-admin">Buat Testimoni Palsu (Random Names)</button>
-                    <button onclick="deleteAllTestimonials()" class="btn-admin delete">Hapus Semua Testimoni</button>
-                    <button onclick="exportData()" class="btn-admin">Export Semua Data</button>
+                
+                <div class="db-content">
+                    <div id="dbUsersTab" class="db-tab-content active">
+                        <h4 id="dbUsers">Registered Users</h4>
+                        <div class="table-container">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Email</th>
+                                        <th>Last Login</th>
+                                        <th>Role</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="userList">
+                                    <!-- User data loaded via JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <div id="dbTestimonialsTab" class="db-tab-content">
+                        <h4 id="dbAllTesti">All Testimonials</h4>
+                        <pre class="raw-data" id="rawTesti">Loading...</pre>
+                    </div>
+                    
+                    <div id="dbAnalyticsTab" class="db-tab-content">
+                        <h4>Data Management</h4>
+                        <div class="admin-tools">
+                            <button onclick="generateFakeTestimonials()" class="btn btn-admin">
+                                <i class="fas fa-magic"></i> Generate Fake Testimonials
+                            </button>
+                            <button onclick="deleteAllTestimonials()" class="btn btn-admin btn-danger">
+                                <i class="fas fa-broom"></i> Clear All Testimonials
+                            </button>
+                            <button onclick="exportData()" class="btn btn-admin btn-success">
+                                <i class="fas fa-download"></i> Export All Data
+                            </button>
+                            <button onclick="resetVisitorCount()" class="btn btn-admin">
+                                <i class="fas fa-redo"></i> Reset Visitor Counter
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </section>
 
-            <!-- Testimoni -->
-            <section id="testimoniSection" class="content-section hidden">
-                <h2 id="testiTitle">Testimoni Pelanggan</h2>
-                <div class="testimoni-list" id="testimoniList">
-                    <!-- Testimoni di-load via JS -->
+            <!-- Testimonials -->
+            <section id="testimoniSection" class="content-section">
+                <div class="section-header">
+                    <h2 id="testiTitle" class="section-title">Customer Testimonials</h2>
+                    <p id="testiDesc" class="section-subtitle">See what our customers say about us</p>
                 </div>
-                <div class="add-testimoni" id="addTestimoniSection">
-                    <h3>Tambah Testimoni</h3>
-                    <textarea id="newTestimoni" placeholder="Tulis pengalaman Anda..."></textarea>
-                    <button onclick="addTestimoni()" id="btnAddTestimoni">Kirim Testimoni</button>
+                
+                <div class="testimonials-grid" id="testimoniList">
+                    <!-- Testimonials loaded via JS -->
                 </div>
-                <div class="admin-actions admin-only">
-                    <h3>Admin Tools</h3>
-                    <button onclick="generateFakeTestimonials()" class="btn-admin">Buat Testimoni Palsu (10)</button>
+                
+                <div class="add-testimonial-section" id="addTestimoniSection">
+                    <h3>Share Your Experience</h3>
+                    <textarea id="newTestimoni" placeholder="Write your testimonial here..." class="testimonial-textarea"></textarea>
+                    <button onclick="addTestimoni()" class="btn btn-primary btn-submit-testimonial">
+                        <i class="fas fa-paper-plane"></i> Submit Testimonial
+                    </button>
+                    <p class="form-note">You must be logged in to submit a testimonial.</p>
+                </div>
+                
+                <div class="admin-panel admin-only">
+                    <h3 class="panel-title">Testimonial Management</h3>
+                    <div class="admin-actions">
+                        <button onclick="generateFakeTestimonials()" class="btn btn-admin">
+                            <i class="fas fa-plus-circle"></i> Add 10 Random Testimonials
+                        </button>
+                        <p class="admin-note">Random names from Indonesia and other countries will be generated.</p>
+                    </div>
                 </div>
             </section>
 
             <!-- User Settings -->
-            <section id="userSettingsSection" class="content-section hidden">
-                <h2 id="settingsTitle">Pengaturan Pengguna</h2>
-                <div class="settings-form">
-                    <label id="labelEmail">Email:</label>
-                    <input type="email" id="userEmail" disabled>
-                    <label id="labelTheme">Tema:</label>
-                    <select id="themeSelect" onchange="setTheme(this.value)">
-                        <option value="green">Hijau</option>
-                        <option value="red">Merah</option>
-                    </select>
-                    <label id="labelLanguage">Bahasa:</label>
-                    <select id="languageSelect" onchange="changeLanguage()">
-                        <option value="id">Indonesia</option>
-                        <option value="en">English</option>
-                        <option value="jp">日本語</option>
-                        <option value="ar">العربية</option>
-                    </select>
-                    <button onclick="updateProfile()" class="btn-save" id="btnSave">Simpan</button>
+            <section id="userSettingsSection" class="content-section">
+                <div class="section-header">
+                    <h2 id="settingsTitle" class="section-title">Account Settings</h2>
+                    <p id="settingsDesc" class="section-subtitle">Customize your experience</p>
+                </div>
+                
+                <div class="settings-grid">
+                    <div class="settings-card">
+                        <h4><i class="fas fa-user-cog"></i> Profile</h4>
+                        <div class="settings-form">
+                            <div class="form-group">
+                                <label id="labelEmail">Email Address</label>
+                                <input type="email" id="userEmail" class="form-input" disabled>
+                            </div>
+                            <div class="form-group">
+                                <label id="labelName">Display Name</label>
+                                <input type="text" id="userName" class="form-input" placeholder="Enter your name">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="settings-card">
+                        <h4><i class="fas fa-palette"></i> Appearance</h4>
+                        <div class="settings-form">
+                            <div class="form-group">
+                                <label id="labelTheme">Theme</label>
+                                <select id="themeSelectSettings" class="form-select" onchange="setTheme(this.value)">
+                                    <option value="blue">Blue Theme</option>
+                                    <option value="red">Red Theme</option>
+                                    <option value="green">Green Theme</option>
+                                    <option value="yellow">Yellow Theme</option>
+                                    <option value="night">Night Theme</option>
+                                    <option value="light">Light Theme</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label id="labelLanguage">Language</label>
+                                <select id="languageSelect" class="form-select" onchange="changeLanguage()">
+                                    <option value="id">Bahasa Indonesia</option>
+                                    <option value="en">English</option>
+                                    <option value="jp">日本語</option>
+                                    <option value="es">Español</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="settings-card">
+                        <h4><i class="fas fa-shield-alt"></i> Account</h4>
+                        <div class="settings-actions">
+                            <button onclick="updateProfile()" class="btn btn-primary">
+                                <i class="fas fa-save"></i> <span id="btnSave">Save Changes</span>
+                            </button>
+                            <button onclick="deleteAccount()" class="btn btn-danger">
+                                <i class="fas fa-trash"></i> Delete Account
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </section>
         </main>
 
         <!-- Footer -->
-        <footer>
-            <p id="footerText">© 2023 AxeLux Premium Store. Semua fitur aman dan terlindungi.</p>
-            <p class="visitor-counter"><span id="liveVisitorCount">0</span> pengunjung online</p>
+        <footer class="app-footer">
+            <div class="footer-content">
+                <div class="footer-left">
+                    <div class="footer-logo">
+                        <i class="fas fa-gem footer-logo-icon"></i>
+                        <span class="footer-logo-text">AxeLux</span>
+                    </div>
+                    <p id="footerText" class="footer-description">Premium Luxury Store © 2023. All rights reserved.</p>
+                </div>
+                <div class="footer-right">
+                    <div class="footer-stats">
+                        <div class="footer-stat">
+                            <i class="fas fa-users"></i>
+                            <span><span id="footerVisitorCount">0</span> visitors</span>
+                        </div>
+                        <div class="footer-stat">
+                            <i class="fas fa-box"></i>
+                            <span><span id="footerProductCount">0</span> products</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </footer>
     </div>
 
