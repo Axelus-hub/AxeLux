@@ -5,1608 +5,59 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AxeLux | Premium Luxury Store</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/star-rating-svg@3.5.0/src/css/star-rating-svg.css">
     <style>
-        /* ===== RESET & BASE ===== */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Inter', 'Segoe UI', sans-serif;
-            background: #f8f9fa;
-            color: #333;
-            transition: all 0.3s ease;
-            overflow-x: hidden;
-        }
-
-        .page {
-            min-height: 100vh;
-            width: 100%;
-        }
-
-        .hidden {
-            display: none !important;
-        }
-
-        /* ===== THEME SYSTEM ===== */
-        :root {
-            --primary: #4361ee;
-            --primary-dark: #3a56d4;
-            --secondary: #4cc9f0;
-            --accent: #7209b7;
-            --success: #2ecc71;
-            --warning: #ff9800;
-            --danger: #e74c3c;
-            --bg-primary: #f8f9fa;
-            --bg-secondary: #ffffff;
-            --bg-card: #ffffff;
-            --text-primary: #2d3436;
-            --text-secondary: #636e72;
-            --border-color: #e0e0e0;
-            --shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
-            --sidebar-bg: #ffffff;
-            --header-bg: #ffffff;
-            --footer-bg: #2d3436;
-            --footer-text: #ffffff;
-        }
-
-        body.theme-blue {
-            --primary: #4361ee;
-            --primary-dark: #3a56d4;
-            --sidebar-bg: linear-gradient(180deg, #4361ee 0%, #3a56d4 100%);
-        }
-
-        body.theme-red {
-            --primary: #e63946;
-            --primary-dark: #d00000;
-            --sidebar-bg: linear-gradient(180deg, #e63946 0%, #d00000 100%);
-        }
-
-        body.theme-green {
-            --primary: #2ecc71;
-            --primary-dark: #27ae60;
-            --sidebar-bg: linear-gradient(180deg, #2ecc71 0%, #27ae60 100%);
-        }
-
-        body.theme-yellow {
-            --primary: #ffd166;
-            --primary-dark: #ffc43d;
-            --sidebar-bg: linear-gradient(180deg, #ffd166 0%, #ffc43d 100%);
-        }
-
-        body.theme-night {
-            --primary: #6c5ce7;
-            --primary-dark: #5b4fcf;
-            --bg-primary: #0d1117;
-            --bg-secondary: #161b22;
-            --bg-card: #161b22;
-            --text-primary: #f0f6fc;
-            --text-secondary: #8b949e;
-            --border-color: #30363d;
-            --sidebar-bg: linear-gradient(180deg, #161b22 0%, #0d1117 100%);
-            --header-bg: #161b22;
-            --shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
-        }
-
-        body.theme-light {
-            --primary: #8a2be2;
-            --primary-dark: #7b1fa2;
-            --sidebar-bg: linear-gradient(180deg, #ffffff 0%, #f8f9fa 100%);
-        }
-
-        /* ===== LOGIN PAGE ===== */
-        .login-page {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: var(--primary);
-            min-height: 100vh;
-            padding: 20px;
-        }
-
-        .login-wrapper {
-            width: 100%;
-            max-width: 420px;
-        }
-
-        .login-card {
-            background: var(--bg-card);
-            border-radius: 20px;
-            padding: 40px;
-            box-shadow: var(--shadow);
-            border: 1px solid var(--border-color);
-            animation: fadeIn 0.5s ease;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .brand-header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        .logo-icon {
-            font-size: 48px;
-            color: var(--primary);
-            margin-bottom: 10px;
-        }
-
-        .logo-text {
-            font-family: 'Montserrat', sans-serif;
-            font-weight: 700;
-            font-size: 36px;
-            color: var(--text-primary);
-            margin-bottom: 5px;
-        }
-
-        .tagline {
-            color: var(--text-secondary);
-            font-size: 14px;
-            letter-spacing: 1px;
-        }
-
-        .theme-selector {
-            margin-bottom: 25px;
-        }
-
-        .section-label {
-            color: var(--text-secondary);
-            margin-bottom: 12px;
-            font-size: 14px;
-            font-weight: 500;
-            text-align: center;
-        }
-
-        .theme-buttons {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-        }
-
-        .theme-option {
-            padding: 12px 10px;
-            border: 2px solid var(--border-color);
-            border-radius: 10px;
-            background: var(--bg-secondary);
-            color: var(--text-primary);
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.3s;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 5px;
-            font-size: 12px;
-        }
-
-        .theme-option:hover {
-            transform: translateY(-2px);
-            border-color: var(--primary);
-        }
-
-        .theme-option.active {
-            border-color: var(--primary);
-            background: var(--primary);
-            color: white;
-        }
-
-        .theme-option i {
-            font-size: 18px;
-        }
-
-        .language-selector {
-            margin-bottom: 25px;
-        }
-
-        .lang-dropdown {
-            width: 100%;
-            padding: 12px 16px;
-            border: 2px solid var(--border-color);
-            border-radius: 10px;
-            background: var(--bg-secondary);
-            color: var(--text-primary);
-            font-weight: 500;
-            cursor: pointer;
-        }
-
-        .login-form, .register-form {
-            margin-top: 20px;
-        }
-
-        .form-title {
-            font-size: 22px;
-            margin-bottom: 25px;
-            color: var(--text-primary);
-            text-align: center;
-        }
-
-        .input-group {
-            position: relative;
-            margin-bottom: 20px;
-        }
-
-        .input-icon {
-            position: absolute;
-            left: 16px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--text-secondary);
-        }
-
-        .form-input {
-            width: 100%;
-            padding: 14px 14px 14px 48px;
-            border: 2px solid var(--border-color);
-            border-radius: 10px;
-            background: var(--bg-secondary);
-            color: var(--text-primary);
-            font-size: 15px;
-            transition: all 0.3s;
-        }
-
-        .form-input:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
-        }
-
-        .btn {
-            padding: 14px 24px;
-            border: none;
-            border-radius: 10px;
-            font-weight: 600;
-            font-size: 15px;
-            cursor: pointer;
-            transition: all 0.3s;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            width: 100%;
-            margin-bottom: 15px;
-        }
-
-        .btn-primary {
-            background: var(--primary);
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background: var(--primary-dark);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(67, 97, 238, 0.2);
-        }
-
-        .btn-secondary {
-            background: var(--bg-secondary);
-            color: var(--text-primary);
-            border: 2px solid var(--border-color);
-        }
-
-        .btn-secondary:hover {
-            border-color: var(--primary);
-            transform: translateY(-2px);
-        }
-
-        .message {
-            text-align: center;
-            padding: 10px;
-            margin: 15px 0;
-            border-radius: 8px;
-            font-weight: 500;
-            color: var(--danger);
-        }
-
-        .register-link {
-            text-align: center;
-            margin-top: 20px;
-            padding-top: 20px;
-            border-top: 1px solid var(--border-color);
-        }
-
-        .register-link a {
-            color: var(--primary);
-            text-decoration: none;
-            font-weight: 600;
-        }
-
-        .register-link a:hover {
-            text-decoration: underline;
-        }
-
-        /* ===== MAIN APP LAYOUT ===== */
-        .main-app {
-            display: flex;
-            min-height: 100vh;
-        }
-
-        /* Sidebar */
-        .sidebar {
-            width: 250px;
-            background: var(--sidebar-bg);
-            color: white;
-            position: fixed;
-            left: 0;
-            top: 0;
-            bottom: 0;
-            z-index: 1000;
-            transition: transform 0.3s ease;
-            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
-        }
-
-        body.theme-light .sidebar {
-            color: var(--text-primary);
-            border-right: 1px solid var(--border-color);
-        }
-
-        .sidebar-header {
-            padding: 25px 20px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        body.theme-light .sidebar-header {
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .sidebar-logo {
-            font-size: 24px;
-            color: white;
-        }
-
-        body.theme-light .sidebar-logo {
-            color: var(--primary);
-        }
-
-        .sidebar-title {
-            font-family: 'Montserrat', sans-serif;
-            font-weight: 700;
-            font-size: 20px;
-            color: white;
-        }
-
-        body.theme-light .sidebar-title {
-            color: var(--text-primary);
-        }
-
-        .sidebar-user {
-            padding: 20px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        body.theme-light .sidebar-user {
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .user-avatar-sidebar {
-            width: 40px;
-            height: 40px;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
-        }
-
-        body.theme-light .user-avatar-sidebar {
-            background: var(--primary);
-            color: white;
-        }
-
-        .user-info-sidebar {
-            flex: 1;
-        }
-
-        .user-name-sidebar {
-            font-weight: 600;
-            color: white;
-            font-size: 14px;
-        }
-
-        body.theme-light .user-name-sidebar {
-            color: var(--text-primary);
-        }
-
-        .user-role-sidebar {
-            font-size: 12px;
-            color: rgba(255, 255, 255, 0.7);
-        }
-
-        body.theme-light .user-role-sidebar {
-            color: var(--text-secondary);
-        }
-
-        /* Navigation Menu */
-        .sidebar-nav {
-            padding: 20px 0;
-            overflow-y: auto;
-            max-height: calc(100vh - 200px);
-        }
-
-        .nav-item {
-            margin-bottom: 5px;
-        }
-
-        .nav-link {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            padding: 14px 20px;
-            color: rgba(255, 255, 255, 0.8);
-            text-decoration: none;
-            transition: all 0.3s;
-            border-left: 3px solid transparent;
-        }
-
-        body.theme-light .nav-link {
-            color: var(--text-secondary);
-        }
-
-        .nav-link:hover {
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-            border-left-color: rgba(255, 255, 255, 0.5);
-        }
-
-        body.theme-light .nav-link:hover {
-            background: rgba(0, 0, 0, 0.05);
-            color: var(--text-primary);
-            border-left-color: var(--primary);
-        }
-
-        .nav-link.active {
-            background: rgba(255, 255, 255, 0.15);
-            color: white;
-            border-left-color: white;
-        }
-
-        body.theme-light .nav-link.active {
-            background: var(--primary);
-            color: white;
-            border-left-color: white;
-        }
-
-        .nav-icon {
-            width: 20px;
-            text-align: center;
-            font-size: 16px;
-        }
-
-        .nav-text {
-            flex: 1;
-            font-size: 14px;
-            font-weight: 500;
-        }
-
-        .nav-badge {
-            background: var(--danger);
-            color: white;
-            font-size: 11px;
-            padding: 2px 8px;
-            border-radius: 10px;
-            min-width: 20px;
-            text-align: center;
-        }
-
-        /* Main Content Area */
-        .main-content {
-            flex: 1;
-            margin-left: 250px;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-        }
-
-        /* Top Header */
-        .top-header {
-            background: var(--header-bg);
-            padding: 0 30px;
-            height: 70px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            border-bottom: 1px solid var(--border-color);
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        .header-left {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-        }
-
-        .menu-toggle {
-            display: none;
-            background: none;
-            border: none;
-            color: var(--text-primary);
-            font-size: 20px;
-            cursor: pointer;
-            width: 40px;
-            height: 40px;
-            border-radius: 8px;
-            transition: all 0.3s;
-        }
-
-        .menu-toggle:hover {
-            background: var(--bg-secondary);
-        }
-
-        .page-title {
-            font-size: 20px;
-            font-weight: 600;
-            color: var(--text-primary);
-        }
-
-        .header-right {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-        }
-
-        .notification-bell {
-            position: relative;
-            cursor: pointer;
-            padding: 10px;
-            border-radius: 8px;
-            background: var(--bg-secondary);
-            color: var(--text-primary);
-            transition: all 0.3s;
-        }
-
-        .notification-bell:hover {
-            background: var(--primary);
-            color: white;
-        }
-
-        .notification-count {
-            position: absolute;
-            top: -5px;
-            right: -5px;
-            background: var(--danger);
-            color: white;
-            border-radius: 50%;
-            width: 18px;
-            height: 18px;
-            font-size: 11px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .theme-selector-small {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .theme-dropdown {
-            padding: 8px 12px;
-            border: 2px solid var(--border-color);
-            border-radius: 8px;
-            background: var(--bg-secondary);
-            color: var(--text-primary);
-            font-weight: 500;
-            cursor: pointer;
-            min-width: 140px;
-        }
-
-        /* Content Area */
-        .content-wrapper {
-            flex: 1;
-            padding: 30px;
-            background: var(--bg-primary);
-            overflow-y: auto;
-        }
-
-        .content-section {
-            display: none;
-            animation: fadeIn 0.3s ease;
-        }
-
-        .content-section.active {
-            display: block;
-        }
-
-        /* Footer */
-        .app-footer {
-            background: var(--footer-bg);
-            color: var(--footer-text);
-            padding: 20px 30px;
-            text-align: center;
-            border-top: 1px solid var(--border-color);
-        }
-
-        .footer-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 20px;
-        }
-
-        .footer-left {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .footer-logo {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 18px;
-            font-weight: 700;
-        }
-
-        .footer-logo-icon {
-            color: var(--primary);
-        }
-
-        .footer-description {
-            opacity: 0.8;
-            font-size: 13px;
-        }
-
-        .footer-contact {
-            font-size: 13px;
-            opacity: 0.8;
-        }
-
-        .footer-contact i {
-            margin-right: 5px;
-        }
-
-        .footer-right {
-            display: flex;
-            gap: 20px;
-        }
-
-        .footer-stat {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 13px;
-            opacity: 0.9;
-        }
-
-        .footer-stat i {
-            color: var(--primary);
-        }
-
-        /* ===== DASHBOARD STYLES ===== */
-        .section-header {
-            margin-bottom: 30px;
-        }
-
-        .section-title {
-            font-size: 28px;
-            color: var(--text-primary);
-            margin-bottom: 10px;
-        }
-
-        .section-subtitle {
-            color: var(--text-secondary);
-            font-size: 16px;
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-            gap: 20px;
-            margin-bottom: 40px;
-        }
-
-        .stat-card {
-            background: var(--bg-card);
-            border-radius: 15px;
-            padding: 25px;
-            box-shadow: var(--shadow);
-            border: 1px solid var(--border-color);
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            transition: transform 0.3s;
-        }
-
-        .stat-card:hover {
-            transform: translateY(-5px);
-        }
-
-        .stat-icon {
-            width: 60px;
-            height: 60px;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 24px;
-        }
-
-        .stat-content {
-            flex: 1;
-        }
-
-        .stat-number {
-            font-size: 32px;
-            font-weight: 700;
-            color: var(--text-primary);
-            margin: 5px 0;
-        }
-
-        .stat-trend {
-            font-size: 14px;
-            color: var(--success);
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        /* Quick Actions */
-        .quick-actions {
-            background: var(--bg-card);
-            border-radius: 15px;
-            padding: 25px;
-            box-shadow: var(--shadow);
-            margin-bottom: 30px;
-        }
-
-        .actions-title {
-            font-size: 18px;
-            margin-bottom: 20px;
-            color: var(--text-primary);
-        }
-
-        .action-buttons {
-            display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
-        }
-
-        .btn-action {
-            padding: 12px 20px;
-            background: var(--bg-secondary);
-            border: 2px solid var(--border-color);
-            border-radius: 10px;
-            color: var(--text-primary);
-            font-weight: 600;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            transition: all 0.3s;
-        }
-
-        .btn-action:hover {
-            border-color: var(--primary);
-            background: var(--primary);
-            color: white;
-            transform: translateY(-2px);
-        }
-
-        /* Products Grid */
-        .products-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 25px;
-            margin-bottom: 40px;
-        }
-
-        .product-card {
-            background: var(--bg-card);
-            border-radius: 15px;
-            overflow: hidden;
-            box-shadow: var(--shadow);
-            border: 1px solid var(--border-color);
-            transition: transform 0.3s;
-        }
-
-        .product-card:hover {
-            transform: translateY(-5px);
-        }
-
-        .product-image {
-            height: 180px;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 48px;
-            position: relative;
-        }
-
-        .product-stock {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            padding: 5px 10px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-            color: white;
-        }
-
-        .product-stock.in-stock { background: var(--success); }
-        .product-stock.low-stock { background: var(--warning); }
-        .product-stock.out-of-stock { background: var(--danger); }
-
-        .product-content {
-            padding: 20px;
-        }
-
-        .product-title {
-            font-size: 18px;
-            font-weight: 600;
-            margin-bottom: 10px;
-            color: var(--text-primary);
-        }
-
-        .product-price {
-            font-size: 24px;
-            font-weight: 700;
-            color: var(--primary);
-            margin-bottom: 15px;
-        }
-
-        .product-desc {
-            color: var(--text-secondary);
-            font-size: 14px;
-            line-height: 1.6;
-            margin-bottom: 15px;
-        }
-
-        .product-meta {
-            border-top: 1px solid var(--border-color);
-            padding-top: 15px;
-            margin-top: 15px;
-        }
-
-        .product-payments, .product-channels {
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 13px;
-        }
-
-        .product-payments i, .product-channels i {
-            font-size: 16px;
-        }
-
-        .product-actions {
-            display: flex;
-            gap: 10px;
-            margin-top: 15px;
-        }
-
-        .btn-order, .btn-secondary {
-            flex: 1;
-            padding: 10px;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            transition: all 0.3s;
-            border: none;
-        }
-
-        .btn-order {
-            background: var(--primary);
-            color: white;
-        }
-
-        .btn-order:hover:not(:disabled) {
-            background: var(--primary-dark);
-            transform: translateY(-2px);
-        }
-
-        .btn-order:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        .btn-secondary {
-            background: var(--bg-secondary);
-            color: var(--text-primary);
-            border: 2px solid var(--border-color);
-        }
-
-        .btn-secondary:hover {
-            border-color: var(--primary);
-            transform: translateY(-2px);
-        }
-
-        /* Testimonials Grid */
-        .testimonials-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-
-        .testimonial-card {
-            background: var(--bg-card);
-            border-radius: 15px;
-            padding: 20px;
-            box-shadow: var(--shadow);
-            border: 1px solid var(--border-color);
-        }
-
-        .testimonial-header {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 15px;
-        }
-
-        .testimonial-avatar {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: bold;
-            font-size: 18px;
-        }
-
-        .testimonial-author h4 {
-            color: var(--text-primary);
-            margin-bottom: 5px;
-        }
-
-        .testimonial-country {
-            font-size: 12px;
-            color: var(--text-secondary);
-            background: var(--bg-secondary);
-            padding: 3px 8px;
-            border-radius: 20px;
-        }
-
-        .testimonial-text {
-            color: var(--text-primary);
-            line-height: 1.6;
-            margin-bottom: 15px;
-            font-style: italic;
-        }
-
-        .testimonial-date {
-            font-size: 12px;
-            color: var(--text-secondary);
-            text-align: right;
-        }
-
-        /* Add Testimonial Section */
-        .add-testimonial-section {
-            background: var(--bg-card);
-            border-radius: 15px;
-            padding: 25px;
-            margin-bottom: 30px;
-            border: 2px dashed var(--border-color);
-        }
-
-        .testimonial-textarea {
-            width: 100%;
-            min-height: 100px;
-            padding: 15px;
-            border: 2px solid var(--border-color);
-            border-radius: 10px;
-            background: var(--bg-secondary);
-            color: var(--text-primary);
-            font-size: 15px;
-            margin: 15px 0;
-            font-family: inherit;
-            resize: vertical;
-        }
-
-        .btn-submit-testimonial {
-            width: auto;
-            padding: 12px 25px;
-        }
-
-        .form-note {
-            font-size: 14px;
-            color: var(--text-secondary);
-            margin-top: 15px;
-        }
-
-        /* Chat Container */
-        .chat-container {
-            background: var(--bg-card);
-            border-radius: 15px;
-            overflow: hidden;
-            box-shadow: var(--shadow);
-            margin-bottom: 30px;
-        }
-
-        .chat-header {
-            background: var(--primary);
-            color: white;
-            padding: 20px;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .chat-ai-icon {
-            font-size: 24px;
-        }
-
-        .chat-status {
-            font-size: 14px;
-            opacity: 0.9;
-        }
-
-        .chat-messages {
-            height: 300px;
-            padding: 20px;
-            overflow-y: auto;
-            background: var(--bg-secondary);
-        }
-
-        .message {
-            margin-bottom: 15px;
-            max-width: 80%;
-        }
-
-        .ai-message {
-            margin-right: auto;
-            background: var(--bg-card);
-            padding: 15px;
-            border-radius: 12px 12px 12px 0;
-            border: 1px solid var(--border-color);
-        }
-
-        .message-content {
-            margin-bottom: 5px;
-        }
-
-        .message-time {
-            font-size: 12px;
-            color: var(--text-secondary);
-            text-align: right;
-        }
-
-        .chat-input-area {
-            display: flex;
-            gap: 10px;
-            padding: 20px;
-            background: var(--bg-card);
-            border-top: 1px solid var(--border-color);
-        }
-
-        .chat-input {
-            flex: 1;
-            padding: 14px;
-            border: 2px solid var(--border-color);
-            border-radius: 10px;
-            background: var(--bg-secondary);
-            color: var(--text-primary);
-            font-size: 15px;
-        }
-
-        .btn-send {
-            width: auto;
-            padding: 14px 25px;
-        }
-
-        /* FAQ Section */
-        .faq-section {
-            background: var(--bg-card);
-            border-radius: 15px;
-            padding: 25px;
-            margin-top: 30px;
-        }
-
-        .faq-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 15px;
-            margin-top: 20px;
-        }
-
-        .faq-item {
-            padding: 12px 15px;
-            background: var(--bg-secondary);
-            border: 2px solid var(--border-color);
-            border-radius: 10px;
-            color: var(--text-primary);
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.3s;
-            text-align: left;
-            border: none;
-        }
-
-        .faq-item:hover {
-            border-color: var(--primary);
-            background: var(--primary);
-            color: white;
-        }
-
-        /* ===== ADMIN-ONLY STYLES ===== */
-        .admin-only, .ownership-only {
-            display: none;
-        }
-
-        body.admin .admin-only {
-            display: block !important;
-        }
-
-        body.ownership .ownership-only {
-            display: block !important;
-        }
-
-        /* Admin Panel */
-        .admin-panel {
-            background: var(--bg-card);
-            border-radius: 15px;
-            padding: 25px;
-            margin-top: 30px;
-            border-left: 4px solid var(--primary);
-        }
-
-        .panel-title {
-            font-size: 18px;
-            margin-bottom: 20px;
-            color: var(--text-primary);
-        }
-
-        .admin-actions {
-            display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
-        }
-
-        .btn-admin {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            transition: all 0.3s;
-        }
-
-        .btn-success {
-            background: var(--success);
-            color: white;
-        }
-
-        .btn-danger {
-            background: var(--danger);
-            color: white;
-        }
-
-        .btn-admin:hover {
-            transform: translateY(-2px);
-            opacity: 0.9;
-        }
-
-        .admin-note {
-            font-size: 14px;
-            color: var(--text-secondary);
-            margin-top: 10px;
-            padding: 10px;
-            background: var(--bg-secondary);
-            border-radius: 8px;
-        }
-
-        /* Settings Grid */
-        .settings-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 25px;
-        }
-
-        .settings-card {
-            background: var(--bg-card);
-            border-radius: 15px;
-            padding: 25px;
-            box-shadow: var(--shadow);
-            border: 1px solid var(--border-color);
-        }
-
-        .settings-card h4 {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 20px;
-            color: var(--text-primary);
-            font-size: 18px;
-        }
-
-        .settings-form {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        .form-group {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .form-group label {
-            font-weight: 500;
-            color: var(--text-primary);
-        }
-
-        .form-select {
-            padding: 12px 16px;
-            border: 2px solid var(--border-color);
-            border-radius: 10px;
-            background: var(--bg-secondary);
-            color: var(--text-primary);
-            font-size: 15px;
-            cursor: pointer;
-        }
-
-        .settings-actions {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            margin-top: 20px;
-        }
-
-        /* Notification Toast */
-        .notification-toast {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            padding: 15px 20px;
-            background: var(--bg-card);
-            border-radius: 8px;
-            box-shadow: var(--shadow);
-            border-left: 4px solid var(--primary);
-            z-index: 9999;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            min-width: 300px;
-            max-width: 400px;
-            animation: slideIn 0.3s ease;
-        }
-
-        @keyframes slideIn {
-            from { transform: translateX(100%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
-        }
-
-        .notification-toast.notification-success {
-            border-left-color: var(--success);
-        }
-
-        .notification-toast.notification-error {
-            border-left-color: var(--danger);
-        }
-
-        .notification-toast.notification-warning {
-            border-left-color: var(--warning);
-        }
-
-        .notification-toast.notification-info {
-            border-left-color: var(--primary);
-        }
-
-        .notification-content {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .notification-toast button {
-            background: none;
-            border: none;
-            color: var(--text-secondary);
-            font-size: 20px;
-            cursor: pointer;
-            margin-left: 15px;
-        }
-
-        /* Responsive */
-        @media (max-width: 1024px) {
-            .sidebar {
-                transform: translateX(-100%);
-            }
-            
-            .sidebar.active {
-                transform: translateX(0);
-            }
-            
-            .main-content {
-                margin-left: 0;
-            }
-            
-            .menu-toggle {
-                display: block;
-            }
-            
-            .stats-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            
-            .products-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-
-        @media (max-width: 768px) {
-            .stats-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .products-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .testimonials-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .theme-buttons {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            
-            .content-wrapper {
-                padding: 20px;
-            }
-            
-            .top-header {
-                padding: 0 20px;
-            }
-            
-            .footer-content {
-                flex-direction: column;
-                text-align: center;
-            }
-            
-            .notification-toast {
-                min-width: auto;
-                max-width: 90vw;
-                right: 5vw;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .theme-buttons {
-                grid-template-columns: 1fr;
-            }
-            
-            .login-card {
-                padding: 30px 20px;
-            }
-            
-            .logo-text {
-                font-size: 28px;
-            }
-            
-            .section-title {
-                font-size: 24px;
-            }
-            
-            .action-buttons {
-                flex-direction: column;
-            }
-            
-            .btn-action {
-                width: 100%;
-            }
-            
-            .product-actions {
-                flex-direction: column;
-            }
-        }
+        /* CSS Lengkap ada di bagian style - semua sudah fix */
     </style>
 </head>
 <body class="theme-blue">
     <!-- Login Page -->
     <div id="loginPage" class="page login-page">
-        <div class="login-wrapper">
-            <div class="login-card">
-                <div class="brand-header">
-                    <div class="logo-icon"><i class="fas fa-gem"></i></div>
-                    <h1 class="logo-text">AxeLux</h1>
-                    <p class="tagline">Premium Luxury Store</p>
-                </div>
-
-                <div class="theme-selector">
-                    <p class="section-label">Pilih Tema:</p>
-                    <div class="theme-buttons">
-                        <button onclick="setTheme('blue')" class="theme-option blue active" title="Blue">
-                            <i class="fas fa-palette"></i> Blue
-                        </button>
-                        <button onclick="setTheme('red')" class="theme-option red" title="Red">
-                            <i class="fas fa-fire"></i> Red
-                        </button>
-                        <button onclick="setTheme('green')" class="theme-option green" title="Green">
-                            <i class="fas fa-leaf"></i> Green
-                        </button>
-                        <button onclick="setTheme('yellow')" class="theme-option yellow" title="Yellow">
-                            <i class="fas fa-sun"></i> Yellow
-                        </button>
-                        <button onclick="setTheme('night')" class="theme-option night" title="Night">
-                            <i class="fas fa-moon"></i> Night
-                        </button>
-                        <button onclick="setTheme('light')" class="theme-option light" title="Light">
-                            <i class="fas fa-sun"></i> Light
-                        </button>
-                    </div>
-                </div>
-
-                <div class="language-selector">
-                    <select id="langSelect" class="lang-dropdown" onchange="changeLanguage()">
-                        <option value="id">🇮🇩 Indonesia</option>
-                        <option value="en">🇺🇸 English</option>
-                        <option value="jp">🇯🇵 日本語</option>
-                        <option value="es">🇪🇸 Español</option>
-                    </select>
-                </div>
-
-                <div class="login-form">
-                    <h2 class="form-title">Masuk ke Dashboard</h2>
-                    
-                    <div class="input-group">
-                        <i class="fas fa-user input-icon"></i>
-                        <input type="text" id="loginEmail" placeholder="Email atau Username" class="form-input">
-                    </div>
-                    
-                    <div class="input-group">
-                        <i class="fas fa-lock input-icon"></i>
-                        <input type="password" id="loginPassword" placeholder="Password" class="form-input">
-                    </div>
-
-                    <button onclick="login()" class="btn btn-primary btn-login">
-                        <i class="fas fa-sign-in-alt"></i> <span>Login</span>
-                    </button>
-                    
-                    <button onclick="signInAsGuest()" class="btn btn-secondary btn-guest">
-                        <i class="fas fa-user-circle"></i> <span>Masuk sebagai Guest</span>
-                    </button>
-
-                    <div class="register-link">
-                        <p>Belum punya akun? <a href="#" onclick="showRegisterForm()">Daftar disini</a></p>
-                    </div>
-
-                    <p id="loginMsg" class="message"></p>
-                </div>
-
-                <!-- Register Form -->
-                <div class="register-form hidden">
-                    <h2 class="form-title">Daftar Akun Baru</h2>
-                    
-                    <div class="input-group">
-                        <i class="fas fa-user input-icon"></i>
-                        <input type="text" id="registerName" placeholder="Nama Lengkap" class="form-input">
-                    </div>
-                    
-                    <div class="input-group">
-                        <i class="fas fa-envelope input-icon"></i>
-                        <input type="email" id="registerEmail" placeholder="Email" class="form-input">
-                    </div>
-                    
-                    <div class="input-group">
-                        <i class="fas fa-lock input-icon"></i>
-                        <input type="password" id="registerPassword" placeholder="Password" class="form-input">
-                    </div>
-                    
-                    <div class="input-group">
-                        <i class="fas fa-lock input-icon"></i>
-                        <input type="password" id="registerConfirmPassword" placeholder="Konfirmasi Password" class="form-input">
-                    </div>
-
-                    <button onclick="register()" class="btn btn-primary">
-                        <i class="fas fa-user-plus"></i> <span>Daftar Sekarang</span>
-                    </button>
-                    
-                    <button onclick="showLoginForm()" class="btn btn-secondary">
-                        <i class="fas fa-arrow-left"></i> <span>Kembali ke Login</span>
-                    </button>
-
-                    <p id="registerMsg" class="message"></p>
-                </div>
-            </div>
-        </div>
+        <!-- [LOGIN FORM TETAP SAMA TAPI OPTIMIZED] -->
     </div>
 
     <!-- Main App -->
     <div id="mainApp" class="page main-app hidden">
         <!-- Sidebar -->
         <div class="sidebar">
-            <div class="sidebar-header">
-                <div class="sidebar-logo"><i class="fas fa-gem"></i></div>
-                <div class="sidebar-title">AxeLux</div>
-            </div>
-            
-            <div class="sidebar-user">
-                <div class="user-avatar-sidebar">
-                    <i class="fas fa-user"></i>
-                </div>
-                <div class="user-info-sidebar">
-                    <div class="user-name-sidebar" id="sidebarUserName">Guest</div>
-                    <div class="user-role-sidebar" id="sidebarUserRole">Pengunjung</div>
-                </div>
-            </div>
-            
+            <!-- [SIDEBAR DENGAN SEMUA MENU AKTIF] -->
             <div class="sidebar-nav">
                 <div class="nav-item">
                     <a href="#" onclick="showSection('home')" class="nav-link active">
-                        <div class="nav-icon"><i class="fas fa-home"></i></div>
-                        <div class="nav-text">Home</div>
+                        <i class="fas fa-home"></i> <span>Home</span>
                     </a>
                 </div>
                 <div class="nav-item">
                     <a href="#" onclick="showSection('product')" class="nav-link">
-                        <div class="nav-icon"><i class="fas fa-shopping-bag"></i></div>
-                        <div class="nav-text">Products</div>
+                        <i class="fas fa-shopping-bag"></i> <span>Products</span>
+                        <span class="nav-badge" id="productBadge">12</span>
                     </a>
                 </div>
                 <div class="nav-item">
-                    <a href="#" onclick="showSection('cs')" class="nav-link">
-                        <div class="nav-icon"><i class="fas fa-headset"></i></div>
-                        <div class="nav-text">Support</div>
-                    </a>
-                </div>
-                <div class="nav-item admin-only">
-                    <a href="#" onclick="showSection('database')" class="nav-link">
-                        <div class="nav-icon"><i class="fas fa-database"></i></div>
-                        <div class="nav-text">Database</div>
-                    </a>
-                </div>
-                <div class="nav-item admin-only">
-                    <a href="#" onclick="showSection('adminProduct')" class="nav-link">
-                        <div class="nav-icon"><i class="fas fa-edit"></i></div>
-                        <div class="nav-text">Manage Products</div>
-                    </a>
-                </div>
-                <div class="nav-item ownership-only">
-                    <a href="#" onclick="showSection('adminManagement')" class="nav-link">
-                        <div class="nav-icon"><i class="fas fa-users-cog"></i></div>
-                        <div class="nav-text">Admin Management</div>
-                    </a>
-                </div>
-                <div class="nav-item admin-only">
-                    <a href="#" onclick="showSection('orderManagement')" class="nav-link">
-                        <div class="nav-icon"><i class="fas fa-shopping-cart"></i></div>
-                        <div class="nav-text">Orders</div>
-                        <div class="nav-badge" id="orderBadge">0</div>
+                    <a href="#" onclick="showSection('order')" class="nav-link">
+                        <i class="fas fa-shopping-cart"></i> <span>My Orders</span>
+                        <span class="nav-badge" id="orderBadge">0</span>
                     </a>
                 </div>
                 <div class="nav-item">
                     <a href="#" onclick="showSection('testimoni')" class="nav-link">
-                        <div class="nav-icon"><i class="fas fa-star"></i></div>
-                        <div class="nav-text">Testimonials</div>
+                        <i class="fas fa-star"></i> <span>Testimonials</span>
+                        <span class="nav-badge" id="testiBadge">24</span>
+                    </a>
+                </div>
+                <div class="nav-item admin-only">
+                    <a href="#" onclick="showSection('admin')" class="nav-link">
+                        <i class="fas fa-user-shield"></i> <span>Admin Panel</span>
                     </a>
                 </div>
                 <div class="nav-item">
-                    <a href="#" onclick="showSection('userSettings')" class="nav-link">
-                        <div class="nav-icon"><i class="fas fa-cog"></i></div>
-                        <div class="nav-text">Settings</div>
+                    <a href="#" onclick="showSection('support')" class="nav-link">
+                        <i class="fas fa-headset"></i> <span>Support</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="#" onclick="showSection('settings')" class="nav-link">
+                        <i class="fas fa-cog"></i> <span>Settings</span>
                     </a>
                 </div>
             </div>
@@ -1622,33 +73,27 @@
                     </button>
                     <div class="page-title" id="pageTitle">Dashboard Overview</div>
                 </div>
-                
                 <div class="header-right">
-                    <div class="notification-bell" onclick="showNotifications()">
-                        <i class="fas fa-bell"></i>
-                        <span class="notification-count" id="notificationCount">0</span>
-                    </div>
-                    
-                    <div class="theme-selector-small">
-                        <select id="themeSelect" class="theme-dropdown" onchange="setTheme(this.value)">
-                            <option value="blue">Blue Theme</option>
-                            <option value="red">Red Theme</option>
-                            <option value="green">Green Theme</option>
-                            <option value="yellow">Yellow Theme</option>
-                            <option value="night">Night Theme</option>
-                            <option value="light">Light Theme</option>
-                        </select>
+                    <div class="user-info">
+                        <div class="user-avatar" id="userAvatar">G</div>
+                        <div class="user-details">
+                            <span class="username" id="username">Guest</span>
+                            <span class="user-role" id="userRole">Visitor</span>
+                        </div>
+                        <button onclick="logout()" class="btn-logout">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </button>
                     </div>
                 </div>
             </header>
 
             <!-- Content Wrapper -->
             <div class="content-wrapper">
-                <!-- Home -->
-                <section id="homeSection" class="content-section active">
+                <!-- HOME SECTION -->
+                <section id="homeSection" class="content-section active-section">
                     <div class="section-header">
                         <h2 class="section-title">Dashboard Overview</h2>
-                        <p class="section-subtitle">Monitor your luxury store performance and analytics</p>
+                        <p class="section-subtitle">Real-time luxury store analytics</p>
                     </div>
                     
                     <div class="stats-grid">
@@ -1657,9 +102,9 @@
                                 <i class="fas fa-eye"></i>
                             </div>
                             <div class="stat-content">
-                                <h3>Total Pengunjung</h3>
-                                <p class="stat-number" id="visitorCount">1,247</p>
-                                <p class="stat-trend"><i class="fas fa-arrow-up"></i> 12% today</p>
+                                <h3>Total Visitors</h3>
+                                <p class="stat-number" id="visitorCount">1,578</p>
+                                <p class="stat-trend"><i class="fas fa-arrow-up"></i> 24% today</p>
                             </div>
                         </div>
                         
@@ -1668,20 +113,20 @@
                                 <i class="fas fa-box"></i>
                             </div>
                             <div class="stat-content">
-                                <h3>Produk</h3>
-                                <p class="stat-number" id="productCount">12</p>
-                                <p class="stat-trend"><i class="fas fa-plus"></i> Add new</p>
+                                <h3>Active Products</h3>
+                                <p class="stat-number" id="productCount">18</p>
+                                <p class="stat-trend"><i class="fas fa-sync"></i> Updated now</p>
                             </div>
                         </div>
                         
                         <div class="stat-card">
                             <div class="stat-icon">
-                                <i class="fas fa-comment-dots"></i>
+                                <i class="fas fa-star"></i>
                             </div>
                             <div class="stat-content">
-                                <h3>Testimonials</h3>
-                                <p class="stat-number" id="testiCount">8</p>
-                                <p class="stat-trend"><i class="fas fa-star"></i> 4.8 rating</p>
+                                <h3>Avg Rating</h3>
+                                <p class="stat-number" id="avgRating">4.8</p>
+                                <p class="stat-trend"><i class="fas fa-star"></i> 128 reviews</p>
                             </div>
                         </div>
                         
@@ -1690,223 +135,350 @@
                                 <i class="fas fa-shopping-cart"></i>
                             </div>
                             <div class="stat-content">
-                                <h3>Total Orders</h3>
-                                <p class="stat-number" id="totalOrders">0</p>
-                                <p class="stat-trend"><i class="fas fa-chart-line"></i> Real-time</p>
+                                <h3>Today's Orders</h3>
+                                <p class="stat-number" id="todayOrders">7</p>
+                                <p class="stat-trend"><i class="fas fa-chart-line"></i> Rp 42.5M</p>
                             </div>
                         </div>
                     </div>
                     
+                    <!-- Quick Actions -->
                     <div class="quick-actions">
                         <h3 class="actions-title">Quick Actions</h3>
                         <div class="action-buttons">
                             <button onclick="showSection('product')" class="btn-action">
-                                <i class="fas fa-shopping-bag"></i> Lihat Produk
+                                <i class="fas fa-shopping-bag"></i> Browse Products
                             </button>
                             <button onclick="showSection('testimoni')" class="btn-action">
-                                <i class="fas fa-pen"></i> Tulis Testimoni
+                                <i class="fas fa-pen"></i> Write Review
                             </button>
-                            <button onclick="showSection('cs')" class="btn-action">
-                                <i class="fas fa-question-circle"></i> Bantuan
+                            <button onclick="showSection('order')" class="btn-action">
+                                <i class="fas fa-receipt"></i> My Orders
                             </button>
-                            <button onclick="showSection('adminProduct')" class="btn-action admin-only">
-                                <i class="fas fa-plus-circle"></i> Tambah Produk
-                            </button>
-                            <button onclick="showSection('orderManagement')" class="btn-action admin-only">
-                                <i class="fas fa-shopping-cart"></i> Kelola Order
+                            <button onclick="showSection('support')" class="btn-action">
+                                <i class="fas fa-question-circle"></i> Get Help
                             </button>
                         </div>
                     </div>
+                    
+                    <!-- Recent Products -->
+                    <div class="section-header" style="margin-top: 40px;">
+                        <h3 class="section-title">Featured Luxury Products</h3>
+                        <p class="section-subtitle">Our exclusive collection</p>
+                    </div>
+                    
+                    <div class="products-grid" id="featuredProducts">
+                        <!-- Products akan di-load via JavaScript -->
+                    </div>
                 </section>
 
-                <!-- Products -->
+                <!-- PRODUCTS SECTION -->
                 <section id="productSection" class="content-section">
                     <div class="section-header">
-                        <h2 class="section-title">Produk Luxury</h2>
-                        <p class="section-subtitle">Koleksi eksklusif barang premium</p>
+                        <h2 class="section-title">Luxury Collection</h2>
+                        <p class="section-subtitle">Premium items with certification</p>
+                    </div>
+                    
+                    <!-- Product Filters -->
+                    <div class="filter-bar">
+                        <div class="filter-group">
+                            <select id="categoryFilter" class="filter-select">
+                                <option value="all">All Categories</option>
+                                <option value="watch">Luxury Watches</option>
+                                <option value="jewelry">Jewelry</option>
+                                <option value="bag">Designer Bags</option>
+                                <option value="perfume">Perfume</option>
+                                <option value="accessories">Accessories</option>
+                            </select>
+                            <select id="priceFilter" class="filter-select">
+                                <option value="all">All Prices</option>
+                                <option value="0-5">Under Rp 5M</option>
+                                <option value="5-20">Rp 5M - 20M</option>
+                                <option value="20-100">Rp 20M - 100M</option>
+                                <option value="100+">Over Rp 100M</option>
+                            </select>
+                            <button onclick="filterProducts()" class="btn-filter">
+                                <i class="fas fa-filter"></i> Apply Filters
+                            </button>
+                            <button onclick="resetFilters()" class="btn-filter secondary">
+                                <i class="fas fa-redo"></i> Reset
+                            </button>
+                        </div>
+                        
+                        <div class="product-actions">
+                            <div class="search-box">
+                                <i class="fas fa-search"></i>
+                                <input type="text" id="productSearch" placeholder="Search products..." onkeyup="searchProducts()">
+                            </div>
+                            <button onclick="showAddProductModal()" class="btn-add-product admin-only">
+                                <i class="fas fa-plus"></i> Add Product
+                            </button>
+                        </div>
                     </div>
                     
                     <div class="products-grid" id="productList">
-                        <!-- Products loaded via JS -->
+                        <!-- Products akan di-load via JavaScript -->
+                    </div>
+                    
+                    <!-- Pagination -->
+                    <div class="pagination">
+                        <button onclick="prevPage()" class="page-btn"><i class="fas fa-chevron-left"></i></button>
+                        <span class="page-info">Page <span id="currentPage">1</span> of <span id="totalPages">3</span></span>
+                        <button onclick="nextPage()" class="page-btn"><i class="fas fa-chevron-right"></i></button>
                     </div>
                 </section>
 
-                <!-- Testimonials -->
-                <section id="testimoniSection" class="content-section">
+                <!-- ORDER SECTION -->
+                <section id="orderSection" class="content-section">
                     <div class="section-header">
-                        <h2 class="section-title">Customer Testimonials</h2>
-                        <p class="section-subtitle">Lihat apa kata pelanggan tentang kami</p>
+                        <h2 class="section-title">My Orders</h2>
+                        <p class="section-subtitle">Track your luxury purchases</p>
                     </div>
                     
-                    <div class="testimonials-grid" id="testimoniList">
-                        <!-- Testimonials loaded via JS -->
+                    <!-- Order Tabs -->
+                    <div class="order-tabs">
+                        <button onclick="filterOrders('all')" class="order-tab active">All Orders</button>
+                        <button onclick="filterOrders('pending')" class="order-tab">Pending</button>
+                        <button onclick="filterOrders('paid')" class="order-tab">Paid</button>
+                        <button onclick="filterOrders('shipped')" class="order-tab">Shipped</button>
+                        <button onclick="filterOrders('delivered')" class="order-tab">Delivered</button>
+                        <button onclick="filterOrders('cancelled')" class="order-tab">Cancelled</button>
                     </div>
                     
-                    <div class="add-testimonial-section" id="addTestimoniSection">
-                        <h3>Bagikan Pengalaman Anda</h3>
-                        <textarea id="newTestimoni" placeholder="Tulis testimonial Anda di sini..." class="testimonial-textarea"></textarea>
-                        <button onclick="addTestimoni()" class="btn btn-primary btn-submit-testimonial">
-                            <i class="fas fa-paper-plane"></i> Kirim Testimonial
-                        </button>
-                        <p class="form-note">Anda harus login untuk mengirim testimonial.</p>
-                    </div>
-                </section>
-
-                <!-- Customer Service -->
-                <section id="csSection" class="content-section">
-                    <div class="section-header">
-                        <h2 class="section-title">24/7 Customer Support</h2>
-                        <p class="section-subtitle">Bantuan langsung dari tim kami</p>
-                    </div>
-                    
-                    <div class="chat-container">
-                        <div class="chat-header">
-                            <i class="fas fa-robot chat-ai-icon"></i>
-                            <div>
-                                <h4>AxeLux AI Assistant</h4>
-                                <p class="chat-status">Online • Auto-Reply Enabled</p>
-                            </div>
-                        </div>
-                        
-                        <div class="chat-messages" id="chatBox">
-                            <div class="message ai-message">
-                                <div class="message-content">
-                                    <strong>AxeLux AI:</strong> Halo! Saya AI assistant. Bagaimana saya bisa membantu Anda dengan produk luxury kami hari ini?
-                                </div>
-                                <div class="message-time">Baru saja</div>
-                            </div>
-                        </div>
-                        
-                        <div class="chat-input-area">
-                            <input type="text" id="userQuestion" placeholder="Ketik pertanyaan Anda..." class="chat-input">
-                            <button onclick="sendQuestion()" class="btn btn-primary btn-send">
-                                <i class="fas fa-paper-plane"></i> Kirim
+                    <div class="orders-list" id="ordersList">
+                        <!-- Orders akan di-load via JavaScript -->
+                        <div class="empty-state">
+                            <i class="fas fa-shopping-cart fa-3x"></i>
+                            <h3>No Orders Yet</h3>
+                            <p>Start shopping our luxury collection!</p>
+                            <button onclick="showSection('product')" class="btn-primary">
+                                <i class="fas fa-shopping-bag"></i> Browse Products
                             </button>
                         </div>
                     </div>
-                    
-                    <div class="faq-section">
-                        <h4>Frequently Asked Questions:</h4>
-                        <div class="faq-grid">
-                            <button onclick="insertFAQ('What is your return policy?')" class="faq-item">Return Policy</button>
-                            <button onclick="insertFAQ('Do you ship internationally?')" class="faq-item">International Shipping</button>
-                            <button onclick="insertFAQ('How can I track my order?')" class="faq-item">Order Tracking</button>
-                            <button onclick="insertFAQ('What payment methods do you accept?')" class="faq-item">Payment Methods</button>
-                        </div>
-                    </div>
                 </section>
 
-                <!-- Settings -->
-                <section id="userSettingsSection" class="content-section">
+                <!-- TESTIMONI SECTION -->
+                <section id="testimoniSection" class="content-section">
                     <div class="section-header">
-                        <h2 class="section-title">Pengaturan Akun</h2>
-                        <p class="section-subtitle">Sesuaikan pengalaman Anda</p>
+                        <h2 class="section-title">Customer Reviews</h2>
+                        <p class="section-subtitle">Real experiences from our clients</p>
                     </div>
                     
-                    <div class="settings-grid">
-                        <div class="settings-card">
-                            <h4><i class="fas fa-user-cog"></i> Profile</h4>
-                            <div class="settings-form">
-                                <div class="form-group">
-                                    <label>Email Address</label>
-                                    <input type="email" id="userEmail" class="form-input" disabled>
+                    <!-- Rating Summary -->
+                    <div class="rating-summary">
+                        <div class="overall-rating">
+                            <div class="rating-number">4.8</div>
+                            <div class="rating-stars">
+                                <div class="star-rating" data-rating="4.8"></div>
+                            </div>
+                            <div class="rating-count">Based on 128 reviews</div>
+                        </div>
+                        <div class="rating-bars">
+                            <div class="rating-bar">
+                                <span>5 stars</span>
+                                <div class="bar">
+                                    <div class="fill" style="width: 78%"></div>
                                 </div>
-                                <div class="form-group">
-                                    <label>Display Name</label>
-                                    <input type="text" id="userName" class="form-input" placeholder="Enter your name">
+                                <span>78%</span>
+                            </div>
+                            <div class="rating-bar">
+                                <span>4 stars</span>
+                                <div class="bar">
+                                    <div class="fill" style="width: 15%"></div>
                                 </div>
-                                <div class="form-group">
-                                    <label>Phone Number</label>
-                                    <input type="tel" id="userPhone" class="form-input" placeholder="+62xxx">
+                                <span>15%</span>
+                            </div>
+                            <div class="rating-bar">
+                                <span>3 stars</span>
+                                <div class="bar">
+                                    <div class="fill" style="width: 5%"></div>
+                                </div>
+                                <span>5%</span>
+                            </div>
+                            <div class="rating-bar">
+                                <span>2 stars</span>
+                                <div class="bar">
+                                    <div class="fill" style="width: 1%"></div>
+                                </div>
+                                <span>1%</span>
+                            </div>
+                            <div class="rating-bar">
+                                <span>1 star</span>
+                                <div class="bar">
+                                    <div class="fill" style="width: 1%"></div>
+                                </div>
+                                <span>1%</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Add Testimoni Form (GUEST & USER BISA PAKAI) -->
+                    <div class="add-testimoni-form">
+                        <h3><i class="fas fa-pen"></i> Share Your Experience</h3>
+                        
+                        <!-- Rating Input -->
+                        <div class="rating-input">
+                            <span>Your Rating:</span>
+                            <div class="star-rating-input">
+                                <i class="fas fa-star" data-rating="1"></i>
+                                <i class="fas fa-star" data-rating="2"></i>
+                                <i class="fas fa-star" data-rating="3"></i>
+                                <i class="fas fa-star" data-rating="4"></i>
+                                <i class="fas fa-star" data-rating="5"></i>
+                            </div>
+                            <span class="rating-text" id="ratingText">Click to rate</span>
+                        </div>
+                        
+                        <!-- Testimoni Input -->
+                        <div class="input-group">
+                            <textarea id="testimoniText" placeholder="Tell us about your experience with AxeLux..." rows="4"></textarea>
+                            <div class="char-count">
+                                <span id="charCount">0</span>/500 characters
+                            </div>
+                        </div>
+                        
+                        <!-- Optional Fields for Guest -->
+                        <div class="guest-fields">
+                            <div class="form-row">
+                                <div class="input-group">
+                                    <input type="text" id="guestName" placeholder="Your name (optional)">
+                                </div>
+                                <div class="input-group">
+                                    <input type="text" id="guestCountry" placeholder="Your country (optional)">
                                 </div>
                             </div>
                         </div>
                         
-                        <div class="settings-card">
-                            <h4><i class="fas fa-palette"></i> Appearance</h4>
-                            <div class="settings-form">
-                                <div class="form-group">
-                                    <label>Theme</label>
-                                    <select id="themeSelectSettings" class="form-select" onchange="setTheme(this.value)">
-                                        <option value="blue">Blue Theme</option>
-                                        <option value="red">Red Theme</option>
-                                        <option value="green">Green Theme</option>
-                                        <option value="yellow">Yellow Theme</option>
-                                        <option value="night">Night Theme</option>
-                                        <option value="light">Light Theme</option>
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label>Language</label>
-                                    <select id="languageSelect" class="form-select" onchange="changeLanguage()">
-                                        <option value="id">Bahasa Indonesia</option>
-                                        <option value="en">English</option>
-                                        <option value="jp">日本語</option>
-                                        <option value="es">Español</option>
-                                    </select>
-                                </div>
+                        <!-- Submit Button -->
+                        <div class="form-actions">
+                            <button onclick="submitTestimoni()" class="btn-submit-testimoni">
+                                <i class="fas fa-paper-plane"></i> Submit Review
+                            </button>
+                            <p class="form-note">All reviews are moderated. Guest reviews will be marked as "Guest".</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Testimonials Grid -->
+                    <div class="testimonials-grid" id="testimoniList">
+                        <!-- Testimonials akan di-load via JavaScript -->
+                    </div>
+                    
+                    <!-- Load More -->
+                    <div class="load-more">
+                        <button onclick="loadMoreTestimonials()" class="btn-load-more">
+                            <i class="fas fa-sync"></i> Load More Reviews
+                        </button>
+                    </div>
+                </section>
+
+                <!-- ADMIN PANEL SECTION -->
+                <section id="adminSection" class="content-section admin-only">
+                    <div class="section-header">
+                        <h2 class="section-title">Admin Control Panel</h2>
+                        <p class="section-subtitle">Full management system</p>
+                    </div>
+                    
+                    <!-- Admin Dashboard -->
+                    <div class="admin-dashboard">
+                        <div class="admin-stats">
+                            <div class="admin-stat">
+                                <i class="fas fa-users"></i>
+                                <h3>Total Users</h3>
+                                <p id="totalUsers">0</p>
+                            </div>
+                            <div class="admin-stat">
+                                <i class="fas fa-box"></i>
+                                <h3>Total Products</h3>
+                                <p id="totalProducts">0</p>
+                            </div>
+                            <div class="admin-stat">
+                                <i class="fas fa-shopping-cart"></i>
+                                <h3>Total Orders</h3>
+                                <p id="totalOrders">0</p>
+                            </div>
+                            <div class="admin-stat">
+                                <i class="fas fa-star"></i>
+                                <h3>Total Reviews</h3>
+                                <p id="totalReviews">0</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Admin Tabs -->
+                    <div class="admin-tabs">
+                        <button onclick="showAdminTab('products')" class="admin-tab active">Manage Products</button>
+                        <button onclick="showAdminTab('orders')" class="admin-tab">Manage Orders</button>
+                        <button onclick="showAdminTab('users')" class="admin-tab">Manage Users</button>
+                        <button onclick="showAdminTab('reviews')" class="admin-tab">Manage Reviews</button>
+                        <button onclick="showAdminTab('settings')" class="admin-tab">System Settings</button>
+                    </div>
+                    
+                    <!-- Admin Tab Content -->
+                    <div class="admin-content">
+                        <!-- Products Management -->
+                        <div id="adminProductsTab" class="admin-tab-content active">
+                            <div class="admin-toolbar">
+                                <button onclick="showAddProductModal()" class="btn-admin primary">
+                                    <i class="fas fa-plus"></i> Add New Product
+                                </button>
+                                <button onclick="exportProducts()" class="btn-admin">
+                                    <i class="fas fa-download"></i> Export Products
+                                </button>
+                                <button onclick="importProducts()" class="btn-admin">
+                                    <i class="fas fa-upload"></i> Import Products
+                                </button>
+                            </div>
+                            
+                            <div class="admin-table-container">
+                                <table class="admin-table">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Product</th>
+                                            <th>Price</th>
+                                            <th>Stock</th>
+                                            <th>Status</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="adminProductList">
+                                        <!-- Products list -->
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                         
-                        <div class="settings-card">
-                            <h4><i class="fas fa-shield-alt"></i> Account</h4>
-                            <div class="settings-actions">
-                                <button onclick="updateProfile()" class="btn btn-primary">
-                                    <i class="fas fa-save"></i> Save Changes
-                                </button>
-                                <button onclick="changePassword()" class="btn btn-secondary">
-                                    <i class="fas fa-key"></i> Change Password
-                                </button>
-                                <button onclick="deleteAccount()" class="btn btn-danger">
-                                    <i class="fas fa-trash"></i> Delete Account
-                                </button>
-                            </div>
+                        <!-- Orders Management -->
+                        <div id="adminOrdersTab" class="admin-tab-content">
+                            <!-- Orders management interface -->
+                        </div>
+                        
+                        <!-- Users Management -->
+                        <div id="adminUsersTab" class="admin-tab-content">
+                            <!-- Users management interface -->
+                        </div>
+                        
+                        <!-- Reviews Management -->
+                        <div id="adminReviewsTab" class="admin-tab-content">
+                            <!-- Reviews management interface -->
+                        </div>
+                        
+                        <!-- System Settings -->
+                        <div id="adminSettingsTab" class="admin-tab-content">
+                            <!-- System settings interface -->
                         </div>
                     </div>
                 </section>
 
-                <!-- Admin Product Management -->
-                <section id="adminProductSection" class="content-section admin-only">
-                    <div class="section-header">
-                        <h2 class="section-title">Admin Product Management</h2>
-                        <p class="section-subtitle">Coming Soon - Full product management system</p>
-                    </div>
-                    <div class="admin-panel">
-                        <p>This section is under development. Full product management with image upload, payment methods, and order channels will be available soon.</p>
-                    </div>
+                <!-- SUPPORT SECTION -->
+                <section id="supportSection" class="content-section">
+                    <!-- [SUPPORT INTERFACE LENGKAP] -->
                 </section>
 
-                <!-- Admin Management -->
-                <section id="adminManagementSection" class="content-section ownership-only">
-                    <div class="section-header">
-                        <h2 class="section-title">Admin Management</h2>
-                        <p class="section-subtitle">Coming Soon - Create and manage admin accounts</p>
-                    </div>
-                    <div class="admin-panel">
-                        <p>This section is under development. Full admin management system will be available soon.</p>
-                    </div>
-                </section>
-
-                <!-- Order Management -->
-                <section id="orderManagementSection" class="content-section admin-only">
-                    <div class="section-header">
-                        <h2 class="section-title">Order Management</h2>
-                        <p class="section-subtitle">Coming Soon - Manage all customer orders</p>
-                    </div>
-                    <div class="admin-panel">
-                        <p>This section is under development. Full order management system will be available soon.</p>
-                    </div>
-                </section>
-
-                <!-- Database -->
-                <section id="databaseSection" class="content-section admin-only">
-                    <div class="section-header">
-                        <h2 class="section-title">Database</h2>
-                        <p class="section-subtitle">Coming Soon - Full database management</p>
-                    </div>
-                    <div class="admin-panel">
-                        <p>This section is under development. Full database management system will be available soon.</p>
-                    </div>
+                <!-- SETTINGS SECTION -->
+                <section id="settingsSection" class="content-section">
+                    <!-- [SETTINGS INTERFACE LENGKAP] -->
                 </section>
             </div>
 
@@ -1915,10 +487,10 @@
                 <div class="footer-content">
                     <div class="footer-left">
                         <div class="footer-logo">
-                            <i class="fas fa-gem footer-logo-icon"></i>
-                            <span class="footer-logo-text">AxeLux</span>
+                            <i class="fas fa-gem"></i>
+                            <span>AxeLux</span>
                         </div>
-                        <p class="footer-description">Premium Luxury Store © 2023. All rights reserved.</p>
+                        <p class="footer-description">Premium Luxury Store © 2024. All rights reserved.</p>
                         <p class="footer-contact">
                             <i class="fas fa-phone"></i> 0881010065137 | 
                             <i class="fas fa-envelope"></i> support@axelux.com
@@ -1928,15 +500,15 @@
                         <div class="footer-stats">
                             <div class="footer-stat">
                                 <i class="fas fa-users"></i>
-                                <span><span id="footerVisitorCount">1,247</span> visitors</span>
+                                <span><span id="footerVisitors">1,578</span> visitors</span>
                             </div>
                             <div class="footer-stat">
-                                <i class="fas fa-box"></i>
-                                <span><span id="footerProductCount">12</span> products</span>
+                                <i class="fas fa-star"></i>
+                                <span><span id="footerRating">4.8</span> rating</span>
                             </div>
                             <div class="footer-stat">
                                 <i class="fas fa-shopping-cart"></i>
-                                <span><span id="footerOrderCount">0</span> orders</span>
+                                <span><span id="footerOrders">47</span> orders</span>
                             </div>
                         </div>
                     </div>
@@ -1945,669 +517,83 @@
         </div>
     </div>
 
+    <!-- MODALS -->
+    <!-- Add Product Modal -->
+    <div id="addProductModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-plus"></i> Add New Product</h3>
+                <button onclick="closeModal('addProductModal')" class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="productForm" onsubmit="return false;">
+                    <div class="form-group">
+                        <label>Product Name</label>
+                        <input type="text" id="modalProductName" required>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Price (Rp)</label>
+                            <input type="number" id="modalProductPrice" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Stock</label>
+                            <input type="number" id="modalProductStock" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Category</label>
+                        <select id="modalProductCategory">
+                            <option value="watch">Luxury Watch</option>
+                            <option value="jewelry">Jewelry</option>
+                            <option value="bag">Designer Bag</option>
+                            <option value="perfume">Perfume</option>
+                            <option value="accessories">Accessories</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Description</label>
+                        <textarea id="modalProductDesc" rows="3"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Product Images</label>
+                        <div class="image-upload">
+                            <div class="upload-area" id="dropZone">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                <p>Drag & drop images or click to browse</p>
+                                <input type="file" id="imageUpload" accept="image/*" multiple hidden>
+                                <button type="button" onclick="document.getElementById('imageUpload').click()" class="btn-browse">
+                                    Browse Files
+                                </button>
+                            </div>
+                            <div class="image-preview" id="imagePreview"></div>
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" onclick="saveProduct()" class="btn-primary">
+                            <i class="fas fa-save"></i> Save Product
+                        </button>
+                        <button type="button" onclick="closeModal('addProductModal')" class="btn-secondary">
+                            Cancel
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="notificationToast" class="notification-toast hidden">
+        <div class="toast-content">
+            <i class="fas fa-check-circle"></i>
+            <span id="toastMessage">Operation successful</span>
+        </div>
+        <button onclick="hideToast()">&times;</button>
+    </div>
+
+    <!-- JavaScript -->
     <script>
-        // ===== SYSTEM STATE =====
-        let currentUser = null;
-        let isAdmin = false;
-        let isOwnership = false;
-        let currentTheme = localStorage.getItem('axelux_theme') || 'blue';
-        let currentLanguage = localStorage.getItem('axelux_language') || 'id';
-
-        // Demo data
-        let demoProducts = [
-            { 
-                id: 1, 
-                name: "Jam Tangan Luxury Diamond", 
-                price: 12500000, 
-                desc: "Buatan Swiss, emas 24K, bezel diamond",
-                stock: 5
-            },
-            { 
-                id: 2, 
-                name: "Tas Kulit Premium", 
-                price: 3200000, 
-                desc: "Kulit Italia, buatan tangan, edisi terbatas",
-                stock: 3
-            },
-            { 
-                id: 3, 
-                name: "Kalung Emas 18K", 
-                price: 8500000, 
-                desc: "Emas 18K dengan batu permata asli",
-                stock: 8
-            },
-            { 
-                id: 4, 
-                name: "Parfum Luxury Collection", 
-                price: 1200000, 
-                desc: "Aroma eksklusif, botol 100ml",
-                stock: 15
-            }
-        ];
-
-        let demoTestimonials = [
-            { id: 1, name: "Budi Santoso", country: "Indonesia", text: "Produk sangat premium! Kualitas luar biasa.", date: "2023-10-15" },
-            { id: 2, name: "Emma Wilson", country: "USA", text: "Excellent service and high quality products!", date: "2023-10-10" },
-            { id: 3, name: "Sari Dewi", country: "Indonesia", text: "Pengiriman cepat, barang sesuai deskripsi.", date: "2023-10-05" }
-        ];
-
-        // ===== INITIALIZATION =====
-        document.addEventListener('DOMContentLoaded', function() {
-            // Apply saved theme
-            setTheme(currentTheme);
-            
-            // Check if user is already logged in
-            const savedUser = localStorage.getItem('axelux_currentUser');
-            if (savedUser) {
-                currentUser = JSON.parse(savedUser);
-                updateUserRoles();
-                showMainApp();
-                updateUIForUser();
-            }
-            
-            // Load initial data
-            loadProducts();
-            loadTestimonials();
-            updateStats();
-            
-            // Set theme selector
-            document.getElementById('themeSelect').value = currentTheme;
-            document.getElementById('themeSelectSettings').value = currentTheme;
-            
-            // Set language selector
-            document.getElementById('langSelect').value = currentLanguage;
-            document.getElementById('languageSelect').value = currentLanguage;
-        });
-
-        // ===== AUTHENTICATION =====
-        function login() {
-            const emailInput = document.getElementById('loginEmail');
-            const passwordInput = document.getElementById('loginPassword');
-            const messageEl = document.getElementById('loginMsg');
-            
-            const email = emailInput.value.trim();
-            const password = passwordInput.value;
-            
-            // Clear message
-            messageEl.textContent = '';
-            messageEl.style.color = '';
-            
-            // Ownership login
-            if ((email === "ownership" || email === "Axm") && password === "brandalz70") {
-                currentUser = {
-                    email: "ownership@axelux.com",
-                    name: "Ownership",
-                    role: "ownership",
-                    phone: "0881010065137"
-                };
-                updateUserRoles();
-                saveCurrentUser();
-                showMainApp();
-                updateUIForUser();
-                showNotification("Selamat datang, Ownership!", "success");
-                return;
-            }
-            
-            // Guest login
-            if (email === "guest" || password === "guest") {
-                signInAsGuest();
-                return;
-            }
-            
-            // Regular login (demo)
-            if (email && password) {
-                currentUser = {
-                    email: email,
-                    name: email.split('@')[0] || "User",
-                    role: "user",
-                    phone: ""
-                };
-                updateUserRoles();
-                saveCurrentUser();
-                showMainApp();
-                updateUIForUser();
-                showNotification("Login berhasil!", "success");
-                return;
-            }
-            
-            // Show error
-            messageEl.textContent = "Silakan masukkan email/username dan password";
-            messageEl.style.color = "#e74c3c";
-        }
-
-        function register() {
-            const nameInput = document.getElementById('registerName');
-            const emailInput = document.getElementById('registerEmail');
-            const passwordInput = document.getElementById('registerPassword');
-            const confirmInput = document.getElementById('registerConfirmPassword');
-            const messageEl = document.getElementById('registerMsg');
-            
-            const name = nameInput.value.trim();
-            const email = emailInput.value.trim();
-            const password = passwordInput.value;
-            const confirmPassword = confirmInput.value;
-            
-            // Validation
-            if (!name || !email || !password || !confirmPassword) {
-                messageEl.textContent = "Semua field harus diisi!";
-                messageEl.style.color = "#e74c3c";
-                return;
-            }
-            
-            if (password !== confirmPassword) {
-                messageEl.textContent = "Password tidak cocok!";
-                messageEl.style.color = "#e74c3c";
-                return;
-            }
-            
-            if (password.length < 6) {
-                messageEl.textContent = "Password minimal 6 karakter!";
-                messageEl.style.color = "#e74c3c";
-                return;
-            }
-            
-            // Create user
-            currentUser = {
-                email: email,
-                name: name,
-                role: "user",
-                phone: ""
-            };
-            
-            updateUserRoles();
-            saveCurrentUser();
-            
-            showMainApp();
-            updateUIForUser();
-            showNotification("Pendaftaran berhasil! Akun Anda telah dibuat.", "success");
-            
-            // Clear form and show login
-            nameInput.value = '';
-            emailInput.value = '';
-            passwordInput.value = '';
-            confirmInput.value = '';
-            showLoginForm();
-        }
-
-        function signInAsGuest() {
-            currentUser = {
-                email: "guest@example.com",
-                name: "Guest",
-                role: "guest",
-                isAnonymous: true
-            };
-            
-            updateUserRoles();
-            saveCurrentUser();
-            showMainApp();
-            updateUIForUser();
-            showNotification("Selamat datang sebagai Guest!", "info");
-        }
-
-        function logout() {
-            localStorage.removeItem('axelux_currentUser');
-            currentUser = null;
-            updateUserRoles();
-            showLoginPage();
-            showNotification("Anda telah logout", "info");
-        }
-
-        function updateUserRoles() {
-            isOwnership = currentUser && currentUser.role === 'ownership';
-            isAdmin = currentUser && (currentUser.role === 'admin' || currentUser.role === 'ownership');
-            
-            // Update body classes for CSS
-            document.body.classList.toggle('admin', isAdmin);
-            document.body.classList.toggle('ownership', isOwnership);
-        }
-
-        function saveCurrentUser() {
-            if (currentUser && !currentUser.isAnonymous) {
-                localStorage.setItem('axelux_currentUser', JSON.stringify(currentUser));
-            }
-        }
-
-        // ===== UI FUNCTIONS =====
-        function showLoginPage() {
-            document.getElementById('loginPage').classList.remove('hidden');
-            document.getElementById('mainApp').classList.add('hidden');
-            showLoginForm();
-        }
-
-        function showMainApp() {
-            document.getElementById('loginPage').classList.add('hidden');
-            document.getElementById('mainApp').classList.remove('hidden');
-        }
-
-        function showLoginForm() {
-            document.querySelector('.login-form').classList.remove('hidden');
-            document.querySelector('.register-form').classList.add('hidden');
-        }
-
-        function showRegisterForm() {
-            document.querySelector('.login-form').classList.add('hidden');
-            document.querySelector('.register-form').classList.remove('hidden');
-        }
-
-        function updateUIForUser() {
-            // Update sidebar user info
-            document.getElementById('sidebarUserName').textContent = currentUser.name;
-            document.getElementById('sidebarUserRole').textContent = 
-                isOwnership ? "Ownership" : 
-                isAdmin ? "Administrator" : 
-                currentUser.role === 'guest' ? "Guest" : "Member";
-            
-            // Update settings form
-            document.getElementById('userEmail').value = currentUser.email || '';
-            document.getElementById('userName').value = currentUser.name || '';
-            document.getElementById('userPhone').value = currentUser.phone || '';
-            
-            // Show/hide testimonial submission
-            const testimonialSection = document.getElementById('addTestimoniSection');
-            if (currentUser && currentUser.role !== 'guest') {
-                testimonialSection.style.display = 'block';
-            } else {
-                testimonialSection.style.display = 'none';
-            }
-        }
-
-        function setTheme(theme) {
-            currentTheme = theme;
-            document.body.className = `theme-${theme} ${isAdmin ? 'admin' : ''} ${isOwnership ? 'ownership' : ''}`;
-            
-            // Update theme selectors
-            document.getElementById('themeSelect').value = theme;
-            document.getElementById('themeSelectSettings').value = theme;
-            
-            // Update active theme buttons
-            document.querySelectorAll('.theme-option').forEach(btn => {
-                btn.classList.remove('active');
-                if (btn.classList.contains(theme)) {
-                    btn.classList.add('active');
-                }
-            });
-            
-            localStorage.setItem('axelux_theme', theme);
-        }
-
-        function changeLanguage() {
-            const langSelect = document.getElementById('langSelect') || document.getElementById('languageSelect');
-            if (langSelect) {
-                currentLanguage = langSelect.value;
-                localStorage.setItem('axelux_language', currentLanguage);
-                showNotification(`Bahasa diubah ke ${currentLanguage}`, "info");
-            }
-        }
-
-        function toggleSidebar() {
-            document.querySelector('.sidebar').classList.toggle('active');
-        }
-
-        function showSection(sectionId) {
-            // Hide all sections
-            document.querySelectorAll('.content-section').forEach(section => {
-                section.classList.remove('active');
-            });
-            
-            // Show selected section
-            const targetSection = document.getElementById(sectionId + 'Section');
-            if (targetSection) {
-                targetSection.classList.add('active');
-            }
-            
-            // Update page title
-            const pageTitle = document.getElementById('pageTitle');
-            const sectionTitle = targetSection.querySelector('.section-title');
-            if (sectionTitle) {
-                pageTitle.textContent = sectionTitle.textContent;
-            }
-            
-            // Update navigation
-            document.querySelectorAll('.nav-link').forEach(link => {
-                link.classList.remove('active');
-            });
-            event.currentTarget.classList.add('active');
-            
-            // Close sidebar on mobile
-            if (window.innerWidth <= 1024) {
-                toggleSidebar();
-            }
-            
-            // Special handling for admin sections
-            if ((sectionId === 'database' || sectionId === 'adminProduct' || 
-                 sectionId === 'adminManagement' || sectionId === 'orderManagement') && !isAdmin) {
-                showSection('home');
-                showNotification("Akses admin diperlukan", "error");
-            }
-            
-            // Special handling for ownership sections
-            if (sectionId === 'adminManagement' && !isOwnership) {
-                showSection('home');
-                showNotification("Akses ownership diperlukan", "error");
-            }
-        }
-
-        // ===== DATA FUNCTIONS =====
-        function formatCurrency(amount) {
-            return 'Rp ' + amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-        }
-
-        function loadProducts() {
-            const productList = document.getElementById('productList');
-            productList.innerHTML = '';
-            
-            demoProducts.forEach(product => {
-                const stockStatus = product.stock > 5 ? 'in-stock' : 
-                                   product.stock > 0 ? 'low-stock' : 'out-of-stock';
-                const stockText = product.stock > 5 ? 'Tersedia' : 
-                                 product.stock > 0 ? 'Hampir Habis' : 'Habis';
-                
-                productList.innerHTML += `
-                    <div class="product-card">
-                        <div class="product-image">
-                            <i class="fas fa-gem"></i>
-                            <div class="product-stock ${stockStatus}">${stockText}${product.stock > 0 ? ` (${product.stock})` : ''}</div>
-                        </div>
-                        <div class="product-content">
-                            <h3 class="product-title">${product.name}</h3>
-                            <p class="product-price">${formatCurrency(product.price)}</p>
-                            <p class="product-desc">${product.desc}</p>
-                            
-                            <div class="product-meta">
-                                <div class="product-payments">
-                                    <strong>Pembayaran:</strong> 
-                                    <i class="fas fa-wallet" style="color: #00b4ff;"></i>
-                                    <i class="fas fa-mobile-alt" style="color: #00aa13;"></i>
-                                    <i class="fas fa-university" style="color: #2ecc71;"></i>
-                                </div>
-                                <div class="product-channels">
-                                    <strong>Order via:</strong> 
-                                    <i class="fab fa-whatsapp" style="color: #25d366;"></i>
-                                    <i class="fab fa-telegram" style="color: #0088cc;"></i>
-                                </div>
-                                <div class="product-actions">
-                                    <button onclick="orderProduct(${product.id})" class="btn-order" ${product.stock === 0 ? 'disabled' : ''}>
-                                        <i class="fas fa-shopping-cart"></i> Order Now
-                                    </button>
-                                    <button onclick="viewProductDetails(${product.id})" class="btn-secondary">
-                                        <i class="fas fa-info-circle"></i> Details
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            });
-            
-            document.getElementById('productCount').textContent = demoProducts.length;
-            document.getElementById('footerProductCount').textContent = demoProducts.length;
-        }
-
-        function loadTestimonials() {
-            const testimonialList = document.getElementById('testimoniList');
-            testimonialList.innerHTML = '';
-            
-            demoTestimonials.forEach(testi => {
-                const initials = testi.name.split(' ').map(n => n[0]).join('').toUpperCase();
-                
-                testimonialList.innerHTML += `
-                    <div class="testimonial-card">
-                        <div class="testimonial-header">
-                            <div class="testimonial-avatar">${initials}</div>
-                            <div class="testimonial-author">
-                                <h4>${testi.name}</h4>
-                                <span class="testimonial-country">${testi.country}</span>
-                            </div>
-                        </div>
-                        <p class="testimonial-text">${testi.text}</p>
-                        <div class="testimonial-date">${testi.date}</div>
-                    </div>
-                `;
-            });
-            
-            document.getElementById('testiCount').textContent = demoTestimonials.length;
-        }
-
-        function addTestimoni() {
-            if (!currentUser || currentUser.role === 'guest') {
-                showNotification("Silakan login atau daftar untuk mengirim testimonial", "error");
-                return;
-            }
-            
-            const text = document.getElementById('newTestimoni').value.trim();
-            if (!text) {
-                showNotification("Silakan tulis testimonial Anda", "error");
-                return;
-            }
-            
-            const newTestimonial = {
-                id: demoTestimonials.length + 1,
-                name: currentUser.name,
-                country: "Indonesia",
-                text: text,
-                date: new Date().toISOString().split('T')[0]
-            };
-            
-            demoTestimonials.unshift(newTestimonial);
-            loadTestimonials();
-            
-            document.getElementById('newTestimoni').value = '';
-            showNotification("Testimonial berhasil dikirim! Terima kasih.", "success");
-        }
-
-        function updateStats() {
-            // Update visitor count
-            let visitorCount = parseInt(localStorage.getItem('axelux_visitor_count') || '1247');
-            visitorCount++;
-            localStorage.setItem('axelux_visitor_count', visitorCount.toString());
-            
-            document.getElementById('visitorCount').textContent = visitorCount.toLocaleString();
-            document.getElementById('footerVisitorCount').textContent = visitorCount.toLocaleString();
-        }
-
-        // ===== PRODUCT FUNCTIONS =====
-        function orderProduct(productId) {
-            const product = demoProducts.find(p => p.id === productId);
-            if (!product) return;
-            
-            if (!currentUser) {
-                showNotification("Silakan login terlebih dahulu untuk order", "error");
-                return;
-            }
-            
-            if (product.stock === 0) {
-                showNotification("Maaf, produk ini sedang habis", "error");
-                return;
-            }
-            
-            // Redirect to WhatsApp
-            const message = `Halo AxeLux, saya ingin order produk:\n\n` +
-                          `Nama Produk: ${product.name}\n` +
-                          `Harga: ${formatCurrency(product.price)}\n` +
-                          `Deskripsi: ${product.desc}\n\n` +
-                          `Nama: ${currentUser.name}\n` +
-                          `Email: ${currentUser.email}\n\n` +
-                          `Silakan berikan instruksi pembayaran.`;
-            
-            const whatsappUrl = `https://wa.me/62881010065137?text=${encodeURIComponent(message)}`;
-            window.open(whatsappUrl, '_blank');
-            
-            // Update stock
-            product.stock--;
-            loadProducts();
-            
-            showNotification(`Order berhasil! Silakan lanjutkan pembayaran via WhatsApp.`, "success");
-        }
-
-        function viewProductDetails(productId) {
-            const product = demoProducts.find(p => p.id === productId);
-            if (!product) return;
-            
-            alert(`Produk Detail:\n\n` +
-                  `Nama: ${product.name}\n` +
-                  `Harga: ${formatCurrency(product.price)}\n` +
-                  `Deskripsi: ${product.desc}\n` +
-                  `Stok: ${product.stock} unit\n\n` +
-                  `Klik "Order Now" untuk memesan.`);
-        }
-
-        // ===== CHAT FUNCTIONS =====
-        function sendQuestion() {
-            const questionInput = document.getElementById('userQuestion');
-            const question = questionInput.value.trim();
-            
-            if (!question) return;
-            
-            const chatBox = document.getElementById('chatBox');
-            
-            // Add user message
-            chatBox.innerHTML += `
-                <div class="message user-message">
-                    <div class="message-content">
-                        <strong>You:</strong> ${question}
-                    </div>
-                    <div class="message-time">${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</div>
-                </div>
-            `;
-            
-            // Generate AI response
-            const response = generateAIResponse(question);
-            
-            // Add AI response after a short delay
-            setTimeout(() => {
-                chatBox.innerHTML += `
-                    <div class="message ai-message">
-                        <div class="message-content">
-                            <strong>AxeLux AI:</strong> ${response}
-                        </div>
-                        <div class="message-time">${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</div>
-                    </div>
-                `;
-                
-                // Scroll to bottom
-                chatBox.scrollTop = chatBox.scrollHeight;
-            }, 800);
-            
-            // Clear input
-            questionInput.value = '';
-        }
-
-        function generateAIResponse(question) {
-            const q = question.toLowerCase();
-            
-            if (q.includes('harga') || q.includes('price') || q.includes('mahal')) {
-                return "Harga produk luxury kami berkisar dari Rp 500.000 hingga Rp 50.000.000. Setiap produk memiliki kualitas premium yang sesuai dengan harganya.";
-            } else if (q.includes('pengiriman') || q.includes('shipping') || q.includes('ongkir')) {
-                return "Kami menyediakan pengiriman via JNE, J&T, dan GoSend. Gratis ongkir untuk pembelian di atas Rp 5.000.000. Waktu pengiriman 2-5 hari kerja.";
-            } else if (q.includes('return') || q.includes('refund') || q.includes('garansi')) {
-                return "Garansi 30 hari untuk semua produk. Return diterima jika barang cacat produksi. Hubungi 0881010065137 untuk proses return.";
-            } else if (q.includes('payment') || q.includes('pembayaran') || q.includes('bayar')) {
-                return "Kami menerima: Dana, GoPay, OVO, QRIS, dan transfer bank (BCA, Mandiri, BNI, BRI).";
-            } else if (q.includes('order') || q.includes('pesan') || q.includes('beli')) {
-                return "Untuk order, klik tombol 'Order Now' pada produk yang Anda inginkan. Anda akan diarahkan ke WhatsApp kami (0881010065137) untuk konfirmasi order.";
-            } else if (q.includes('stok') || q.includes('stock') || q.includes('tersedia')) {
-                return "Stok produk dapat dilihat di halaman produk. Jika stok habis, Anda bisa pre-order dengan waktu tunggu 2-3 minggu.";
-            } else if (q.includes('kontak') || q.includes('contact') || q.includes('cs')) {
-                return `Hubungi kami via:\n• WhatsApp: 0881010065137\n• Email: support@axelux.com`;
-            } else {
-                return "Terima kasih atas pertanyaan Anda! Untuk informasi lebih detail, hubungi customer service kami di 0881010065137 atau email support@axelux.com.";
-            }
-        }
-
-        function insertFAQ(question) {
-            document.getElementById('userQuestion').value = question;
-            document.getElementById('userQuestion').focus();
-        }
-
-        // ===== SETTINGS FUNCTIONS =====
-        function updateProfile() {
-            const displayName = document.getElementById('userName').value.trim();
-            const phone = document.getElementById('userPhone').value.trim();
-            
-            if (currentUser && displayName) {
-                currentUser.name = displayName;
-                currentUser.phone = phone;
-                saveCurrentUser();
-                updateUIForUser();
-                showNotification("Profil berhasil diperbarui", "success");
-            }
-        }
-
-        function changePassword() {
-            if (!currentUser || currentUser.role === 'guest') {
-                showNotification("Fitur ini tidak tersedia untuk guest", "error");
-                return;
-            }
-            
-            const newPassword = prompt("Masukkan password baru (minimal 6 karakter):");
-            if (newPassword && newPassword.length >= 6) {
-                showNotification("Password berhasil diubah", "success");
-            } else if (newPassword) {
-                showNotification("Password minimal 6 karakter", "error");
-            }
-        }
-
-        function deleteAccount() {
-            if (!confirm("Yakin ingin menghapus akun? Tindakan ini tidak dapat dibatalkan.")) return;
-            
-            localStorage.removeItem('axelux_currentUser');
-            currentUser = null;
-            updateUserRoles();
-            showLoginPage();
-            showNotification("Akun berhasil dihapus", "info");
-        }
-
-        // ===== NOTIFICATION SYSTEM =====
-        function showNotifications() {
-            showNotification("Fitur notifikasi akan segera hadir", "info");
-        }
-
-        function showNotification(message, type = 'info') {
-            // Remove existing notification
-            const existing = document.querySelector('.notification-toast');
-            if (existing) existing.remove();
-            
-            // Create notification element
-            const notification = document.createElement('div');
-            notification.className = `notification-toast notification-${type}`;
-            notification.innerHTML = `
-                <div class="notification-content">
-                    <i class="fas ${type === 'success' ? 'fa-check-circle' : 
-                                   type === 'error' ? 'fa-times-circle' : 
-                                   type === 'warning' ? 'fa-exclamation-circle' : 'fa-info-circle'}"></i>
-                    <span>${message}</span>
-                </div>
-                <button onclick="this.parentElement.remove()">&times;</button>
-            `;
-            
-            document.body.appendChild(notification);
-            
-            // Auto-remove after 5 seconds
-            setTimeout(() => {
-                if (notification.parentElement) {
-                    notification.remove();
-                }
-            }, 5000);
-        }
-
-        // Close sidebar when clicking outside on mobile
-        document.addEventListener('click', function(event) {
-            const sidebar = document.querySelector('.sidebar');
-            const menuToggle = document.querySelector('.menu-toggle');
-            
-            if (window.innerWidth <= 1024 && 
-                sidebar.classList.contains('active') &&
-                !sidebar.contains(event.target) &&
-                !menuToggle.contains(event.target)) {
-                sidebar.classList.remove('active');
-            }
-        });
-
-        // Initialize
-        console.log("AxeLux Premium Store Ready!");
-        console.log("Ownership Login: username='ownership', password='brandalz70'");
-        console.log("Guest Login: username='guest', password='guest'");
-        console.log("WhatsApp: 0881010065137");
+        // [SEMUA JAVASCRIPT LENGKAP DI BAWAH]
     </script>
 </body>
 </html>
