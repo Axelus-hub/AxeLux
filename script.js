@@ -1,30 +1,65 @@
-// AXELUX STORE - CORE APPLICATION
+// AXELUX STORE - ENHANCED VERSION
 class AxeLuxStore {
     constructor() {
         this.currentUser = null;
         this.isAdmin = false;
         this.theme = 'dark';
+        this.language = 'id';
         this.visitorId = null;
+        
+        // Data collections
         this.users = [];
         this.products = [];
         this.testimonials = [];
         this.visitors = [];
         this.logs = [];
         
+        // Indonesian names database (prioritized)
+        this.indonesianNames = [
+            // Male
+            'Ahmad', 'Budi', 'Cahya', 'Dedi', 'Eka', 'Fajar', 'Gunawan', 'Hadi', 'Irfan', 'Joko',
+            'Kurniawan', 'Lukman', 'Mulyadi', 'Nugroho', 'Oka', 'Pratama', 'Rahmat', 'Surya', 'Teguh', 'Wahyu',
+            'Yanto', 'Zainal', 'Agus', 'Bayu', 'Candra', 'Darma', 'Edi', 'Firmansyah', 'Galih', 'Hendra',
+            'Iwan', 'Jaya', 'Kusuma', 'Laksana', 'Maman', 'Nur', 'Oki', 'Putra', 'Rizki', 'Saputra',
+            'Taufik', 'Umar', 'Vino', 'Wira', 'Yuda', 'Zaki', 'Ade', 'Bagus', 'Cahyo', 'Dani',
+            
+            // Female
+            'Ani', 'Bunga', 'Citra', 'Dewi', 'Eva', 'Fitri', 'Gita', 'Hani', 'Indah', 'Juli',
+            'Kartika', 'Lestari', 'Maya', 'Nina', 'Olivia', 'Putri', 'Rani', 'Sari', 'Tika', 'Wulan',
+            'Yuni', 'Zahra', 'Ayu', 'Bella', 'Cinta', 'Diah', 'Elisa', 'Fiona', 'Gita', 'Hilda',
+            'Intan', 'Jessy', 'Kania', 'Linda', 'Mira', 'Nadia', 'Okta', 'Puspita', 'Queena', 'Rina',
+            'Siska', 'Tuti', 'Umi', 'Vera', 'Widya', 'Xena', 'Yulia', 'Zara', 'Amelia', 'Bulan'
+        ];
+        
+        // International names
+        this.internationalNames = [
+            'John', 'Michael', 'David', 'James', 'Robert', 'Maria', 'Sarah', 'Lisa', 'Jennifer', 'William',
+            'Thomas', 'Christopher', 'Daniel', 'Matthew', 'Anthony', 'Margaret', 'Susan', 'Karen', 'Nancy', 'Betty',
+            'Emma', 'Olivia', 'Ava', 'Isabella', 'Sophia', 'Mia', 'Charlotte', 'Amelia', 'Harper', 'Evelyn',
+            'Liam', 'Noah', 'Oliver', 'Elijah', 'William', 'James', 'Benjamin', 'Lucas', 'Henry', 'Alexander',
+            'Sakura', 'Yuki', 'Hiroshi', 'Kenji', 'Yumi', 'Minato', 'Akari', 'Riko', 'Daichi', 'Haruto',
+            'Jin', 'Min', 'Wei', 'Li', 'Chen', 'Wang', 'Zhang', 'Liu', 'Yang', 'Huang',
+            'Mateo', 'Santiago', 'Sebastian', 'Leonardo', 'Diego', 'Valentina', 'Isabella', 'Camila', 'Sofia', 'Valeria',
+            'Mohammed', 'Ahmed', 'Ali', 'Omar', 'Yusuf', 'Fatima', 'Aisha', 'Mariam', 'Zainab', 'Hafsa'
+        ];
+        
         this.init();
     }
     
+    // INITIALIZATION
     init() {
-        this.loadData();
-        this.setupEventListeners();
+        this.loadAllData();
         this.setTheme(this.getSavedTheme());
+        this.setLanguage(this.getSavedLanguage());
+        this.setupEventListeners();
         this.checkAuth();
         this.trackVisitor();
-        this.render();
+        this.renderUI();
+        this.updateUI();
     }
     
     // DATA MANAGEMENT
-    loadData() {
+    loadAllData() {
         // Load users
         this.users = JSON.parse(localStorage.getItem('axelux_users') || '[]');
         
@@ -37,7 +72,8 @@ class AxeLuxStore {
                 password: btoa('brandalz70'),
                 role: 'owner',
                 created: new Date().toISOString(),
-                lastLogin: null
+                lastLogin: null,
+                language: 'id'
             });
             this.saveUsers();
         }
@@ -48,18 +84,31 @@ class AxeLuxStore {
         this.visitors = JSON.parse(localStorage.getItem('axelux_visitors') || '[]');
         this.logs = JSON.parse(localStorage.getItem('axelux_logs') || '[]');
         
-        // Initialize sample products if empty
+        // Initialize sample data if empty
+        this.initializeSampleData();
+    }
+    
+    initializeSampleData() {
+        // Sample products
         if (this.products.length === 0) {
             this.products = [
-                { id: 1, name: 'Premium Watch', price: '$299', category: 'Electronics', stock: 10 },
-                { id: 2, name: 'Wireless Earbuds', price: '$199', category: 'Audio', stock: 25 },
-                { id: 3, name: 'Smartphone X', price: '$999', category: 'Electronics', stock: 5 },
-                { id: 4, name: 'Leather Wallet', price: '$89', category: 'Accessories', stock: 50 }
+                { id: 1, name: 'Smart Watch Pro', price: '$299', category: 'Electronics', stock: 15, rating: 4.5 },
+                { id: 2, name: 'Wireless Earbuds', price: '$159', category: 'Audio', stock: 42, rating: 4.8 },
+                { id: 3, name: 'Gaming Laptop', price: '$1299', category: 'Computers', stock: 8, rating: 4.7 },
+                { id: 4, name: 'Leather Backpack', price: '$89', category: 'Fashion', stock: 56, rating: 4.3 },
+                { id: 5, name: 'Smartphone X', price: '$999', category: 'Electronics', stock: 12, rating: 4.9 },
+                { id: 6, name: 'Coffee Maker', price: '$199', category: 'Home', stock: 23, rating: 4.4 }
             ];
             this.saveProducts();
         }
+        
+        // Sample testimonials
+        if (this.testimonials.length === 0) {
+            this.generateSampleTestimonials(8);
+        }
     }
     
+    // SAVE METHODS
     saveUsers() { localStorage.setItem('axelux_users', JSON.stringify(this.users)); }
     saveProducts() { localStorage.setItem('axelux_products', JSON.stringify(this.products)); }
     saveTestimonials() { localStorage.setItem('axelux_testimonials', JSON.stringify(this.testimonials)); }
@@ -80,21 +129,23 @@ class AxeLuxStore {
             }
             
             this.showMainPage();
-        } else {
-            this.showLoginPage();
+            return true;
         }
+        
+        this.showLoginPage();
+        return false;
     }
     
     register(username, email, password) {
         // Validation
         if (password.length < 6) {
-            this.showError('Password must be at least 6 characters');
+            this.showError(this.translate('error.passwordLength'));
             return false;
         }
         
         // Check if user exists
         if (this.users.find(u => u.username === username || u.email === email)) {
-            this.showError('Username or email already exists');
+            this.showError(this.translate('error.userExists'));
             return false;
         }
         
@@ -105,6 +156,7 @@ class AxeLuxStore {
             email,
             password: btoa(password),
             role: 'user',
+            language: this.language,
             created: new Date().toISOString(),
             lastLogin: new Date().toISOString()
         };
@@ -116,7 +168,7 @@ class AxeLuxStore {
         this.login(username, password);
         
         this.logAction('USER_REGISTER', `New user: ${username}`);
-        this.showSuccess(`Welcome ${username}! Account created successfully.`);
+        this.showSuccess(this.translate('success.register'));
         
         return true;
     }
@@ -151,7 +203,8 @@ class AxeLuxStore {
                 username: user.username,
                 email: user.email,
                 displayName: user.username + (user.role === 'owner' ? ' (Owner)' : ''),
-                role: user.role
+                role: user.role,
+                language: user.language || this.language
             };
             
             this.isAdmin = user.role === 'owner';
@@ -164,15 +217,20 @@ class AxeLuxStore {
                 document.body.classList.add('show-admin');
             }
             
+            // Set user language preference
+            if (user.language) {
+                this.setLanguage(user.language);
+            }
+            
             this.showMainPage();
             this.updateUI();
             
             this.logAction('USER_LOGIN', `${user.username} logged in`);
-            this.showSuccess(`Welcome back, ${user.username}!`);
+            this.showSuccess(this.translate('success.login', { name: user.username }));
             
             return true;
         } else {
-            this.showError('Invalid username/email or password');
+            this.showError(this.translate('error.invalidLogin'));
             return false;
         }
     }
@@ -181,8 +239,9 @@ class AxeLuxStore {
         this.currentUser = {
             id: 'guest_' + Date.now(),
             username: 'guest_' + Math.random().toString(36).substr(2, 6),
-            displayName: 'Guest User',
-            role: 'guest'
+            displayName: this.translate('user.guest'),
+            role: 'guest',
+            language: this.language
         };
         
         localStorage.setItem('axelux_current_user', JSON.stringify(this.currentUser));
@@ -192,13 +251,13 @@ class AxeLuxStore {
         this.updateUI();
         
         this.logAction('GUEST_LOGIN', 'Guest user entered');
-        this.showInfo('You are browsing as guest. Some features are limited.');
+        this.showInfo(this.translate('info.guestMode'));
         
         return true;
     }
     
     logout() {
-        this.logAction('USER_LOGOUT', `${this.currentUser.username} logged out`);
+        this.logAction('USER_LOGOUT', `${this.currentUser?.username || 'Unknown'} logged out`);
         
         this.currentUser = null;
         this.isAdmin = false;
@@ -208,35 +267,92 @@ class AxeLuxStore {
         document.body.classList.remove('show-admin');
         
         this.showLoginPage();
-        this.showSuccess('Logged out successfully');
+        this.showSuccess(this.translate('success.logout'));
     }
     
-    // VISITOR TRACKING
-    trackVisitor() {
-        this.visitorId = 'visitor_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-        
-        const visitor = {
-            id: this.visitorId,
-            timestamp: new Date().toISOString(),
-            userAgent: navigator.userAgent,
-            screen: `${window.screen.width}x${window.screen.height}`,
-            user: this.currentUser ? this.currentUser.username : 'anonymous'
+    // TESTIMONIALS SYSTEM
+    generateRandomName() {
+        // 70% chance for Indonesian name, 30% for international
+        const isIndonesian = Math.random() < 0.7;
+        const namePool = isIndonesian ? this.indonesianNames : this.internationalNames;
+        return namePool[Math.floor(Math.random() * namePool.length)];
+    }
+    
+    generateFakeTestimonial() {
+        const texts = {
+            id: [
+                "Produknya luar biasa! Kualitas melebihi ekspektasi.",
+                "Pelayanan customer service sangat memuaskan.",
+                "Pengiriman cepat, barang sampai dengan baik.",
+                "Harga sangat worth it untuk kualitas seperti ini.",
+                "Sangat recommended! Akan belanja lagi di sini.",
+                "Produk original, packing aman, seller ramah.",
+                "Respon cepat, proses transaksi mudah.",
+                "Barang sesuai gambar, kualitas premium.",
+                "Pengalaman belanja terbaik!",
+                "Sudah beli berkali-kali, selalu puas."
+            ],
+            en: [
+                "Amazing product! Quality exceeds expectations.",
+                "Customer service is very satisfying.",
+                "Fast shipping, items arrived in good condition.",
+                "Price is very worth it for this quality.",
+                "Highly recommended! Will shop here again.",
+                "Original product, safe packaging, friendly seller.",
+                "Quick response, easy transaction process.",
+                "Item matches pictures, premium quality.",
+                "Best shopping experience!",
+                "Have bought multiple times, always satisfied."
+            ]
         };
         
-        this.visitors.push(visitor);
-        this.saveVisitors();
+        const ratings = [4, 4.5, 5, 5, 5, 5, 4.5, 5, 5, 4.5];
+        const textPool = texts[this.language] || texts['en'];
         
-        // Keep only last 100 visitors
-        if (this.visitors.length > 100) {
-            this.visitors = this.visitors.slice(-100);
-            this.saveVisitors();
-        }
+        return {
+            author: this.generateRandomName(),
+            text: textPool[Math.floor(Math.random() * textPool.length)],
+            rating: ratings[Math.floor(Math.random() * ratings.length)],
+            fake: true,
+            verified: false
+        };
     }
     
-    // TESTIMONIALS
+    generateSampleTestimonials(count) {
+        for (let i = 0; i < count; i++) {
+            const testimonial = this.generateFakeTestimonial();
+            testimonial.id = 'sample_' + Date.now() + '_' + i;
+            testimonial.date = new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000).toISOString();
+            this.testimonials.push(testimonial);
+        }
+        this.saveTestimonials();
+    }
+    
+    addFakeTestimonials(count) {
+        if (!this.isAdmin) {
+            this.showError(this.translate('error.adminOnly'));
+            return;
+        }
+        
+        for (let i = 0; i < count; i++) {
+            const testimonial = this.generateFakeTestimonial();
+            testimonial.id = 'fake_' + Date.now() + '_' + i;
+            testimonial.date = new Date().toISOString();
+            testimonial.fake = true;
+            testimonial.verified = false;
+            
+            this.testimonials.push(testimonial);
+            this.logAction('FAKE_TESTIMONIAL', `Added fake testimonial: ${testimonial.author}`);
+        }
+        
+        this.saveTestimonials();
+        this.updateUI();
+        this.showSuccess(this.translate('success.fakeTestimonials', { count: count }));
+    }
+    
     addTestimonial(text, isFake = false) {
         if (!this.currentUser || this.currentUser.role === 'guest') {
-            this.showError('Please login to submit testimonials');
+            this.showError(this.translate('error.loginRequired'));
             return false;
         }
         
@@ -247,139 +363,51 @@ class AxeLuxStore {
             rating: 5,
             date: new Date().toISOString(),
             fake: isFake,
-            verified: !isFake
+            verified: !isFake,
+            userId: this.currentUser.id
         };
         
         this.testimonials.push(testimonial);
         this.saveTestimonials();
         
-        this.logAction('TESTIMONIAL_ADDED', `${isFake ? 'Fake' : 'Real'} testimonial added`);
-        this.showSuccess(isFake ? 'Fake testimonial added!' : 'Thank you for your review!');
+        const action = isFake ? 'FAKE_TESTIMONIAL' : 'TESTIMONIAL_ADDED';
+        this.logAction(action, `${isFake ? 'Fake' : 'Real'} testimonial added by ${this.currentUser.username}`);
+        
+        this.showSuccess(isFake ? 
+            this.translate('success.fakeAdded') : 
+            this.translate('success.testimonialAdded')
+        );
         
         return true;
     }
     
-    addFakeTestimonials(count) {
-        if (!this.isAdmin) {
-            this.showError('Admin access required');
-            return;
-        }
+    // VISITOR TRACKING
+    trackVisitor() {
+        this.visitorId = 'visitor_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
         
-        const fakeNames = ['Alex Johnson', 'Maria Garcia', 'James Smith', 'Lisa Wang', 'Robert Brown'];
-        const fakeTexts = [
-            'Amazing product! Exceeded all expectations.',
-            'Best purchase ever. Highly recommended!',
-            'Quality is outstanding. Worth every penny.',
-            'Customer service was excellent.',
-            'I would recommend this to everyone.'
-        ];
-        
-        for (let i = 0; i < count; i++) {
-            this.addTestimonial(
-                fakeTexts[Math.floor(Math.random() * fakeTexts.length)],
-                true
-            );
-        }
-        
-        this.showSuccess(`Added ${count} fake testimonials`);
-    }
-    
-    // PRODUCTS
-    addProduct(name, price, category, stock) {
-        if (!this.isAdmin) {
-            this.showError('Admin access required');
-            return false;
-        }
-        
-        const product = {
-            id: 'prod_' + Date.now(),
-            name,
-            price,
-            category,
-            stock: parseInt(stock),
-            added: new Date().toISOString()
+        const visitor = {
+            id: this.visitorId,
+            timestamp: new Date().toISOString(),
+            userAgent: navigator.userAgent.substring(0, 100),
+            screen: `${window.screen.width}x${window.screen.height}`,
+            language: navigator.language,
+            user: this.currentUser ? this.currentUser.username : 'anonymous',
+            page: window.location.href
         };
         
-        this.products.push(product);
-        this.saveProducts();
+        this.visitors.push(visitor);
+        this.saveVisitors();
         
-        this.logAction('PRODUCT_ADDED', `New product: ${name}`);
-        return true;
-    }
-    
-    // AI SUPPORT
-    askAI(question) {
-        const responses = {
-            shipping: 'We offer worldwide shipping within 5-7 business days. Express shipping available for $25.',
-            price: 'Our prices are competitive. Contact us at sales@axelux.store for bulk discounts.',
-            refund: '30-day money back guarantee. No questions asked. Contact support for returns.',
-            contact: 'Email: support@axelux.store | Phone: +1-800-AXELUX | Hours: 24/7',
-            default: 'Thank you for your inquiry. Our team will respond within 24 hours. For immediate assistance, check our FAQ section.'
-        };
-        
-        let response = responses.default;
-        question = question.toLowerCase();
-        
-        if (question.includes('ship') || question.includes('delivery')) response = responses.shipping;
-        else if (question.includes('price') || question.includes('cost')) response = responses.price;
-        else if (question.includes('refund') || question.includes('return')) response = responses.refund;
-        else if (question.includes('contact') || question.includes('support')) response = responses.contact;
-        
-        this.logAction('AI_QUERY', `Question: ${question.substring(0, 50)}...`);
-        return response;
-    }
-    
-    // DATABASE OPERATIONS
-    viewDatabase(tab = 'users') {
-        if (!this.isAdmin) {
-            this.showError('Admin access required');
-            return;
-        }
-        
-        let output = '';
-        
-        switch(tab) {
-            case 'users':
-                output = JSON.stringify(this.users, null, 2);
-                break;
-            case 'products':
-                output = JSON.stringify(this.products, null, 2);
-                break;
-            case 'reviews':
-                output = JSON.stringify(this.testimonials, null, 2);
-                break;
-            case 'logs':
-                output = JSON.stringify(this.logs.slice(-50), null, 2);
-                break;
-            default:
-                output = 'Select a tab to view data';
-        }
-        
-        document.getElementById('databaseOutput').textContent = output;
-    }
-    
-    nukeDatabase() {
-        if (!this.isAdmin) return;
-        
-        if (confirm('⚠️ NUKE DATABASE? This will delete ALL data except users. Cannot be undone!')) {
-            this.products = [];
-            this.testimonials = [];
-            this.visitors = [];
-            this.logs = [];
-            
-            this.saveProducts();
-            this.saveTestimonials();
+        // Keep only last 500 visitors
+        if (this.visitors.length > 500) {
+            this.visitors = this.visitors.slice(-500);
             this.saveVisitors();
-            this.saveLogs();
-            
-            this.showSuccess('Database nuked. System reset.');
-            this.logAction('DATABASE_NUKE', 'All data cleared');
-            
-            setTimeout(() => location.reload(), 2000);
         }
+        
+        this.logAction('VISITOR_TRACKED', `New visitor: ${visitor.user}`);
     }
     
-    // THEME
+    // THEME MANAGEMENT
     setTheme(theme) {
         this.theme = theme;
         document.documentElement.setAttribute('data-theme', theme);
@@ -390,109 +418,135 @@ class AxeLuxStore {
         return localStorage.getItem('axelux_theme') || 'dark';
     }
     
-    // LOGGING
-    logAction(action, details) {
-        const log = {
-            timestamp: new Date().toISOString(),
-            action,
-            details,
-            user: this.currentUser ? this.currentUser.username : 'system',
-            ip: this.visitorId
+    // LANGUAGE MANAGEMENT
+    setLanguage(lang) {
+        this.language = lang;
+        localStorage.setItem('axelux_language', lang);
+        
+        // Update language selector
+        const selector = document.getElementById('languageSelect');
+        if (selector) selector.value = lang;
+        
+        // Update all translatable elements
+        this.updateTranslations();
+    }
+    
+    getSavedLanguage() {
+        return localStorage.getItem('axelux_language') || 'id';
+    }
+    
+    translate(key, params = {}) {
+        const translations = window.AxeLuxTranslations || {};
+        const langData = translations[this.language] || translations['en'] || {};
+        let text = langData[key] || key;
+        
+        // Replace parameters
+        Object.keys(params).forEach(param => {
+            text = text.replace(`{${param}}`, params[param]);
+        });
+        
+        return text;
+    }
+    
+    updateTranslations() {
+        // Update all elements with data-i18n attribute
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+            const key = el.getAttribute('data-i18n');
+            el.textContent = this.translate(key);
+        });
+        
+        // Update placeholders
+        document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+            const key = el.getAttribute('data-i18n-placeholder');
+            el.placeholder = this.translate(key);
+        });
+    }
+    
+    // AI SUPPORT
+    askAI(question) {
+        const responses = {
+            id: {
+                shipping: 'Kami menawarkan pengiriman ke seluruh dunia dalam 5-7 hari kerja. Pengiriman ekspres tersedia dengan biaya tambahan $25.',
+                price: 'Harga kami kompetitif. Hubungi sales@axelux.store untuk diskon pembelian dalam jumlah besar.',
+                refund: 'Garansi uang kembali 30 hari. Tanpa pertanyaan. Hubungi dukungan untuk pengembalian.',
+                contact: 'Email: support@axelux.store | Telepon: +1-800-AXELUX | Jam Operasional: 24/7',
+                default: 'Terima kasih atas pertanyaan Anda. Tim kami akan merespons dalam 24 jam. Untuk bantuan segera, lihat bagian FAQ kami.'
+            },
+            en: {
+                shipping: 'We offer worldwide shipping within 5-7 business days. Express shipping available for $25.',
+                price: 'Our prices are competitive. Contact sales@axelux.store for bulk discounts.',
+                refund: '30-day money back guarantee. No questions asked. Contact support for returns.',
+                contact: 'Email: support@axelux.store | Phone: +1-800-AXELUX | Hours: 24/7',
+                default: 'Thank you for your inquiry. Our team will respond within 24 hours. For immediate assistance, check our FAQ section.'
+            }
         };
         
-        this.logs.push(log);
+        const langResponses = responses[this.language] || responses['en'];
+        let response = langResponses.default;
+        question = question.toLowerCase();
         
-        // Keep only last 200 logs
-        if (this.logs.length > 200) {
-            this.logs = this.logs.slice(-200);
+        if (question.includes('ship') || question.includes('delivery') || question.includes('pengiriman')) {
+            response = langResponses.shipping;
+        } else if (question.includes('price') || question.includes('cost') || question.includes('harga')) {
+            response = langResponses.price;
+        } else if (question.includes('refund') || question.includes('return') || question.includes('garansi')) {
+            response = langResponses.refund;
+        } else if (question.includes('contact') || question.includes('support') || question.includes('hubung')) {
+            response = langResponses.contact;
         }
         
-        this.saveLogs();
+        this.logAction('AI_QUERY', `Question: ${question.substring(0, 50)}...`);
+        return response;
     }
     
     // UI UPDATES
     updateUI() {
         if (this.currentUser) {
-            document.getElementById('currentUsername').textContent = this.currentUser.displayName;
-            document.getElementById('currentRole').textContent = this.currentUser.role;
-            document.getElementById('userStatus').textContent = this.currentUser.role === 'owner' ? 'Owner Mode' : 'User Mode';
+            // Update user info
+            document.getElementById('sidebarUsername').textContent = this.currentUser.displayName;
+            document.getElementById('sidebarUserEmail').textContent = this.currentUser.email || 'guest@example.com';
+            document.getElementById('userRoleDisplay').textContent = this.translate(`role.${this.currentUser.role}`);
             
-            document.getElementById('settingUsername').textContent = this.currentUser.username;
-            document.getElementById('settingRole').textContent = this.currentUser.role;
-            document.getElementById('settingJoinDate').textContent = new Date().toLocaleDateString();
+            // Update avatar icon based on role
+            const avatarIcon = document.getElementById('avatarIcon');
+            if (avatarIcon) {
+                avatarIcon.className = this.currentUser.role === 'owner' ? 'fas fa-crown' : 
+                                     this.currentUser.role === 'guest' ? 'fas fa-user' : 'fas fa-user-circle';
+            }
         }
         
         // Update stats
-        document.getElementById('statVisitors').textContent = this.visitors.length;
-        document.getElementById('statProducts').textContent = this.products.length;
-        document.getElementById('statReviews').textContent = this.testimonials.length;
+        document.getElementById('miniVisitors').textContent = this.visitors.length;
+        document.getElementById('miniProducts').textContent = this.products.length;
+        document.getElementById('miniReviews').textContent = this.testimonials.length;
+        document.getElementById('reviewBadge').textContent = this.testimonials.length;
         
-        // Update live visitors
-        this.updateLiveVisitors();
+        // Update password strength
+        this.updatePasswordStrength();
         
-        // Render products and testimonials
-        this.renderProducts();
-        this.renderTestimonials();
+        // Update translations
+        this.updateTranslations();
     }
     
-    updateLiveVisitors() {
-        const container = document.getElementById('liveVisitors');
-        if (!container) return;
+    updatePasswordStrength() {
+        const passwordInput = document.getElementById('regPassword');
+        const strengthBar = document.getElementById('passwordStrength');
         
-        const recentVisitors = this.visitors.slice(-10).reverse();
+        if (!passwordInput || !strengthBar) return;
         
-        if (recentVisitors.length === 0) {
-            container.innerHTML = '<p class="empty-state">No active visitors</p>';
-            return;
-        }
-        
-        container.innerHTML = recentVisitors.map(v => `
-            <div class="visitor-item">
-                <i class="fas fa-user-circle"></i>
-                <span>${v.user}</span>
-                <span class="time">${new Date(v.timestamp).toLocaleTimeString()}</span>
-            </div>
-        `).join('');
-    }
-    
-    renderProducts() {
-        const container = document.getElementById('productsGrid');
-        if (!container) return;
-        
-        container.innerHTML = this.products.map(p => `
-            <div class="product-card">
-                <h3>${p.name}</h3>
-                <p class="price">${p.price}</p>
-                <p class="category">${p.category}</p>
-                <p class="stock">Stock: ${p.stock}</p>
-                ${this.isAdmin ? `
-                    <button class="btn-secondary" onclick="axelux.deleteProduct('${p.id}')">
-                        <i class="fas fa-trash"></i> Delete
-                    </button>
-                ` : ''}
-            </div>
-        `).join('');
-    }
-    
-    renderTestimonials() {
-        const container = document.getElementById('testimonialsGrid');
-        if (!container) return;
-        
-        const recentReviews = this.testimonials.slice(-20).reverse();
-        
-        container.innerHTML = recentReviews.map(t => `
-            <div class="testimonial-card ${t.fake ? 'fake' : ''}">
-                <div class="review-header">
-                    <strong>${t.author}</strong>
-                    <span class="review-date">${new Date(t.date).toLocaleDateString()}</span>
-                    ${t.fake ? '<span class="badge fake-badge">FAKE</span>' : ''}
-                </div>
-                <div class="review-text">${t.text}</div>
-                <div class="review-rating">
-                    ${'★'.repeat(t.rating)}${'☆'.repeat(5 - t.rating)}
-                </div>
-            </div>
-        `).join('');
+        passwordInput.addEventListener('input', () => {
+            const password = passwordInput.value;
+            let strength = 0;
+            
+            if (password.length >= 6) strength += 25;
+            if (password.length >= 8) strength += 25;
+            if (/[A-Z]/.test(password)) strength += 25;
+            if (/[0-9]/.test(password)) strength += 25;
+            
+            strengthBar.style.width = `${strength}%`;
+            strengthBar.style.background = strength < 50 ? 'var(--danger)' : 
+                                          strength < 75 ? 'var(--warning)' : 'var(--success)';
+        });
     }
     
     // PAGE NAVIGATION
@@ -504,82 +558,53 @@ class AxeLuxStore {
     showMainPage() {
         document.getElementById('loginPage').classList.remove('active');
         document.getElementById('mainPage').classList.add('active');
-        this.updateUI();
+        this.renderContentSections();
     }
     
     showSection(sectionId) {
-        // Hide all sections
-        document.querySelectorAll('.content-section').forEach(s => {
-            s.classList.remove('active');
-        });
-        
-        // Remove active from all menu items
-        document.querySelectorAll('.menu-item').forEach(m => {
-            m.classList.remove('active');
-        });
-        
-        // Show selected section
-        document.getElementById(sectionId).classList.add('active');
-        
-        // Add active to clicked menu item
-        event.target.closest('.menu-item').classList.add('active');
-        
-        // If database section, load default tab
-        if (sectionId === 'database' && this.isAdmin) {
-            this.viewDatabase('users');
-        }
+        this.renderSection(sectionId);
     }
     
-    showDatabaseTab(tab) {
-        if (!this.isAdmin) return;
+    // CONTENT RENDERING
+    renderUI() {
+        this.renderContentSections();
+    }
+    
+    renderContentSections() {
+        const container = document.getElementById('contentSections');
+        if (!container) return;
         
-        // Update tab buttons
-        document.querySelectorAll('.tab-btn').forEach(btn => {
-            btn.classList.remove('active');
-        });
-        event.target.classList.add('active');
-        
-        // Show tab content
-        this.viewDatabase(tab);
-    }
-    
-    // NOTIFICATIONS
-    showError(message) {
-        this.showNotification(message, 'error');
-        console.error('Error:', message);
-    }
-    
-    showSuccess(message) {
-        this.showNotification(message, 'success');
-        console.log('Success:', message);
-    }
-    
-    showInfo(message) {
-        this.showNotification(message, 'info');
-    }
-    
-    showNotification(message, type = 'info') {
-        const container = document.getElementById('notificationArea');
-        
-        const notification = document.createElement('div');
-        notification.className = `notification ${type}`;
-        notification.innerHTML = `
-            <i class="fas fa-${type === 'success' ? 'check-circle' : 
-                            type === 'error' ? 'exclamation-circle' : 
-                            'info-circle'}"></i>
-            <span>${message}</span>
-            <button onclick="this.parentElement.remove()">&times;</button>
+        // This would render different sections based on current view
+        // For now, we'll just show a welcome message
+        container.innerHTML = `
+            <div class="welcome-section">
+                <h1>${this.translate('welcome.title', { name: this.currentUser?.displayName || 'Guest' })}</h1>
+                <p>${this.translate('welcome.subtitle')}</p>
+                
+                <div class="quick-stats">
+                    <div class="stat-card">
+                        <i class="fas fa-users"></i>
+                        <h3>${this.visitors.length}</h3>
+                        <p>${this.translate('stats.visitors')}</p>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-box"></i>
+                        <h3>${this.products.length}</h3>
+                        <p>${this.translate('stats.products')}</p>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-star"></i>
+                        <h3>${this.testimonials.length}</h3>
+                        <p>${this.translate('stats.reviews')}</p>
+                    </div>
+                </div>
+            </div>
         `;
-        
-        container.appendChild(notification);
-        
-        // Auto remove after 5 seconds
-        setTimeout(() => {
-            if (notification.parentElement) {
-                notification.style.animation = 'fadeOut 0.3s ease forwards';
-                setTimeout(() => notification.remove(), 300);
-            }
-        }, 5000);
+    }
+    
+    renderSection(sectionId) {
+        // This would render different sections
+        console.log('Rendering section:', sectionId);
     }
     
     // EVENT LISTENERS
@@ -603,134 +628,105 @@ class AxeLuxStore {
             const confirm = document.getElementById('regConfirmPassword').value;
             
             if (password !== confirm) {
-                this.showError('Passwords do not match');
+                this.showError(this.translate('error.passwordMatch'));
                 return;
             }
             
             this.register(username, email, password);
         });
         
-        // AI Chat
-        window.sendAIQuery = () => {
-            const input = document.getElementById('userQuery');
-            const question = input.value.trim();
-            
-            if (!question) return;
-            
-            // Add user message
-            const chat = document.getElementById('chatMessages');
-            chat.innerHTML += `
-                <div class="message user">
-                    <div class="message-avatar">You</div>
-                    <div class="message-content">${question}</div>
-                </div>
-            `;
-            
-            // Get AI response
-            const response = this.askAI(question);
-            
-            // Add AI response after delay
-            setTimeout(() => {
-                chat.innerHTML += `
-                    <div class="message ai">
-                        <div class="message-avatar">AI</div>
-                        <div class="message-content">${response}</div>
-                    </div>
-                `;
-                chat.scrollTop = chat.scrollHeight;
-            }, 500);
-            
-            input.value = '';
-        };
+        // Password strength
+        this.updatePasswordStrength();
         
-        // Quick questions
-        window.askQuestion = (type) => {
-            const questions = {
-                shipping: 'What are the shipping options?',
-                price: 'Are there any discounts?',
-                refund: 'What is the return policy?',
-                contact: 'How can I contact support?'
-            };
-            
-            document.getElementById('userQuery').value = questions[type];
-            sendAIQuery();
-        };
-        
-        // Testimonial submission
-        window.submitTestimonial = () => {
-            const textarea = document.getElementById('newTestimonial');
-            const text = textarea.value.trim();
-            
-            if (!text) {
-                this.showError('Please enter review text');
-                return;
-            }
-            
-            if (this.addTestimonial(text, false)) {
-                textarea.value = '';
-                this.renderTestimonials();
-                this.updateUI();
-            }
-        };
-        
-        // Admin functions
-        window.addFakeTestimonials = (count) => this.addFakeTestimonials(count);
-        window.wipeVisitorData = () => {
-            if (!this.isAdmin) return;
-            this.visitors = [];
-            this.saveVisitors();
-            this.updateUI();
-            this.showSuccess('Visitor data cleared');
-        };
-        
-        window.showAdminAccess = () => {
-            document.getElementById('adminAccess').style.display = 'block';
-        };
-        
-        window.verifyAdminCredentials = () => {
-            const username = document.getElementById('adminUsername').value;
-            const password = document.getElementById('adminPassword').value;
-            
-            if (username === 'Axm' && password === 'brandalz70') {
-                this.login(username, password, true);
-                this.hideAdminModal();
-            } else {
-                this.showError('Invalid admin credentials');
-            }
-        };
-        
-        window.hideAdminModal = () => {
-            document.getElementById('adminModal').classList.remove('active');
-        };
-        
-        window.showNukeConfirm = () => {
-            if (confirm('⚠️ THIS WILL DELETE ALL DATA EXCEPT USERS!\n\nAre you absolutely sure?')) {
-                this.nukeDatabase();
+        // Language change
+        window.changeLanguage = (lang) => {
+            this.setLanguage(lang);
+            if (this.currentUser) {
+                // Update user language preference
+                const userIndex = this.users.findIndex(u => u.id === this.currentUser.id);
+                if (userIndex !== -1) {
+                    this.users[userIndex].language = lang;
+                    this.saveUsers();
+                }
             }
         };
     }
     
-    // RENDER INITIAL UI
-    render() {
-        this.updateUI();
+    // LOGGING
+    logAction(action, details) {
+        const log = {
+            timestamp: new Date().toISOString(),
+            action,
+            details,
+            user: this.currentUser ? this.currentUser.username : 'system',
+            ip: this.visitorId,
+            language: this.language
+        };
         
-        // Show admin quick access if URL parameter
-        const urlParams = new URLSearchParams(window.location.search);
-        if (urlParams.get('admin') === 'true') {
-            document.getElementById('adminAccess').style.display = 'block';
+        this.logs.push(log);
+        
+        // Keep only last 200 logs
+        if (this.logs.length > 200) {
+            this.logs = this.logs.slice(-200);
         }
+        
+        this.saveLogs();
+    }
+    
+    // NOTIFICATION SYSTEM
+    showError(message) {
+        this.showNotification(message, 'error');
+        console.error('Error:', message);
+    }
+    
+    showSuccess(message) {
+        this.showNotification(message, 'success');
+        console.log('Success:', message);
+    }
+    
+    showInfo(message) {
+        this.showNotification(message, 'info');
+    }
+    
+    showNotification(message, type = 'info') {
+        const container = document.getElementById('notificationArea');
+        if (!container) return;
+        
+        // Remove existing notifications
+        const existing = container.querySelectorAll('.notification');
+        existing.forEach(n => n.remove());
+        
+        const notification = document.createElement('div');
+        notification.className = `notification ${type}`;
+        notification.innerHTML = `
+            <i class="fas fa-${type === 'success' ? 'check-circle' : 
+                            type === 'error' ? 'exclamation-circle' : 
+                            'info-circle'}"></i>
+            <span>${message}</span>
+            <button onclick="this.parentElement.remove()">&times;</button>
+        `;
+        
+        container.appendChild(notification);
+        
+        // Auto remove after 5 seconds
+        setTimeout(() => {
+            if (notification.parentElement) {
+                notification.style.animation = 'slideOutRight 0.3s ease forwards';
+                setTimeout(() => notification.remove(), 300);
+            }
+        }, 5000);
     }
 }
 
 // GLOBAL FUNCTIONS
 function showLoginForm() {
-    document.getElementById('registerForm').style.display = 'none';
-    document.getElementById('loginFormContainer').style.display = 'block';
+    document.getElementById('registerForm').classList.remove('active');
+    document.getElementById('loginFormContainer').classList.add('active');
 }
 
 function showRegisterForm() {
-    document.getElementById('loginFormContainer').style.display = 'none';
-    document.getElementById('registerForm').style.display = 'block';
+    document.getElementById('loginFormContainer').classList.remove('active');
+    document.getElementById('registerForm').classList.add('active');
 }
 
 function enterAsGuest() {
@@ -750,7 +746,20 @@ function setTheme(theme) {
 }
 
 function showAdminHint() {
-    axelux.showInfo('Owner Mode: Use username "Axm" and password "brandalz70"');
+    axelux.showInfo(axelux.translate('info.adminHint'));
+}
+
+function togglePassword(inputId) {
+    const input = document.getElementById(inputId);
+    const button = input.nextElementSibling;
+    
+    if (input.type === 'password') {
+        input.type = 'text';
+        button.innerHTML = '<i class="fas fa-eye-slash"></i>';
+    } else {
+        input.type = 'password';
+        button.innerHTML = '<i class="fas fa-eye"></i>';
+    }
 }
 
 // Initialize application
@@ -765,51 +774,59 @@ window.directAdminLogin = directAdminLogin;
 window.logout = logout;
 window.setTheme = setTheme;
 window.showAdminHint = showAdminHint;
+window.togglePassword = togglePassword;
 window.showSection = (section) => axelux.showSection(section);
-window.showDatabaseTab = (tab) => axelux.showDatabaseTab(tab);
+window.changeLanguage = (lang) => axelux.setLanguage(lang);
 
-// Add CSS for notifications if not exists
+// Add notification styles
 if (!document.querySelector('#notification-styles')) {
     const style = document.createElement('style');
     style.id = 'notification-styles';
     style.textContent = `
         #notificationArea {
             position: fixed;
-            top: 20px;
-            right: 20px;
+            top: 100px;
+            right: 30px;
             z-index: 9999;
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 15px;
+            max-width: 400px;
         }
         
         .notification {
-            padding: 16px 20px;
-            border-radius: 12px;
+            padding: 20px 25px;
+            border-radius: 16px;
             display: flex;
             align-items: center;
-            gap: 12px;
-            max-width: 400px;
-            animation: slideInRight 0.3s ease;
-            backdrop-filter: blur(10px);
+            gap: 15px;
+            backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+            animation: slideInRight 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            transform-origin: right;
+        }
+        
+        .notification i {
+            font-size: 1.4rem;
+            flex-shrink: 0;
         }
         
         .notification.success {
             background: rgba(16, 185, 129, 0.15);
-            border-left: 4px solid #10b981;
+            border-left: 6px solid #10b981;
             color: #10b981;
         }
         
         .notification.error {
             background: rgba(239, 68, 68, 0.15);
-            border-left: 4px solid #ef4444;
+            border-left: 6px solid #ef4444;
             color: #ef4444;
         }
         
         .notification.info {
             background: rgba(59, 130, 246, 0.15);
-            border-left: 4px solid #3b82f6;
+            border-left: 6px solid #3b82f6;
             color: #3b82f6;
         }
         
@@ -819,8 +836,10 @@ if (!document.querySelector('#notification-styles')) {
             border: none;
             color: inherit;
             cursor: pointer;
-            font-size: 20px;
+            font-size: 22px;
             opacity: 0.7;
+            padding: 0 5px;
+            transition: opacity 0.3s;
         }
         
         .notification button:hover {
@@ -828,30 +847,88 @@ if (!document.querySelector('#notification-styles')) {
         }
         
         @keyframes slideInRight {
-            from { transform: translateX(100%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
+            0% {
+                opacity: 0;
+                transform: translateX(100%) scale(0.8);
+            }
+            100% {
+                opacity: 1;
+                transform: translateX(0) scale(1);
+            }
         }
         
-        @keyframes fadeOut {
-            to { opacity: 0; transform: translateY(-10px); }
+        @keyframes slideOutRight {
+            0% {
+                opacity: 1;
+                transform: translateX(0) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translateX(100%) scale(0.8);
+            }
         }
         
-        .fake-badge {
-            background: #f59e0b;
-            color: white;
-            padding: 2px 8px;
-            border-radius: 4px;
-            font-size: 0.75rem;
-            font-weight: 600;
+        .quick-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 40px;
         }
         
-        .role-badge {
-            background: var(--primary);
-            color: white;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            font-weight: 600;
+        .stat-card {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            padding: 25px;
+            border: 1px solid var(--border);
+            text-align: center;
+            transition: var(--transition);
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+            box-shadow: 0 15px 40px var(--shadow);
+        }
+        
+        .stat-card i {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+        
+        .stat-card h3 {
+            font-size: 2.8rem;
+            font-weight: 800;
+            margin: 10px 0;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .stat-card p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+        
+        .welcome-section {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 0;
+        }
+        
+        .welcome-section h1 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .welcome-section p {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            max-width: 800px;
+            line-height: 1.8;
         }
     `;
     document.head.appendChild(style);
