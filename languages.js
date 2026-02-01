@@ -1,4 +1,4 @@
-// AXELUX TRANSLATIONS
+// AXELUX TRANSLATIONS - FIXED VERSION
 window.AxeLuxTranslations = {
     'id': {
         // Login Page
@@ -23,7 +23,7 @@ window.AxeLuxTranslations = {
         'register.subtitle': 'Bergabung dengan komunitas AxeLux',
         'register.username': 'Pilih username',
         'register.email': 'Alamat email',
-        'register.password': 'Kata sandi (min 6 karakter)',
+        'register.password': 'Kata sandi (minimal 6 karakter)',
         'register.confirm': 'Konfirmasi kata sandi',
         'register.strength': 'Kekuatan kata sandi',
         'register.create': 'Buat Akun',
@@ -40,14 +40,14 @@ window.AxeLuxTranslations = {
         'menu.analytics': 'Analitik',
         'menu.admin': 'ADMIN',
         'menu.database': 'Database',
-        'menu.users': 'Manajemen Pengguna',
+        'menu.users': 'Kelola Pengguna',
         'menu.settings': 'PENGATURAN',
         'menu.profile': 'Profil',
         
         // User Roles
-        'role.owner': 'Pemilik',
-        'role.user': 'Pengguna',
-        'role.guest': 'Tamu',
+        'role.owner': 'PEMILIK',
+        'role.user': 'PENGGUNA',
+        'role.guest': 'TAMU',
         'user.guest': 'Pengguna Tamu',
         
         // Welcome
@@ -77,7 +77,17 @@ window.AxeLuxTranslations = {
         'error.invalidLogin': 'Username/email atau kata sandi salah',
         'error.passwordMatch': 'Kata sandi tidak cocok',
         'error.adminOnly': 'Hanya admin yang bisa melakukan ini',
-        'error.loginRequired': 'Harus login terlebih dahulu'
+        'error.loginRequired': 'Harus login terlebih dahulu',
+        
+        // Additional UI Text
+        'ui.owner': 'PEMILIK',
+        'ui.analytics': 'Analitik',
+        'ui.database': 'Database',
+        'ui.settings': 'Pengaturan',
+        'ui.profile': 'Profil',
+        'ui.createAccount': 'Buat Akun',
+        'ui.haveAccount': 'Sudah punya akun?',
+        'ui.signIn': 'Masuk'
     },
     
     'en': {
@@ -125,9 +135,9 @@ window.AxeLuxTranslations = {
         'menu.profile': 'Profile',
         
         // User Roles
-        'role.owner': 'Owner',
-        'role.user': 'User',
-        'role.guest': 'Guest',
+        'role.owner': 'OWNER',
+        'role.user': 'USER',
+        'role.guest': 'GUEST',
         'user.guest': 'Guest User',
         
         // Welcome
@@ -157,42 +167,16 @@ window.AxeLuxTranslations = {
         'error.invalidLogin': 'Invalid username/email or password',
         'error.passwordMatch': 'Passwords do not match',
         'error.adminOnly': 'Admin access required',
-        'error.loginRequired': 'Login required for this action'
-    },
-    
-    'jp': {
-        'login.welcome': 'お帰りなさい',
-        'login.signin': 'アカウントにサインイン',
-        'login.subtitle': 'プレミアムデジタルエクスペリエンス',
-        'login.feature1': '軍用グレードのセキュリティ',
-        'login.feature2': 'AI搭載サポート',
-        'login.feature3': '多言語対応'
-    },
-    
-    'kr': {
-        'login.welcome': '다시 오신 것을 환영합니다',
-        'login.signin': '계정에 로그인',
-        'login.subtitle': '프리미엄 디지털 경험',
-        'login.feature1': '군사급 보안',
-        'login.feature2': 'AI 기반 지원',
-        'login.feature3': '다국어 지원'
-    },
-    
-    'cn': {
-        'login.welcome': '欢迎回来',
-        'login.signin': '登录您的账户',
-        'login.subtitle': '高级数字体验',
-        'login.feature1': '军事级安全',
-        'login.feature2': 'AI驱动支持',
-        'login.feature3': '多语言支持'
-    },
-    
-    'es': {
-        'login.welcome': 'Bienvenido de nuevo',
-        'login.signin': 'Inicia sesión en tu cuenta',
-        'login.subtitle': 'Experiencia Digital Premium',
-        'login.feature1': 'Seguridad de grado militar',
-        'login.feature2': 'Soporte impulsado por IA',
-        'login.feature3': 'Idiomas múltiples'
+        'error.loginRequired': 'Login required for this action',
+        
+        // Additional UI Text
+        'ui.owner': 'OWNER',
+        'ui.analytics': 'Analytics',
+        'ui.database': 'Database',
+        'ui.settings': 'Settings',
+        'ui.profile': 'Profile',
+        'ui.createAccount': 'Create Account',
+        'ui.haveAccount': 'Already have an account?',
+        'ui.signIn': 'Sign In'
     }
 };
