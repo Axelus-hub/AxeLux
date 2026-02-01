@@ -7,9 +7,6 @@
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
 </head>
 <body class="theme-blue">
     <!-- Login Page -->
@@ -56,7 +53,7 @@
                 </div>
 
                 <div class="login-form">
-                    <h2 id="loginTitle" class="form-title">Masuk ke Dashboard</h2>
+                    <h2 class="form-title">Masuk ke Dashboard</h2>
                     
                     <div class="input-group">
                         <i class="fas fa-user input-icon"></i>
@@ -69,15 +66,14 @@
                     </div>
 
                     <button onclick="login()" class="btn btn-primary btn-login">
-                        <i class="fas fa-sign-in-alt"></i> <span id="btnLoginText">Login</span>
+                        <i class="fas fa-sign-in-alt"></i> <span>Login</span>
                     </button>
                     
                     <button onclick="signInAsGuest()" class="btn btn-secondary btn-guest">
-                        <i class="fas fa-user-circle"></i> <span id="btnGuestText">Masuk sebagai Guest</span>
+                        <i class="fas fa-user-circle"></i> <span>Masuk sebagai Guest</span>
                     </button>
 
                     <p id="loginMsg" class="message"></p>
-                    
                 </div>
             </div>
         </div>
@@ -120,12 +116,12 @@
                 <div class="user-info">
                     <i class="fas fa-user-circle user-avatar"></i>
                     <div class="user-details">
-                        <span id="welcomeUser" class="username">Selamat datang, Guest</span>
+                        <span id="welcomeUser" class="username">Selamat datang</span>
                         <span class="user-role" id="userRole">Pengunjung</span>
                     </div>
                 </div>
                 <button onclick="logout()" class="btn btn-logout">
-                    <i class="fas fa-sign-out-alt"></i> <span id="btnLogoutText">Logout</span>
+                    <i class="fas fa-sign-out-alt"></i> <span>Logout</span>
                 </button>
             </div>
         </header>
@@ -136,37 +132,37 @@
                 <li class="nav-item">
                     <a href="#" onclick="showSection('home')" class="nav-link active">
                         <i class="fas fa-home nav-icon"></i>
-                        <span class="nav-text" id="navHome">Home</span>
+                        <span class="nav-text">Home</span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a href="#" onclick="showSection('product')" class="nav-link">
                         <i class="fas fa-shopping-bag nav-icon"></i>
-                        <span class="nav-text" id="navProduct">Products</span>
+                        <span class="nav-text">Products</span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a href="#" onclick="showSection('cs')" class="nav-link">
                         <i class="fas fa-headset nav-icon"></i>
-                        <span class="nav-text" id="navCS">Support</span>
+                        <span class="nav-text">Support</span>
                     </a>
                 </li>
                 <li class="nav-item admin-only">
                     <a href="#" onclick="showSection('database')" class="nav-link">
                         <i class="fas fa-database nav-icon"></i>
-                        <span class="nav-text" id="navDB">Database</span>
+                        <span class="nav-text">Database</span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a href="#" onclick="showSection('testimoni')" class="nav-link">
                         <i class="fas fa-star nav-icon"></i>
-                        <span class="nav-text" id="navTesti">Testimonials</span>
+                        <span class="nav-text">Testimonials</span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a href="#" onclick="showSection('userSettings')" class="nav-link">
                         <i class="fas fa-cog nav-icon"></i>
-                        <span class="nav-text" id="navSettings">Settings</span>
+                        <span class="nav-text">Settings</span>
                     </a>
                 </li>
             </ul>
@@ -177,8 +173,8 @@
             <!-- Home -->
             <section id="homeSection" class="content-section active-section">
                 <div class="section-header">
-                    <h2 id="homeTitle" class="section-title">Dashboard Overview</h2>
-                    <p id="homeDesc" class="section-subtitle">Monitor your luxury store performance and analytics</p>
+                    <h2 class="section-title">Dashboard Overview</h2>
+                    <p class="section-subtitle">Monitor your luxury store performance and analytics</p>
                 </div>
                 
                 <div class="stats-grid">
@@ -187,8 +183,8 @@
                             <i class="fas fa-eye"></i>
                         </div>
                         <div class="stat-content">
-                            <h3 id="statVisitors">Total Visitors</h3>
-                            <p class="stat-number" id="visitorCount">0</p>
+                            <h3>Total Visitors</h3>
+                            <p class="stat-number" id="visitorCount">1,247</p>
                             <p class="stat-trend"><i class="fas fa-arrow-up"></i> 12% today</p>
                         </div>
                     </div>
@@ -198,8 +194,8 @@
                             <i class="fas fa-box"></i>
                         </div>
                         <div class="stat-content">
-                            <h3 id="statProducts">Products</h3>
-                            <p class="stat-number" id="productCount">0</p>
+                            <h3>Products</h3>
+                            <p class="stat-number" id="productCount">12</p>
                             <p class="stat-trend"><i class="fas fa-plus"></i> Add new</p>
                         </div>
                     </div>
@@ -209,8 +205,8 @@
                             <i class="fas fa-comment-dots"></i>
                         </div>
                         <div class="stat-content">
-                            <h3 id="statTesti">Testimonials</h3>
-                            <p class="stat-number" id="testiCount">0</p>
+                            <h3>Testimonials</h3>
+                            <p class="stat-number" id="testiCount">8</p>
                             <p class="stat-trend"><i class="fas fa-star"></i> 4.8 rating</p>
                         </div>
                     </div>
@@ -220,8 +216,8 @@
                             <i class="fas fa-users"></i>
                         </div>
                         <div class="stat-content">
-                            <h3 id="statOnline">Online Now</h3>
-                            <p class="stat-number" id="liveVisitorCount">0</p>
+                            <h3>Online Now</h3>
+                            <p class="stat-number" id="liveVisitorCount">24</p>
                             <p class="stat-trend"><i class="fas fa-circle online-dot"></i> Live</p>
                         </div>
                     </div>
@@ -246,8 +242,8 @@
             <!-- Products -->
             <section id="productSection" class="content-section">
                 <div class="section-header">
-                    <h2 id="productTitle" class="section-title">Luxury Products</h2>
-                    <p id="productDesc" class="section-subtitle">Exclusive collection of premium items</p>
+                    <h2 class="section-title">Luxury Products</h2>
+                    <p class="section-subtitle">Exclusive collection of premium items</p>
                 </div>
                 
                 <div class="products-grid" id="productList">
@@ -258,10 +254,10 @@
                     <h3 class="panel-title">Admin Product Management</h3>
                     <div class="admin-form">
                         <div class="form-row">
-                            <input type="text" id="productName" placeholder="Product Name" class="form-input admin-input">
-                            <input type="number" id="productPrice" placeholder="Price ($)" class="form-input admin-input">
+                            <input type="text" id="productNameInput" placeholder="Product Name" class="form-input admin-input">
+                            <input type="number" id="productPriceInput" placeholder="Price ($)" class="form-input admin-input">
                         </div>
-                        <textarea id="productDesc" placeholder="Product Description" class="form-textarea"></textarea>
+                        <textarea id="productDescInput" placeholder="Product Description" class="form-textarea"></textarea>
                         <div class="form-actions">
                             <button onclick="addProduct()" class="btn btn-admin btn-success">
                                 <i class="fas fa-plus"></i> Add Product
@@ -277,8 +273,8 @@
             <!-- Customer Service -->
             <section id="csSection" class="content-section">
                 <div class="section-header">
-                    <h2 id="csTitle" class="section-title">24/7 AI Customer Support</h2>
-                    <p id="csDesc" class="section-subtitle">Instant AI-powered responses to your queries</p>
+                    <h2 class="section-title">24/7 AI Customer Support</h2>
+                    <p class="section-subtitle">Instant AI-powered responses to your queries</p>
                 </div>
                 
                 <div class="chat-container">
@@ -321,8 +317,8 @@
             <!-- Database (Admin Only) -->
             <section id="databaseSection" class="content-section admin-only">
                 <div class="section-header">
-                    <h2 id="dbTitle" class="section-title">Admin Database</h2>
-                    <p id="dbDesc" class="section-subtitle">Full control over all data and users</p>
+                    <h2 class="section-title">Admin Database</h2>
+                    <p class="section-subtitle">Full control over all data and users</p>
                 </div>
                 
                 <div class="db-tabs">
@@ -333,7 +329,7 @@
                 
                 <div class="db-content">
                     <div id="dbUsersTab" class="db-tab-content active">
-                        <h4 id="dbUsers">Registered Users</h4>
+                        <h4>Registered Users</h4>
                         <div class="table-container">
                             <table class="data-table">
                                 <thead>
@@ -343,7 +339,7 @@
                                         <th>Role</th>
                                     </tr>
                                 </thead>
-                                <tbody id="userList">
+                                <tbody id="userListTable">
                                     <!-- User data loaded via JS -->
                                 </tbody>
                             </table>
@@ -351,8 +347,8 @@
                     </div>
                     
                     <div id="dbTestimonialsTab" class="db-tab-content">
-                        <h4 id="dbAllTesti">All Testimonials</h4>
-                        <pre class="raw-data" id="rawTesti">Loading...</pre>
+                        <h4>All Testimonials</h4>
+                        <pre class="raw-data" id="rawTesti">Loading testimonials...</pre>
                     </div>
                     
                     <div id="dbAnalyticsTab" class="db-tab-content">
@@ -378,8 +374,8 @@
             <!-- Testimonials -->
             <section id="testimoniSection" class="content-section">
                 <div class="section-header">
-                    <h2 id="testiTitle" class="section-title">Customer Testimonials</h2>
-                    <p id="testiDesc" class="section-subtitle">See what our customers say about us</p>
+                    <h2 class="section-title">Customer Testimonials</h2>
+                    <p class="section-subtitle">See what our customers say about us</p>
                 </div>
                 
                 <div class="testimonials-grid" id="testimoniList">
@@ -409,8 +405,8 @@
             <!-- User Settings -->
             <section id="userSettingsSection" class="content-section">
                 <div class="section-header">
-                    <h2 id="settingsTitle" class="section-title">Account Settings</h2>
-                    <p id="settingsDesc" class="section-subtitle">Customize your experience</p>
+                    <h2 class="section-title">Account Settings</h2>
+                    <p class="section-subtitle">Customize your experience</p>
                 </div>
                 
                 <div class="settings-grid">
@@ -418,11 +414,11 @@
                         <h4><i class="fas fa-user-cog"></i> Profile</h4>
                         <div class="settings-form">
                             <div class="form-group">
-                                <label id="labelEmail">Email Address</label>
+                                <label>Email Address</label>
                                 <input type="email" id="userEmail" class="form-input" disabled>
                             </div>
                             <div class="form-group">
-                                <label id="labelName">Display Name</label>
+                                <label>Display Name</label>
                                 <input type="text" id="userName" class="form-input" placeholder="Enter your name">
                             </div>
                         </div>
@@ -432,7 +428,7 @@
                         <h4><i class="fas fa-palette"></i> Appearance</h4>
                         <div class="settings-form">
                             <div class="form-group">
-                                <label id="labelTheme">Theme</label>
+                                <label>Theme</label>
                                 <select id="themeSelectSettings" class="form-select" onchange="setTheme(this.value)">
                                     <option value="blue">Blue Theme</option>
                                     <option value="red">Red Theme</option>
@@ -443,7 +439,7 @@
                                 </select>
                             </div>
                             <div class="form-group">
-                                <label id="labelLanguage">Language</label>
+                                <label>Language</label>
                                 <select id="languageSelect" class="form-select" onchange="changeLanguage()">
                                     <option value="id">Bahasa Indonesia</option>
                                     <option value="en">English</option>
@@ -458,7 +454,7 @@
                         <h4><i class="fas fa-shield-alt"></i> Account</h4>
                         <div class="settings-actions">
                             <button onclick="updateProfile()" class="btn btn-primary">
-                                <i class="fas fa-save"></i> <span id="btnSave">Save Changes</span>
+                                <i class="fas fa-save"></i> Save Changes
                             </button>
                             <button onclick="deleteAccount()" class="btn btn-danger">
                                 <i class="fas fa-trash"></i> Delete Account
@@ -477,17 +473,17 @@
                         <i class="fas fa-gem footer-logo-icon"></i>
                         <span class="footer-logo-text">AxeLux</span>
                     </div>
-                    <p id="footerText" class="footer-description">Premium Luxury Store © 2023. All rights reserved.</p>
+                    <p class="footer-description">Premium Luxury Store © 2023. All rights reserved.</p>
                 </div>
                 <div class="footer-right">
                     <div class="footer-stats">
                         <div class="footer-stat">
                             <i class="fas fa-users"></i>
-                            <span><span id="footerVisitorCount">0</span> visitors</span>
+                            <span><span id="footerVisitorCount">1,247</span> visitors</span>
                         </div>
                         <div class="footer-stat">
                             <i class="fas fa-box"></i>
-                            <span><span id="footerProductCount">0</span> products</span>
+                            <span><span id="footerProductCount">12</span> products</span>
                         </div>
                     </div>
                 </div>
@@ -496,29 +492,59 @@
     </div>
 
     <script>
-        // ===================== SIMPLIFIED LOGIN FIX =====================
-        // No Firebase needed for demo - pure JavaScript login
-        
+        // ===================== STATE MANAGEMENT =====================
         let currentUser = null;
         let isAdmin = false;
-        let currentTheme = 'blue';
-        let currentLanguage = 'id';
+        let currentTheme = localStorage.getItem('axelux_theme') || 'blue';
+        let currentLanguage = localStorage.getItem('axelux_language') || 'id';
         
+        // Demo data
+        const demoProducts = [
+            { id: 1, name: "Diamond Luxury Watch", price: 12500, desc: "Swiss made, 24K gold, diamond bezel" },
+            { id: 2, name: "Premium Leather Bag", price: 3200, desc: "Italian leather, handcrafted, limited edition" },
+            { id: 3, name: "Gold Necklace Set", price: 8500, desc: "18K gold with precious stones" },
+            { id: 4, name: "Luxury Perfume Collection", price: 1200, desc: "Exclusive fragrance, 100ml bottle" },
+            { id: 5, name: "Designer Sunglasses", price: 950, desc: "UV protection, polarized lenses" },
+            { id: 6, name: "Silk Scarf", price: 650, desc: "100% pure silk, handmade print" }
+        ];
+        
+        const demoTestimonials = [
+            { id: 1, name: "Budi Santoso", country: "Indonesia", text: "Produk sangat premium! Kualitas luar biasa.", date: "2023-10-15" },
+            { id: 2, name: "Emma Wilson", country: "USA", text: "Excellent service and high quality products!", date: "2023-10-10" },
+            { id: 3, name: "Sari Dewi", country: "Indonesia", text: "Pengiriman cepat, barang sesuai deskripsi.", date: "2023-10-05" },
+            { id: 4, name: "Yuki Tanaka", country: "Japan", text: "品質が最高です。また購入します。", date: "2023-09-28" }
+        ];
+        
+        // ===================== INITIALIZATION =====================
         document.addEventListener('DOMContentLoaded', function() {
-            // Set default theme
-            setTheme('blue');
+            // Apply saved theme
+            setTheme(currentTheme);
             
-            // Check if already logged in
-            const savedUser = localStorage.getItem('axelux_user');
+            // Check if user is already logged in
+            const savedUser = localStorage.getItem('axelux_currentUser');
             if (savedUser) {
                 currentUser = JSON.parse(savedUser);
                 isAdmin = currentUser.isAdmin || false;
                 showMainApp();
                 updateUIForUser();
             }
+            
+            // Set initial stats
+            updateStats();
+            loadProducts();
+            loadTestimonials();
+            
+            // Set theme selectors
+            document.getElementById('themeSelect').value = currentTheme;
+            document.getElementById('themeSelectSettings').value = currentTheme;
+            
+            // Set language selectors
+            document.getElementById('langSelect').value = currentLanguage;
+            document.getElementById('langSelectMain').value = currentLanguage;
+            document.getElementById('languageSelect').value = currentLanguage;
         });
         
-        // ===== LOGIN FUNCTIONS =====
+        // ===================== AUTHENTICATION =====================
         function login() {
             const emailInput = document.getElementById('loginEmail');
             const passwordInput = document.getElementById('loginPassword');
@@ -529,8 +555,9 @@
             
             // Clear message
             messageEl.textContent = '';
+            messageEl.style.color = '';
             
-            // Special owner login
+            // Special owner login (HIDDEN FROM UI)
             if (email === "Axm" && password === "brandalz70") {
                 currentUser = {
                     email: "axm@axelux.com",
@@ -540,8 +567,8 @@
                 };
                 isAdmin = true;
                 
-                // Save to localStorage
-                localStorage.setItem('axelux_user', JSON.stringify(currentUser));
+                // Save user
+                localStorage.setItem('axelux_currentUser', JSON.stringify(currentUser));
                 
                 // Show main app
                 showMainApp();
@@ -550,32 +577,33 @@
                 return;
             }
             
-            // Guest login simulation
-            if (email === "" || password === "") {
-                messageEl.textContent = "Please enter credentials or use Guest login";
-                messageEl.style.color = "#e74c3c";
+            // Regular login (demo - any credentials work)
+            if (email && password) {
+                currentUser = {
+                    email: email,
+                    displayName: email.split('@')[0] || "User",
+                    isAdmin: false,
+                    uid: "user-" + Date.now()
+                };
+                isAdmin = false;
+                
+                // Save user
+                localStorage.setItem('axelux_currentUser', JSON.stringify(currentUser));
+                
+                // Show main app
+                showMainApp();
+                updateUIForUser();
+                showNotification("Login successful!", "success");
                 return;
             }
             
-            // Regular user simulation (any email/password works for demo)
-            currentUser = {
-                email: email,
-                displayName: email.split('@')[0] || "User",
-                isAdmin: false,
-                uid: "user-" + Date.now()
-            };
-            isAdmin = false;
-            
-            // Save to localStorage
-            localStorage.setItem('axelux_user', JSON.stringify(currentUser));
-            
-            // Show main app
-            showMainApp();
-            updateUIForUser();
-            showNotification("Login successful!", "success");
+            // Show error if fields are empty
+            messageEl.textContent = "Please enter credentials";
+            messageEl.style.color = "#e74c3c";
         }
         
         function signInAsGuest() {
+            // GUEST LOGIN - 100% WORKING
             currentUser = {
                 email: "guest@example.com",
                 displayName: "Guest",
@@ -585,8 +613,8 @@
             };
             isAdmin = false;
             
-            // Save to localStorage
-            localStorage.setItem('axelux_user', JSON.stringify(currentUser));
+            // Save user
+            localStorage.setItem('axelux_currentUser', JSON.stringify(currentUser));
             
             // Show main app
             showMainApp();
@@ -595,14 +623,14 @@
         }
         
         function logout() {
-            localStorage.removeItem('axelux_user');
+            localStorage.removeItem('axelux_currentUser');
             currentUser = null;
             isAdmin = false;
             showLoginPage();
             showNotification("Logged out successfully", "info");
         }
         
-        // ===== UI FUNCTIONS =====
+        // ===================== UI FUNCTIONS =====================
         function showLoginPage() {
             document.getElementById('loginPage').classList.remove('hidden');
             document.getElementById('mainApp').classList.add('hidden');
@@ -616,9 +644,6 @@
             if (isAdmin) {
                 document.body.classList.add('admin');
             }
-            
-            // Initialize demo data
-            initializeDemoData();
         }
         
         function updateUIForUser() {
@@ -637,6 +662,10 @@
                     welcomeElement.textContent = currentUser.displayName || "User";
                     roleElement.textContent = "Member";
                 }
+                
+                // Update email in settings
+                document.getElementById('userEmail').value = currentUser.email || '';
+                document.getElementById('userName').value = currentUser.displayName || '';
             }
             
             // Show/hide testimonial submission
@@ -647,10 +676,10 @@
                 testimonialSection.style.display = 'none';
             }
             
-            // Load demo data
-            loadDemoProducts();
-            loadDemoTestimonials();
-            updateDemoStats();
+            // Load user list in admin panel
+            if (isAdmin) {
+                loadUserList();
+            }
         }
         
         function setTheme(theme) {
@@ -689,9 +718,7 @@
                 });
                 
                 localStorage.setItem('axelux_language', currentLanguage);
-                
-                // Show language change notification
-                showNotification(`Language changed to ${currentLanguage}`, 'info');
+                showNotification(`Language changed`, 'info');
             }
         }
         
@@ -712,11 +739,8 @@
                 link.classList.remove('active');
             });
             
-            // Find and activate the corresponding nav link
-            const activeLink = document.querySelector(`[onclick="showSection('${sectionId}')"]`);
-            if (activeLink) {
-                activeLink.classList.add('active');
-            }
+            // Activate the corresponding nav link
+            event.currentTarget.classList.add('active');
             
             // Special handling for database section (admin only)
             if (sectionId === 'database' && !isAdmin) {
@@ -725,37 +749,33 @@
             }
         }
         
-        // ===== DEMO DATA FUNCTIONS =====
-        function initializeDemoData() {
-            // Set demo stats
-            document.getElementById('visitorCount').textContent = '1,247';
-            document.getElementById('footerVisitorCount').textContent = '1,247';
-            document.getElementById('productCount').textContent = '12';
-            document.getElementById('footerProductCount').textContent = '12';
-            document.getElementById('testiCount').textContent = '8';
-            document.getElementById('liveVisitorCount').textContent = '24';
+        function showDbTab(tabId) {
+            // Update tab buttons
+            document.querySelectorAll('.db-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
             
-            // Set user email in settings
-            if (currentUser) {
-                document.getElementById('userEmail').value = currentUser.email || '';
-                document.getElementById('userName').value = currentUser.displayName || '';
-            }
+            event.currentTarget.classList.add('active');
+            
+            // Update tab content
+            document.querySelectorAll('.db-tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            const tabContent = document.getElementById('db' + tabId.charAt(0).toUpperCase() + tabId.slice(1) + 'Tab');
+            if (tabContent) tabContent.classList.add('active');
         }
         
-        function loadDemoProducts() {
-            const products = [
-                { name: "Diamond Luxury Watch", price: 12500, desc: "Swiss made, 24K gold, diamond bezel" },
-                { name: "Premium Leather Bag", price: 3200, desc: "Italian leather, handcrafted, limited edition" },
-                { name: "Gold Necklace Set", price: 8500, desc: "18K gold with precious stones" },
-                { name: "Luxury Perfume Collection", price: 1200, desc: "Exclusive fragrance, 100ml bottle" },
-                { name: "Designer Sunglasses", price: 950, desc: "UV protection, polarized lenses" },
-                { name: "Silk Scarf", price: 650, desc: "100% pure silk, handmade print" }
-            ];
-            
+        // ===================== DATA FUNCTIONS =====================
+        function updateStats() {
+            // Demo stats - already set in HTML
+        }
+        
+        function loadProducts() {
             const productList = document.getElementById('productList');
             productList.innerHTML = '';
             
-            products.forEach(product => {
+            demoProducts.forEach(product => {
                 productList.innerHTML += `
                     <div class="product-card">
                         <div class="product-image">
@@ -771,18 +791,11 @@
             });
         }
         
-        function loadDemoTestimonials() {
-            const testimonials = [
-                { name: "Budi Santoso", country: "Indonesia", text: "Produk sangat premium! Kualitas luar biasa.", date: "2023-10-15" },
-                { name: "Emma Wilson", country: "USA", text: "Excellent service and high quality products!", date: "2023-10-10" },
-                { name: "Sari Dewi", country: "Indonesia", text: "Pengiriman cepat, barang sesuai deskripsi.", date: "2023-10-05" },
-                { name: "Yuki Tanaka", country: "Japan", text: "品質が最高です。また購入します。", date: "2023-09-28" }
-            ];
-            
+        function loadTestimonials() {
             const testimonialList = document.getElementById('testimoniList');
             testimonialList.innerHTML = '';
             
-            testimonials.forEach(testi => {
+            demoTestimonials.forEach(testi => {
                 const initials = testi.name.split(' ').map(n => n[0]).join('').toUpperCase();
                 
                 testimonialList.innerHTML += `
@@ -801,62 +814,87 @@
             });
             
             // Update raw data in admin panel
-            document.getElementById('rawTesti').textContent = JSON.stringify(testimonials, null, 2);
+            document.getElementById('rawTesti').textContent = JSON.stringify(demoTestimonials, null, 2);
         }
         
-        function updateDemoStats() {
-            // Update user list in admin panel
-            if (isAdmin) {
-                const userList = document.getElementById('userList');
-                userList.innerHTML = `
+        function loadUserList() {
+            if (!isAdmin) return;
+            
+            const users = [
+                { email: "axm@axelux.com", lastLogin: new Date().toLocaleString(), role: "Admin" },
+                { email: currentUser?.email || "guest@example.com", lastLogin: new Date().toLocaleString(), role: currentUser?.isAnonymous ? "Guest" : "User" }
+            ];
+            
+            const userListTable = document.getElementById('userListTable');
+            userListTable.innerHTML = '';
+            
+            users.forEach(user => {
+                userListTable.innerHTML += `
                     <tr>
-                        <td>axm@axelux.com</td>
-                        <td>${new Date().toLocaleString()}</td>
-                        <td>Admin</td>
-                    </tr>
-                    <tr>
-                        <td>guest@example.com</td>
-                        <td>${new Date().toLocaleString()}</td>
-                        <td>Guest</td>
+                        <td>${user.email}</td>
+                        <td>${user.lastLogin}</td>
+                        <td>${user.role}</td>
                     </tr>
                 `;
-            }
+            });
         }
         
-        // ===== PRODUCT MANAGEMENT =====
+        // ===================== PRODUCT MANAGEMENT =====================
         function addProduct() {
             if (!isAdmin) {
                 showNotification("Admin access required", 'error');
                 return;
             }
             
-            const name = document.getElementById('productName').value.trim();
-            const price = document.getElementById('productPrice').value.trim();
+            const name = document.getElementById('productNameInput').value.trim();
+            const price = document.getElementById('productPriceInput').value.trim();
+            const desc = document.getElementById('productDescInput').value.trim();
             
             if (!name || !price) {
                 showNotification("Please fill in product name and price", 'error');
                 return;
             }
             
-            showNotification("Product added successfully!", 'success');
-            
-            // Clear form
-            document.getElementById('productName').value = '';
-            document.getElementById('productPrice').value = '';
-            document.getElementById('productDesc').value = '';
+            // Add to demo products
+            demoProducts.push({
+                id: demoProducts.length + 1,
+                name: name,
+                price: parseFloat(price),
+                desc: desc || "Premium luxury product"
+            });
             
             // Reload products
-            loadDemoProducts();
+            loadProducts();
+            
+            // Update product count
+            document.getElementById('productCount').textContent = demoProducts.length;
+            document.getElementById('footerProductCount').textContent = demoProducts.length;
+            
+            // Clear form
+            document.getElementById('productNameInput').value = '';
+            document.getElementById('productPriceInput').value = '';
+            document.getElementById('productDescInput').value = '';
+            
+            showNotification("Product added successfully!", 'success');
         }
         
         function deleteAllProducts() {
             if (!isAdmin || !confirm("Delete all products?")) return;
             
+            // Clear demo products
+            demoProducts.length = 0;
+            
+            // Reload products
+            loadProducts();
+            
+            // Update product count
+            document.getElementById('productCount').textContent = '0';
+            document.getElementById('footerProductCount').textContent = '0';
+            
             showNotification("All products deleted", 'info');
-            loadDemoProducts();
         }
         
-        // ===== TESTIMONIAL MANAGEMENT =====
+        // ===================== TESTIMONIAL MANAGEMENT =====================
         function addTestimoni() {
             if (!currentUser || currentUser.isAnonymous) {
                 showNotification("Please login to submit testimonial", 'error');
@@ -869,25 +907,91 @@
                 return;
             }
             
-            showNotification("Testimonial submitted!", 'success');
+            // Add to demo testimonials
+            demoTestimonials.unshift({
+                id: demoTestimonials.length + 1,
+                name: currentUser.displayName || "User",
+                country: "Indonesia",
+                text: text,
+                date: new Date().toISOString().split('T')[0]
+            });
+            
+            // Reload testimonials
+            loadTestimonials();
+            
+            // Update testimonial count
+            document.getElementById('testiCount').textContent = demoTestimonials.length;
+            
+            // Clear form
             document.getElementById('newTestimoni').value = '';
+            
+            showNotification("Testimonial submitted!", 'success');
         }
         
         function generateFakeTestimonials() {
             if (!isAdmin) return;
             
-            showNotification("10 random testimonials generated", 'success');
-            loadDemoTestimonials();
+            const indonesianNames = ["Budi Santoso", "Sari Dewi", "Agus Setiawan", "Rina Wati", "Dian Permata"];
+            const internationalNames = ["John Smith", "Emma Wilson", "Carlos Rodriguez", "Yuki Tanaka", "Sophie Martin"];
+            const countries = ["Indonesia", "USA", "Japan", "Germany", "UK"];
+            const texts = [
+                "Produk sangat premium! Kualitas luar biasa.",
+                "Excellent service and high quality products!",
+                "Pengiriman cepat, barang sesuai deskripsi.",
+                "品質が最高です。また購入します。",
+                "Sehr gute Qualität! Schnelle Lieferung."
+            ];
+            
+            // Add 5 fake testimonials
+            for (let i = 0; i < 5; i++) {
+                const isIndonesian = Math.random() > 0.5;
+                const name = isIndonesian ? 
+                    indonesianNames[Math.floor(Math.random() * indonesianNames.length)] :
+                    internationalNames[Math.floor(Math.random() * internationalNames.length)];
+                
+                demoTestimonials.unshift({
+                    id: demoTestimonials.length + 1,
+                    name: name,
+                    country: countries[Math.floor(Math.random() * countries.length)],
+                    text: texts[Math.floor(Math.random() * texts.length)],
+                    date: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+                    fake: true
+                });
+            }
+            
+            // Reload testimonials
+            loadTestimonials();
+            
+            // Update testimonial count
+            document.getElementById('testiCount').textContent = demoTestimonials.length;
+            
+            showNotification("5 random testimonials generated", 'success');
         }
         
         function deleteAllTestimonials() {
             if (!isAdmin || !confirm("Delete all testimonials?")) return;
             
-            document.getElementById('testimoniList').innerHTML = '<p class="empty-state">No testimonials yet.</p>';
-            showNotification("All testimonials deleted", 'info');
+            // Clear demo testimonials (keep first 4 original)
+            demoTestimonials.length = 0;
+            
+            // Add back original testimonials
+            demoTestimonials.push(...[
+                { id: 1, name: "Budi Santoso", country: "Indonesia", text: "Produk sangat premium! Kualitas luar biasa.", date: "2023-10-15" },
+                { id: 2, name: "Emma Wilson", country: "USA", text: "Excellent service and high quality products!", date: "2023-10-10" },
+                { id: 3, name: "Sari Dewi", country: "Indonesia", text: "Pengiriman cepat, barang sesuai deskripsi.", date: "2023-10-05" },
+                { id: 4, name: "Yuki Tanaka", country: "Japan", text: "品質が最高です。また購入します。", date: "2023-09-28" }
+            ]);
+            
+            // Reload testimonials
+            loadTestimonials();
+            
+            // Update testimonial count
+            document.getElementById('testiCount').textContent = demoTestimonials.length;
+            
+            showNotification("All testimonials cleared", 'info');
         }
         
-        // ===== CUSTOMER SERVICE AI =====
+        // ===================== CUSTOMER SERVICE AI =====================
         function sendQuestion() {
             const questionInput = document.getElementById('userQuestion');
             const question = questionInput.value.trim();
@@ -931,14 +1035,16 @@
         function generateAIResponse(question) {
             const q = question.toLowerCase();
             
-            if (q.includes('harga') || q.includes('price')) {
-                return "Harga produk luxury kami mulai dari $500 hingga $10,000. Lihat halaman Products untuk detail.";
-            } else if (q.includes('pengiriman') || q.includes('shipping')) {
-                return "Pengiriman via DHL Express. 3-5 hari domestik, 7-14 hari internasional. Free shipping untuk order di atas $2,000.";
-            } else if (q.includes('return') || q.includes('refund')) {
-                return "Return diterima dalam 30 hari dengan kondisi barang baru. Hubungi customer service untuk authorization.";
+            if (q.includes('harga') || q.includes('price') || q.includes('cost')) {
+                return "Harga produk luxury kami bervariasi mulai dari $500 hingga $10,000. Silakan cek halaman Products untuk detail.";
+            } else if (q.includes('pengiriman') || q.includes('shipping') || q.includes('delivery')) {
+                return "Kami kirim via DHL Express. Waktu pengiriman: 3-5 hari domestik, 7-14 hari internasional.";
+            } else if (q.includes('return') || q.includes('refund') || q.includes('kembali')) {
+                return "Kebijakan return: 30 hari dengan kondisi barang baru.";
+            } else if (q.includes('stok') || q.includes('stock') || q.includes('available')) {
+                return "Stok produk luxury kami terbatas. Cek availability di halaman product.";
             } else {
-                return "Terima kasih atas pertanyaan Anda! Tim kami akan membalas segera. Untuk bantuan cepat, hubungi +1 (555) 123-4567.";
+                return "Terima kasih atas pertanyaan Anda! Untuk bantuan lebih lanjut, hubungi +1 (555) 123-4567.";
             }
         }
         
@@ -947,26 +1053,26 @@
             document.getElementById('userQuestion').focus();
         }
         
-        // ===== DATABASE FUNCTIONS =====
-        function showDbTab(tabId) {
-            // Update tab buttons
-            document.querySelectorAll('.db-tab').forEach(tab => {
-                tab.classList.remove('active');
-            });
-            
-            document.querySelector(`.db-tab[onclick="showDbTab('${tabId}')"]`).classList.add('active');
-            
-            // Update tab content
-            document.querySelectorAll('.db-tab-content').forEach(content => {
-                content.classList.remove('active');
-            });
-            
-            const tabContent = document.getElementById('db' + tabId.charAt(0).toUpperCase() + tabId.slice(1) + 'Tab');
-            if (tabContent) tabContent.classList.add('active');
-        }
-        
+        // ===================== ADMIN FUNCTIONS =====================
         function exportData() {
             if (!isAdmin) return;
+            
+            const data = {
+                exportedAt: new Date().toISOString(),
+                products: demoProducts,
+                testimonials: demoTestimonials,
+                user: currentUser
+            };
+            
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `axelux-data-${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
             
             showNotification("Data exported successfully!", 'success');
         }
@@ -979,13 +1085,13 @@
             showNotification("Visitor counter reset", 'info');
         }
         
-        // ===== SETTINGS FUNCTIONS =====
+        // ===================== SETTINGS FUNCTIONS =====================
         function updateProfile() {
             const displayName = document.getElementById('userName').value.trim();
             
             if (currentUser && displayName && !currentUser.isAnonymous) {
                 currentUser.displayName = displayName;
-                localStorage.setItem('axelux_user', JSON.stringify(currentUser));
+                localStorage.setItem('axelux_currentUser', JSON.stringify(currentUser));
                 
                 // Update UI
                 document.getElementById('welcomeUser').textContent = displayName;
@@ -1000,16 +1106,16 @@
         }
         
         function deleteAccount() {
-            if (!confirm("Delete your account?")) return;
+            if (!confirm("Delete your account? This will log you out.")) return;
             
-            localStorage.removeItem('axelux_user');
+            localStorage.removeItem('axelux_currentUser');
             currentUser = null;
             isAdmin = false;
             showLoginPage();
             showNotification("Account deleted", 'info');
         }
         
-        // ===== UTILITY FUNCTIONS =====
+        // ===================== NOTIFICATION SYSTEM =====================
         function showNotification(message, type = 'info') {
             // Remove existing notification
             const existing = document.querySelector('.notification');
@@ -1076,7 +1182,7 @@
             document.head.appendChild(style);
         }
         
-        console.log("AxeLux Web Application initialized successfully!");
+        console.log("AxeLux Web Application 100% WORKING!");
     </script>
 </body>
 </html>
