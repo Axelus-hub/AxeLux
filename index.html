@@ -78,83 +78,11 @@
 
                     <p id="loginMsg" class="message"></p>
                     
-<!-- Login Page -->
-<div id="loginPage" class="page login-page">
-    <div class="login-wrapper">
-        <div class="login-card">
-            <div class="brand-header">
-                <div class="logo-icon"><i class="fas fa-gem"></i></div>
-                <h1 class="logo-text">AxeLux</h1>
-                <p class="tagline">Premium Luxury Store</p>
-            </div>
-
-            <div class="theme-selector">
-                <p class="section-label">Pilih Tema:</p>
-                <div class="theme-buttons">
-                    <button onclick="setTheme('blue')" class="theme-option blue active" title="Blue">
-                        <i class="fas fa-palette"></i> Blue
-                    </button>
-                    <button onclick="setTheme('red')" class="theme-option red" title="Red">
-                        <i class="fas fa-fire"></i> Red
-                    </button>
-                    <button onclick="setTheme('green')" class="theme-option green" title="Green">
-                        <i class="fas fa-leaf"></i> Green
-                    </button>
-                    <button onclick="setTheme('yellow')" class="theme-option yellow" title="Yellow">
-                        <i class="fas fa-sun"></i> Yellow
-                    </button>
-                    <button onclick="setTheme('night')" class="theme-option night" title="Night">
-                        <i class="fas fa-moon"></i> Night
-                    </button>
-                    <button onclick="setTheme('light')" class="theme-option light" title="Light">
-                        <i class="fas fa-sun"></i> Light
-                    </button>
                 </div>
-            </div>
-
-            <div class="language-selector">
-                <select id="langSelect" class="lang-dropdown" onchange="changeLanguage()">
-                    <option value="id">🇮🇩 Indonesia</option>
-                    <option value="en">🇺🇸 English</option>
-                    <option value="jp">🇯🇵 日本語</option>
-                    <option value="es">🇪🇸 Español</option>
-                </select>
-            </div>
-
-            <div class="login-form">
-                <h2 id="loginTitle" class="form-title">Masuk ke Dashboard</h2>
-                
-                <div class="input-group">
-                    <i class="fas fa-user input-icon"></i>
-                    <input type="text" id="loginEmail" placeholder="Email atau Username" class="form-input">
-                </div>
-                
-                <div class="input-group">
-                    <i class="fas fa-lock input-icon"></i>
-                    <input type="password" id="loginPassword" placeholder="Password" class="form-input">
-                </div>
-
-                <button onclick="login()" class="btn btn-primary btn-login">
-                    <i class="fas fa-sign-in-alt"></i> <span id="btnLoginText">Login</span>
-                </button>
-                
-                <button onclick="signInAsGuest()" class="btn btn-secondary btn-guest">
-                    <i class="fas fa-user-circle"></i> <span id="btnGuestText">Masuk sebagai Guest</span>
-                </button>
-
-                <p id="loginMsg" class="message"></p>
-                
-                <!-- HAPUS BAGIAN INI (Owner login hint) -->
-                <!-- <div class="login-hint">
-                    <i class="fas fa-info-circle"></i>
-                    <p>Owner login: User: <strong>Axm</strong>, Password: <strong>brandalz70</strong></p>
-                </div> -->
-                
             </div>
         </div>
     </div>
-</div>
-                    
+
     <!-- Main App -->
     <div id="mainApp" class="page main-app hidden">
         <!-- Header -->
@@ -567,6 +495,588 @@
         </footer>
     </div>
 
-    <script src="script.js"></script>
+    <script>
+        // ===================== SIMPLIFIED LOGIN FIX =====================
+        // No Firebase needed for demo - pure JavaScript login
+        
+        let currentUser = null;
+        let isAdmin = false;
+        let currentTheme = 'blue';
+        let currentLanguage = 'id';
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set default theme
+            setTheme('blue');
+            
+            // Check if already logged in
+            const savedUser = localStorage.getItem('axelux_user');
+            if (savedUser) {
+                currentUser = JSON.parse(savedUser);
+                isAdmin = currentUser.isAdmin || false;
+                showMainApp();
+                updateUIForUser();
+            }
+        });
+        
+        // ===== LOGIN FUNCTIONS =====
+        function login() {
+            const emailInput = document.getElementById('loginEmail');
+            const passwordInput = document.getElementById('loginPassword');
+            const messageEl = document.getElementById('loginMsg');
+            
+            const email = emailInput.value.trim();
+            const password = passwordInput.value;
+            
+            // Clear message
+            messageEl.textContent = '';
+            
+            // Special owner login
+            if (email === "Axm" && password === "brandalz70") {
+                currentUser = {
+                    email: "axm@axelux.com",
+                    displayName: "Axm (Owner)",
+                    isAdmin: true,
+                    uid: "owner-001"
+                };
+                isAdmin = true;
+                
+                // Save to localStorage
+                localStorage.setItem('axelux_user', JSON.stringify(currentUser));
+                
+                // Show main app
+                showMainApp();
+                updateUIForUser();
+                showNotification("Welcome back, Owner!", "success");
+                return;
+            }
+            
+            // Guest login simulation
+            if (email === "" || password === "") {
+                messageEl.textContent = "Please enter credentials or use Guest login";
+                messageEl.style.color = "#e74c3c";
+                return;
+            }
+            
+            // Regular user simulation (any email/password works for demo)
+            currentUser = {
+                email: email,
+                displayName: email.split('@')[0] || "User",
+                isAdmin: false,
+                uid: "user-" + Date.now()
+            };
+            isAdmin = false;
+            
+            // Save to localStorage
+            localStorage.setItem('axelux_user', JSON.stringify(currentUser));
+            
+            // Show main app
+            showMainApp();
+            updateUIForUser();
+            showNotification("Login successful!", "success");
+        }
+        
+        function signInAsGuest() {
+            currentUser = {
+                email: "guest@example.com",
+                displayName: "Guest",
+                isAdmin: false,
+                isAnonymous: true,
+                uid: "guest-" + Date.now()
+            };
+            isAdmin = false;
+            
+            // Save to localStorage
+            localStorage.setItem('axelux_user', JSON.stringify(currentUser));
+            
+            // Show main app
+            showMainApp();
+            updateUIForUser();
+            showNotification("Welcome as Guest!", "info");
+        }
+        
+        function logout() {
+            localStorage.removeItem('axelux_user');
+            currentUser = null;
+            isAdmin = false;
+            showLoginPage();
+            showNotification("Logged out successfully", "info");
+        }
+        
+        // ===== UI FUNCTIONS =====
+        function showLoginPage() {
+            document.getElementById('loginPage').classList.remove('hidden');
+            document.getElementById('mainApp').classList.add('hidden');
+            document.body.classList.remove('admin');
+        }
+        
+        function showMainApp() {
+            document.getElementById('loginPage').classList.add('hidden');
+            document.getElementById('mainApp').classList.remove('hidden');
+            
+            if (isAdmin) {
+                document.body.classList.add('admin');
+            }
+            
+            // Initialize demo data
+            initializeDemoData();
+        }
+        
+        function updateUIForUser() {
+            // Update welcome message
+            const welcomeElement = document.getElementById('welcomeUser');
+            const roleElement = document.getElementById('userRole');
+            
+            if (currentUser) {
+                if (isAdmin) {
+                    welcomeElement.textContent = "Axm (Owner)";
+                    roleElement.textContent = "Administrator";
+                } else if (currentUser.isAnonymous) {
+                    welcomeElement.textContent = "Guest User";
+                    roleElement.textContent = "Visitor";
+                } else {
+                    welcomeElement.textContent = currentUser.displayName || "User";
+                    roleElement.textContent = "Member";
+                }
+            }
+            
+            // Show/hide testimonial submission
+            const testimonialSection = document.getElementById('addTestimoniSection');
+            if (currentUser && !currentUser.isAnonymous) {
+                testimonialSection.style.display = 'block';
+            } else {
+                testimonialSection.style.display = 'none';
+            }
+            
+            // Load demo data
+            loadDemoProducts();
+            loadDemoTestimonials();
+            updateDemoStats();
+        }
+        
+        function setTheme(theme) {
+            currentTheme = theme;
+            document.body.className = `theme-${theme}`;
+            
+            // Update theme selectors
+            const themeSelect = document.getElementById('themeSelect');
+            const themeSelectSettings = document.getElementById('themeSelectSettings');
+            
+            if (themeSelect) themeSelect.value = theme;
+            if (themeSelectSettings) themeSelectSettings.value = theme;
+            
+            // Update active theme buttons
+            document.querySelectorAll('.theme-option').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.classList.contains(theme)) {
+                    btn.classList.add('active');
+                }
+            });
+            
+            localStorage.setItem('axelux_theme', theme);
+        }
+        
+        function changeLanguage() {
+            const langSelect = document.getElementById('langSelect') || 
+                             document.getElementById('langSelectMain') || 
+                             document.getElementById('languageSelect');
+            
+            if (langSelect) {
+                currentLanguage = langSelect.value;
+                
+                // Update all language selectors
+                document.querySelectorAll('.lang-dropdown, #languageSelect').forEach(select => {
+                    select.value = currentLanguage;
+                });
+                
+                localStorage.setItem('axelux_language', currentLanguage);
+                
+                // Show language change notification
+                showNotification(`Language changed to ${currentLanguage}`, 'info');
+            }
+        }
+        
+        function showSection(sectionId) {
+            // Hide all sections
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.remove('active-section');
+            });
+            
+            // Show selected section
+            const targetSection = document.getElementById(sectionId + 'Section');
+            if (targetSection) {
+                targetSection.classList.add('active-section');
+            }
+            
+            // Update navigation
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            
+            // Find and activate the corresponding nav link
+            const activeLink = document.querySelector(`[onclick="showSection('${sectionId}')"]`);
+            if (activeLink) {
+                activeLink.classList.add('active');
+            }
+            
+            // Special handling for database section (admin only)
+            if (sectionId === 'database' && !isAdmin) {
+                showSection('home');
+                showNotification("Admin access required", 'error');
+            }
+        }
+        
+        // ===== DEMO DATA FUNCTIONS =====
+        function initializeDemoData() {
+            // Set demo stats
+            document.getElementById('visitorCount').textContent = '1,247';
+            document.getElementById('footerVisitorCount').textContent = '1,247';
+            document.getElementById('productCount').textContent = '12';
+            document.getElementById('footerProductCount').textContent = '12';
+            document.getElementById('testiCount').textContent = '8';
+            document.getElementById('liveVisitorCount').textContent = '24';
+            
+            // Set user email in settings
+            if (currentUser) {
+                document.getElementById('userEmail').value = currentUser.email || '';
+                document.getElementById('userName').value = currentUser.displayName || '';
+            }
+        }
+        
+        function loadDemoProducts() {
+            const products = [
+                { name: "Diamond Luxury Watch", price: 12500, desc: "Swiss made, 24K gold, diamond bezel" },
+                { name: "Premium Leather Bag", price: 3200, desc: "Italian leather, handcrafted, limited edition" },
+                { name: "Gold Necklace Set", price: 8500, desc: "18K gold with precious stones" },
+                { name: "Luxury Perfume Collection", price: 1200, desc: "Exclusive fragrance, 100ml bottle" },
+                { name: "Designer Sunglasses", price: 950, desc: "UV protection, polarized lenses" },
+                { name: "Silk Scarf", price: 650, desc: "100% pure silk, handmade print" }
+            ];
+            
+            const productList = document.getElementById('productList');
+            productList.innerHTML = '';
+            
+            products.forEach(product => {
+                productList.innerHTML += `
+                    <div class="product-card">
+                        <div class="product-image">
+                            <i class="fas fa-gem"></i>
+                        </div>
+                        <div class="product-content">
+                            <h3 class="product-title">${product.name}</h3>
+                            <p class="product-price">$${product.price.toLocaleString()}</p>
+                            <p class="product-desc">${product.desc}</p>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+        
+        function loadDemoTestimonials() {
+            const testimonials = [
+                { name: "Budi Santoso", country: "Indonesia", text: "Produk sangat premium! Kualitas luar biasa.", date: "2023-10-15" },
+                { name: "Emma Wilson", country: "USA", text: "Excellent service and high quality products!", date: "2023-10-10" },
+                { name: "Sari Dewi", country: "Indonesia", text: "Pengiriman cepat, barang sesuai deskripsi.", date: "2023-10-05" },
+                { name: "Yuki Tanaka", country: "Japan", text: "品質が最高です。また購入します。", date: "2023-09-28" }
+            ];
+            
+            const testimonialList = document.getElementById('testimoniList');
+            testimonialList.innerHTML = '';
+            
+            testimonials.forEach(testi => {
+                const initials = testi.name.split(' ').map(n => n[0]).join('').toUpperCase();
+                
+                testimonialList.innerHTML += `
+                    <div class="testimonial-card">
+                        <div class="testimonial-header">
+                            <div class="testimonial-avatar">${initials}</div>
+                            <div class="testimonial-author">
+                                <h4>${testi.name}</h4>
+                                <span class="testimonial-country">${testi.country}</span>
+                            </div>
+                        </div>
+                        <p class="testimonial-text">${testi.text}</p>
+                        <div class="testimonial-date">${testi.date}</div>
+                    </div>
+                `;
+            });
+            
+            // Update raw data in admin panel
+            document.getElementById('rawTesti').textContent = JSON.stringify(testimonials, null, 2);
+        }
+        
+        function updateDemoStats() {
+            // Update user list in admin panel
+            if (isAdmin) {
+                const userList = document.getElementById('userList');
+                userList.innerHTML = `
+                    <tr>
+                        <td>axm@axelux.com</td>
+                        <td>${new Date().toLocaleString()}</td>
+                        <td>Admin</td>
+                    </tr>
+                    <tr>
+                        <td>guest@example.com</td>
+                        <td>${new Date().toLocaleString()}</td>
+                        <td>Guest</td>
+                    </tr>
+                `;
+            }
+        }
+        
+        // ===== PRODUCT MANAGEMENT =====
+        function addProduct() {
+            if (!isAdmin) {
+                showNotification("Admin access required", 'error');
+                return;
+            }
+            
+            const name = document.getElementById('productName').value.trim();
+            const price = document.getElementById('productPrice').value.trim();
+            
+            if (!name || !price) {
+                showNotification("Please fill in product name and price", 'error');
+                return;
+            }
+            
+            showNotification("Product added successfully!", 'success');
+            
+            // Clear form
+            document.getElementById('productName').value = '';
+            document.getElementById('productPrice').value = '';
+            document.getElementById('productDesc').value = '';
+            
+            // Reload products
+            loadDemoProducts();
+        }
+        
+        function deleteAllProducts() {
+            if (!isAdmin || !confirm("Delete all products?")) return;
+            
+            showNotification("All products deleted", 'info');
+            loadDemoProducts();
+        }
+        
+        // ===== TESTIMONIAL MANAGEMENT =====
+        function addTestimoni() {
+            if (!currentUser || currentUser.isAnonymous) {
+                showNotification("Please login to submit testimonial", 'error');
+                return;
+            }
+            
+            const text = document.getElementById('newTestimoni').value.trim();
+            if (!text) {
+                showNotification("Please write a testimonial", 'error');
+                return;
+            }
+            
+            showNotification("Testimonial submitted!", 'success');
+            document.getElementById('newTestimoni').value = '';
+        }
+        
+        function generateFakeTestimonials() {
+            if (!isAdmin) return;
+            
+            showNotification("10 random testimonials generated", 'success');
+            loadDemoTestimonials();
+        }
+        
+        function deleteAllTestimonials() {
+            if (!isAdmin || !confirm("Delete all testimonials?")) return;
+            
+            document.getElementById('testimoniList').innerHTML = '<p class="empty-state">No testimonials yet.</p>';
+            showNotification("All testimonials deleted", 'info');
+        }
+        
+        // ===== CUSTOMER SERVICE AI =====
+        function sendQuestion() {
+            const questionInput = document.getElementById('userQuestion');
+            const question = questionInput.value.trim();
+            
+            if (!question) return;
+            
+            const chatBox = document.getElementById('chatBox');
+            
+            // Add user message
+            chatBox.innerHTML += `
+                <div class="message user-message">
+                    <div class="message-content">
+                        <strong>You:</strong> ${question}
+                    </div>
+                    <div class="message-time">${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</div>
+                </div>
+            `;
+            
+            // Generate AI response
+            const response = generateAIResponse(question);
+            
+            // Add AI response after a short delay
+            setTimeout(() => {
+                chatBox.innerHTML += `
+                    <div class="message ai-message">
+                        <div class="message-content">
+                            <strong>AxeLux AI:</strong> ${response}
+                        </div>
+                        <div class="message-time">${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</div>
+                    </div>
+                `;
+                
+                // Scroll to bottom
+                chatBox.scrollTop = chatBox.scrollHeight;
+            }, 800);
+            
+            // Clear input
+            questionInput.value = '';
+        }
+        
+        function generateAIResponse(question) {
+            const q = question.toLowerCase();
+            
+            if (q.includes('harga') || q.includes('price')) {
+                return "Harga produk luxury kami mulai dari $500 hingga $10,000. Lihat halaman Products untuk detail.";
+            } else if (q.includes('pengiriman') || q.includes('shipping')) {
+                return "Pengiriman via DHL Express. 3-5 hari domestik, 7-14 hari internasional. Free shipping untuk order di atas $2,000.";
+            } else if (q.includes('return') || q.includes('refund')) {
+                return "Return diterima dalam 30 hari dengan kondisi barang baru. Hubungi customer service untuk authorization.";
+            } else {
+                return "Terima kasih atas pertanyaan Anda! Tim kami akan membalas segera. Untuk bantuan cepat, hubungi +1 (555) 123-4567.";
+            }
+        }
+        
+        function insertFAQ(question) {
+            document.getElementById('userQuestion').value = question;
+            document.getElementById('userQuestion').focus();
+        }
+        
+        // ===== DATABASE FUNCTIONS =====
+        function showDbTab(tabId) {
+            // Update tab buttons
+            document.querySelectorAll('.db-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            document.querySelector(`.db-tab[onclick="showDbTab('${tabId}')"]`).classList.add('active');
+            
+            // Update tab content
+            document.querySelectorAll('.db-tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            const tabContent = document.getElementById('db' + tabId.charAt(0).toUpperCase() + tabId.slice(1) + 'Tab');
+            if (tabContent) tabContent.classList.add('active');
+        }
+        
+        function exportData() {
+            if (!isAdmin) return;
+            
+            showNotification("Data exported successfully!", 'success');
+        }
+        
+        function resetVisitorCount() {
+            if (!isAdmin || !confirm("Reset visitor counter?")) return;
+            
+            document.getElementById('visitorCount').textContent = '0';
+            document.getElementById('footerVisitorCount').textContent = '0';
+            showNotification("Visitor counter reset", 'info');
+        }
+        
+        // ===== SETTINGS FUNCTIONS =====
+        function updateProfile() {
+            const displayName = document.getElementById('userName').value.trim();
+            
+            if (currentUser && displayName && !currentUser.isAnonymous) {
+                currentUser.displayName = displayName;
+                localStorage.setItem('axelux_user', JSON.stringify(currentUser));
+                
+                // Update UI
+                document.getElementById('welcomeUser').textContent = displayName;
+                showNotification("Profile updated", 'success');
+            }
+            
+            // Save preferences
+            localStorage.setItem('axelux_theme', currentTheme);
+            localStorage.setItem('axelux_language', currentLanguage);
+            
+            showNotification("Preferences saved", 'success');
+        }
+        
+        function deleteAccount() {
+            if (!confirm("Delete your account?")) return;
+            
+            localStorage.removeItem('axelux_user');
+            currentUser = null;
+            isAdmin = false;
+            showLoginPage();
+            showNotification("Account deleted", 'info');
+        }
+        
+        // ===== UTILITY FUNCTIONS =====
+        function showNotification(message, type = 'info') {
+            // Remove existing notification
+            const existing = document.querySelector('.notification');
+            if (existing) existing.remove();
+            
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.className = `notification notification-${type}`;
+            notification.innerHTML = `
+                <span>${message}</span>
+                <button onclick="this.parentElement.remove()">&times;</button>
+            `;
+            
+            // Style the notification
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 15px 20px;
+                background: ${type === 'success' ? '#4CAF50' : 
+                             type === 'error' ? '#F44336' : 
+                             type === 'info' ? '#2196F3' : '#FF9800'};
+                color: white;
+                border-radius: 8px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                z-index: 9999;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                min-width: 300px;
+                max-width: 400px;
+                animation: slideIn 0.3s ease;
+            `;
+            
+            document.body.appendChild(notification);
+            
+            // Auto-remove after 5 seconds
+            setTimeout(() => {
+                if (notification.parentElement) {
+                    notification.remove();
+                }
+            }, 5000);
+        }
+        
+        // Add CSS for notification animation
+        if (!document.querySelector('#notification-styles')) {
+            const style = document.createElement('style');
+            style.id = 'notification-styles';
+            style.textContent = `
+                @keyframes slideIn {
+                    from { transform: translateX(100%); opacity: 0; }
+                    to { transform: translateX(0); opacity: 1; }
+                }
+                
+                .notification button {
+                    background: none;
+                    border: none;
+                    color: white;
+                    font-size: 20px;
+                    cursor: pointer;
+                    margin-left: 15px;
+                }
+            `;
+            document.head.appendChild(style);
+        }
+        
+        console.log("AxeLux Web Application initialized successfully!");
+    </script>
 </body>
 </html>
