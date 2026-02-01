@@ -1,256 +1,202 @@
-// Inisialisasi ketika halaman dimuat
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('Axelux Store Dashboard - Siap Digunakan!');
-    
-    // Inisialisasi toggle tema
-    initThemeToggle();
-    
-    // Inisialisasi efek 3D pada elemen
-    init3DEffects();
-    
-    // Inisialisasi animasi progress bar
-    initProgressAnimation();
-    
-    // Inisialisasi interaksi navigasi
-    initNavigation();
-    
-    // Inisialisasi efek hover pada kartu
-    initCardHoverEffects();
-    
-    // Update status pengguna
-    updateUserStatus();
-    
-    // Tambahkan efek kedalaman pada logo
-    enhanceLogo3D();
-});
-
-// Fungsi toggle tema terang/gelap
-function initThemeToggle() {
-    const themeToggle = document.getElementById('theme-toggle');
-    const body = document.body;
-    const container = document.querySelector('.container');
-    
-    themeToggle.addEventListener('change', function() {
-        if (this.checked) {
-            // Mode terang
-            body.style.background = 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)';
-            container.style.backgroundColor = 'white';
-            container.style.color = '#333';
-            updateThemeLabel('Mode Terang');
-        } else {
-            // Mode gelap
-            body.style.background = 'linear-gradient(135deg, #2c3e50 0%, #1a1a2e 100%)';
-            container.style.backgroundColor = '#2d3436';
-            container.style.color = '#f8f9fa';
-            updateThemeLabel('Mode Gelap');
-        }
-        
-        // Tambahkan efek transisi
-        container.style.transition = 'background-color 0.5s ease, color 0.5s ease';
-        
-        // Tambahkan feedback visual
-        const toggleSlider = document.querySelector('.toggle-slider');
-        toggleSlider.style.transform = 'scale(1.05)';
-        setTimeout(() => {
-            toggleSlider.style.transform = 'scale(1)';
-        }, 200);
-    });
-}
-
-// Fungsi untuk memperbarui label tema
-function updateThemeLabel(mode) {
-    const label = document.querySelector('.toggle-label span');
-    const icon = document.querySelector('.toggle-label i');
-    
-    label.textContent = mode;
-    
-    if (mode === 'Mode Terang') {
-        icon.className = 'fas fa-sun';
-        icon.style.color = '#fdcb6e';
-    } else {
-        icon.className = 'fas fa-moon';
-        icon.style.color = '#6c5ce7';
-    }
-}
-
-// Fungsi untuk efek 3D pada elemen
-function init3DEffects() {
-    const cards3D = document.querySelectorAll('.stat-card-3d, .content-3d');
-    
-    cards3D.forEach(card => {
-        card.addEventListener('mousemove', function(e) {
-            const rect = this.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Axelux Store - Dashboard Modern</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@800;900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <!-- Header dengan efek 3D -->
+        <header class="header">
+            <div class="logo-container">
+                <div class="logo-3d">Axelux</div>
+                <div class="logo-subtitle">Premium Digital Store</div>
+            </div>
             
-            const centerX = rect.width / 2;
-            const centerY = rect.height / 2;
-            
-            const rotateY = (x - centerX) / 25;
-            const rotateX = (centerY - y) / 25;
-            
-            this.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateZ(10px)`;
-        });
-        
-        card.addEventListener('mouseleave', function() {
-            this.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) translateZ(0)';
-            setTimeout(() => {
-                this.style.transition = 'transform 0.5s ease';
-            }, 100);
-        });
-    });
-}
+            <div class="user-info">
+                <div class="user-avatar">
+                    <i class="fas fa-user-circle"></i>
+                </div>
+                <div class="user-details">
+                    <div class="user-name">Pengguna Tamu</div>
+                    <div class="user-status">
+                        <span class="status-indicator active"></span>
+                        <span class="status-text">Online</span>
+                    </div>
+                </div>
+            </div>
+        </header>
 
-// Fungsi animasi progress bar
-function initProgressAnimation() {
-    const progressFill = document.querySelector('.progress-fill');
-    
-    // Reset width untuk memulai animasi
-    progressFill.style.width = '0%';
-    
-    // Jalankan animasi setelah sedikit delay
-    setTimeout(() => {
-        progressFill.style.width = '85%';
-        progressFill.style.transition = 'width 1.5s cubic-bezier(0.22, 0.61, 0.36, 1)';
-    }, 500);
-}
+        <!-- Navigasi dengan efek 3D -->
+        <nav class="navbar">
+            <ul class="nav-menu">
+                <li class="nav-item active">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-home"></i>
+                        <span>Beranda</span>
+                    </a>
+                    <div class="nav-3d-effect"></div>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-box-open"></i>
+                        <span>Produk</span>
+                    </a>
+                    <div class="nav-3d-effect"></div>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-comment-alt"></i>
+                        <span>Testimoni</span>
+                    </a>
+                    <div class="nav-3d-effect"></div>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-cog"></i>
+                        <span>Pengaturan</span>
+                    </a>
+                    <div class="nav-3d-effect"></div>
+                </li>
+            </ul>
+        </nav>
 
-// Fungsi untuk interaksi navigasi
-function initNavigation() {
-    const navItems = document.querySelectorAll('.nav-item');
-    
-    navItems.forEach(item => {
-        item.addEventListener('click', function(e) {
-            e.preventDefault();
-            
-            // Hapus kelas aktif dari semua item
-            navItems.forEach(nav => {
-                nav.classList.remove('active');
-            });
-            
-            // Tambahkan kelas aktif ke item yang diklik
-            this.classList.add('active');
-            
-            // Efek klik
-            this.style.transform = 'scale(0.95)';
-            setTimeout(() => {
-                this.style.transform = 'scale(1)';
-            }, 150);
-            
-            // Simulasi perubahan konten berdasarkan navigasi
-            simulateContentChange(this.querySelector('.nav-link span').textContent);
-        });
-    });
-}
+        <!-- Konten utama dengan efek 3D -->
+        <main class="main-content">
+            <div class="dashboard-header">
+                <h1 class="dashboard-title">
+                    <span class="title-3d">Dashboard</span>
+                    <span class="title-sub">Axelux Store</span>
+                </h1>
+                <div class="theme-toggle">
+                    <div class="toggle-label">
+                        <i class="fas fa-sun"></i>
+                        <span>Mode Terang</span>
+                    </div>
+                    <div class="toggle-switch">
+                        <input type="checkbox" id="theme-toggle" checked>
+                        <label for="theme-toggle" class="toggle-slider">
+                            <span class="toggle-knob"></span>
+                        </label>
+                    </div>
+                </div>
+            </div>
 
-// Fungsi simulasi perubahan konten
-function simulateContentChange(section) {
-    const dashboardTitle = document.querySelector('.title-3d');
-    const originalTitle = dashboardTitle.textContent;
-    
-    // Efek transisi judul
-    dashboardTitle.style.opacity = '0.5';
-    dashboardTitle.style.transform = 'translateY(-10px)';
-    
-    setTimeout(() => {
-        dashboardTitle.textContent = section;
-        dashboardTitle.style.opacity = '1';
-        dashboardTitle.style.transform = 'translateY(0)';
-        
-        // Kembalikan judul setelah 2 detik
-        setTimeout(() => {
-            dashboardTitle.style.opacity = '0.5';
-            dashboardTitle.style.transform = 'translateY(-10px)';
-            
-            setTimeout(() => {
-                dashboardTitle.textContent = originalTitle;
-                dashboardTitle.style.opacity = '1';
-                dashboardTitle.style.transform = 'translateY(0)';
-            }, 300);
-        }, 2000);
-    }, 300);
-}
+            <!-- Kartu statistik 3D -->
+            <div class="stats-container">
+                <div class="stat-card stat-card-3d">
+                    <div class="stat-icon">
+                        <i class="fas fa-shopping-bag"></i>
+                    </div>
+                    <div class="stat-info">
+                        <div class="stat-value">1.248</div>
+                        <div class="stat-label">Total Produk</div>
+                    </div>
+                    <div class="stat-badge">+12%</div>
+                </div>
 
-// Fungsi efek hover pada kartu
-function initCardHoverEffects() {
-    const cards = document.querySelectorAll('.stat-card, .content-card');
-    
-    cards.forEach(card => {
-        card.addEventListener('mouseenter', function() {
-            const icon = this.querySelector('.stat-icon, .illustration-3d, .card-header i');
-            if (icon) {
-                icon.style.transform = 'scale(1.1) rotate(5deg)';
-                icon.style.transition = 'transform 0.3s ease';
-            }
-        });
-        
-        card.addEventListener('mouseleave', function() {
-            const icon = this.querySelector('.stat-icon, .illustration-3d, .card-header i');
-            if (icon) {
-                icon.style.transform = 'scale(1) rotate(0deg)';
-            }
-        });
-    });
-}
+                <div class="stat-card stat-card-3d">
+                    <div class="stat-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="stat-info">
+                        <div class="stat-value">5.623</div>
+                        <div class="stat-label">Pengunjung</div>
+                    </div>
+                    <div class="stat-badge">+8%</div>
+                </div>
 
-// Fungsi untuk memperbarui status pengguna
-function updateUserStatus() {
-    const statusIndicator = document.querySelector('.status-indicator');
-    const statusText = document.querySelector('.status-text');
-    
-    // Simulasi perubahan status acak
-    setInterval(() => {
-        const isOnline = Math.random() > 0.1; // 90% online
-        
-        if (isOnline) {
-            statusIndicator.className = 'status-indicator active';
-            statusIndicator.style.backgroundColor = '#00b894';
-            statusText.textContent = 'Online';
-        } else {
-            statusIndicator.className = 'status-indicator';
-            statusIndicator.style.backgroundColor = '#e17055';
-            statusText.textContent = 'Offline';
-            
-            // Kembalikan ke online setelah 3 detik
-            setTimeout(() => {
-                statusIndicator.className = 'status-indicator active';
-                statusIndicator.style.backgroundColor = '#00b894';
-                statusText.textContent = 'Online';
-            }, 3000);
-        }
-    }, 10000); // Update setiap 10 detik
-}
+                <div class="stat-card stat-card-3d">
+                    <div class="stat-icon">
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <div class="stat-info">
+                        <div class="stat-value">4.8</div>
+                        <div class="stat-label">Rating</div>
+                    </div>
+                    <div class="stat-badge">Terbaik</div>
+                </div>
+            </div>
 
-// Fungsi untuk meningkatkan efek 3D pada logo
-function enhanceLogo3D() {
-    const logo = document.querySelector('.logo-3d');
-    
-    logo.addEventListener('mousemove', function(e) {
-        const rect = this.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        
-        const rotateY = (x / rect.width - 0.5) * 20;
-        
-        this.style.transform = `perspective(1000px) rotateY(${rotateY}deg) translateZ(20px)`;
-        this.style.textShadow = `${-rotateY/2}px 3px 0 rgba(0, 0, 0, 0.2)`;
-    });
-    
-    logo.addEventListener('mouseleave', function() {
-        this.style.transform = 'perspective(1000px) rotateY(0) translateZ(20px)';
-        this.style.textShadow = '3px 3px 0 rgba(0, 0, 0, 0.2)';
-        this.style.transition = 'transform 0.5s ease, text-shadow 0.5s ease';
-    });
-}
+            <!-- Bagian konten utama dengan efek 3D -->
+            <div class="content-grid">
+                <div class="content-card content-3d">
+                    <div class="card-header">
+                        <h3><i class="fas fa-bolt"></i> Status Sistem</h3>
+                        <div class="status-light green active"></div>
+                    </div>
+                    <div class="card-body">
+                        <p>Sistem berjalan dengan lancar. Semua layanan dalam kondisi optimal.</p>
+                        <div class="progress-container">
+                            <div class="progress-label">Kinerja Server</div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 85%"></div>
+                            </div>
+                            <div class="progress-value">85%</div>
+                        </div>
+                    </div>
+                </div>
 
-// Fungsi untuk tombol login
-document.querySelector('.btn-login')?.addEventListener('click', function() {
-    this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Memproses...';
-    this.disabled = true;
-    
-    // Simulasi proses login
-    setTimeout(() => {
-        alert('Fitur login sedang dalam pengembangan. Terima kasih!');
-        this.innerHTML = '<i class="fas fa-sign-in-alt"></i> Masuk ke Akun';
-        this.disabled = false;
-    }, 1500);
-});
+                <div class="content-card content-3d">
+                    <div class="card-header">
+                        <h3><i class="fas fa-fire"></i> Produk Terpopuler</h3>
+                        <span class="hot-badge">HOT</span>
+                    </div>
+                    <div class="card-body">
+                        <ul class="product-list">
+                            <li class="product-item">
+                                <div class="product-rank">1</div>
+                                <div class="product-name">Axelux Pro X9</div>
+                                <div class="product-sales">452 terjual</div>
+                            </li>
+                            <li class="product-item">
+                                <div class="product-rank">2</div>
+                                <div class="product-name">Nexus Lite v3</div>
+                                <div class="product-sales">387 terjual</div>
+                            </li>
+                            <li class="product-item">
+                                <div class="product-rank">3</div>
+                                <div class="product-name">Quantum Z2</div>
+                                <div class="product-sales">321 terjual</div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="content-card content-3d welcome-card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-hand-wave"></i> Selamat Datang, Tamu!</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="welcome-content">
+                            <div class="welcome-text">
+                                <p>Selamat datang di <strong>Axelux Store</strong>. Anda sedang mengakses dashboard dalam mode tamu. Fitur lengkap tersedia setelah login.</p>
+                                <button class="btn-login">
+                                    <i class="fas fa-sign-in-alt"></i> Masuk ke Akun
+                                </button>
+                            </div>
+                            <div class="welcome-illustration">
+                                <div class="illustration-3d">
+                                    <i class="fas fa-store-alt"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <footer class="footer">
+                <p>Axelux Store &copy; 2023 - Dashboard Modern dengan Efek 3D</p>
+                <p class="footer-note">Versi 2.1 | Status: <span class="status-active">Aktif</span></p>
+            </footer>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
